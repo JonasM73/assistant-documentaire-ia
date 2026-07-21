@@ -1,0 +1,41 @@
+# ── Secrets — NE JAMAIS committer ──────────────────────────────
+.env
+.env.*
+!.env.example
+
+# ── Python ─────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+ENV/
+
+# ── Base vectorielle (régénérée par `python ingest.py`) ─────────
+chroma_db/
+
+# ── Modèles / caches téléchargés (fastembed, HuggingFace) ──────
+.cache/
+*.onnx
+
+# ── Documents clients (ne jamais pousser les vrais fichiers) ───
+# Décommente si tu mets de vrais documents de client dans data/ :
+# data/
+
+# ── Systèmes d'exploitation ────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── Éditeurs / IDE ─────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*~
+
+# ── Node (au cas où) ───────────────────────────────────────────
+node_modules/
+
+# ── Logs ───────────────────────────────────────────────────────
+*.log

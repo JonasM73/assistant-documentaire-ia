@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Boréale Équipement — Distributeur CVC & plomberie</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#132840; --blue:#0B5CAD; --blue-dark:#08497f; --amber:#F49B0B;
+    --ink:#1a2431; --soft:#5b6b7d; --bg:#F5F7FA; --card:#FFFFFF;
+    --line:#E3E8EE; --ok:#177245;
+    --disp:'Bricolage Grotesque',system-ui,sans-serif;
+    --ui:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--ui);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;}
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:1160px;margin:0 auto;padding:0 22px;}
+  img,svg{display:block;}
+  .ic{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+
+  /* ---- utility bar ---- */
+  .util{background:var(--navy);color:#c6d2e0;font-size:12.5px;}
+  .util .wrap{display:flex;align-items:center;gap:20px;height:36px;}
+  .util .spacer{flex:1;}
+  .util a{color:#c6d2e0;}
+  .util a:hover{color:#fff;}
+  .util b{color:#fff;}
+
+  /* ---- header ---- */
+  header.site{background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:50;}
+  header.site .wrap{display:flex;align-items:center;gap:22px;height:74px;}
+  .logo{font-family:var(--disp);font-weight:800;font-size:22px;color:var(--navy);letter-spacing:-.01em;white-space:nowrap;}
+  .logo em{color:var(--blue);font-style:normal;}
+  .search{flex:1;display:flex;align-items:center;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:0 12px;height:44px;max-width:520px;}
+  .search input{border:none;background:transparent;outline:none;flex:1;font-family:var(--ui);font-size:14.5px;color:var(--ink);}
+  .search .ic{color:var(--soft);}
+  .hactions{display:flex;align-items:center;gap:20px;margin-left:auto;color:var(--navy);}
+  .hactions a{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;color:var(--soft);font-weight:600;}
+  .hactions a .ic{color:var(--navy);}
+  .hactions .cart{position:relative;}
+  .hactions .cart .badge{position:absolute;top:-6px;right:-8px;background:var(--amber);color:#3a2600;font-size:10px;font-weight:700;border-radius:999px;padding:0 5px;}
+
+  /* ---- category nav ---- */
+  nav.cats{background:var(--blue);}
+  nav.cats .wrap{display:flex;align-items:center;gap:2px;height:46px;}
+  nav.cats a{color:#eaf2fb;font-weight:600;font-size:13.5px;padding:9px 14px;border-radius:8px;}
+  nav.cats a:hover{background:rgba(255,255,255,.12);color:#fff;}
+  nav.cats .promo{margin-left:auto;color:#fff;font-weight:700;font-size:13px;display:flex;align-items:center;gap:7px;}
+  nav.cats .promo .dot{width:7px;height:7px;border-radius:50%;background:var(--amber);}
+
+  /* ---- hero ---- */
+  .hero{background:linear-gradient(120deg,var(--navy) 0%,#1c3a5c 62%,#245285 100%);color:#fff;overflow:hidden;position:relative;}
+  .hero::after{content:"";position:absolute;right:-120px;top:-80px;width:520px;height:520px;
+    background:radial-gradient(circle at center, rgba(244,155,11,.22), transparent 60%);}
+  .hero .wrap{display:grid;grid-template-columns:1.15fr .85fr;gap:30px;align-items:center;padding:52px 22px;position:relative;z-index:1;}
+  .hero .tag{display:inline-block;background:rgba(244,155,11,.16);color:#ffd694;font-weight:700;font-size:12px;letter-spacing:.06em;text-transform:uppercase;padding:6px 12px;border-radius:999px;margin-bottom:16px;}
+  .hero h1{font-family:var(--disp);font-weight:800;font-size:clamp(30px,4.4vw,48px);line-height:1.04;letter-spacing:-.02em;margin:0 0 16px;}
+  .hero p{font-size:17px;color:#c9d6e6;max-width:44ch;margin:0 0 26px;}
+  .btn{display:inline-flex;align-items:center;gap:9px;font-family:var(--disp);font-weight:700;font-size:15px;border:none;cursor:pointer;border-radius:10px;padding:13px 22px;}
+  .btn-amber{background:var(--amber);color:#33230a;}
+  .btn-amber:hover{background:#ffab26;}
+  .btn-ghost{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.35);}
+  .btn-ghost:hover{border-color:#fff;}
+  .hero-cta{display:flex;gap:12px;flex-wrap:wrap;}
+  .promo-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:22px;backdrop-filter:blur(4px);}
+  .promo-card h3{font-family:var(--disp);font-size:15px;margin:0 0 14px;color:#fff;font-weight:700;}
+  .promo-row{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.1);}
+  .promo-row:last-child{border-bottom:none;}
+  .promo-row span{color:#c9d6e6;font-size:13.5px;}
+  .promo-row b{font-family:var(--disp);color:#ffd694;font-size:17px;}
+
+  /* ---- trust strip ---- */
+  .trust{background:var(--card);border-bottom:1px solid var(--line);}
+  .trust .wrap{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;padding:18px 22px;}
+  .trust .item{display:flex;align-items:center;gap:11px;}
+  .trust .item .ic{color:var(--blue);width:24px;height:24px;flex:none;}
+  .trust .item b{display:block;font-family:var(--disp);font-size:13.5px;color:var(--ink);}
+  .trust .item span{font-size:12px;color:var(--soft);}
+
+  /* ---- sections ---- */
+  section{padding:44px 0;}
+  .sec-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:22px;}
+  .sec-head h2{font-family:var(--disp);font-weight:800;font-size:26px;letter-spacing:-.02em;margin:0;color:var(--navy);}
+  .sec-head a{color:var(--blue);font-weight:600;font-size:14px;}
+
+  .cat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+  .cat-tile{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;transition:.15s;cursor:pointer;}
+  .cat-tile:hover{border-color:var(--blue);transform:translateY(-2px);}
+  .cat-tile .badge{width:46px;height:46px;border-radius:12px;background:#eaf1fb;color:var(--blue);display:flex;align-items:center;justify-content:center;margin-bottom:14px;}
+  .cat-tile .badge .ic{width:24px;height:24px;}
+  .cat-tile h3{font-family:var(--disp);font-size:16px;margin:0 0 4px;color:var(--ink);}
+  .cat-tile p{margin:0;font-size:12.5px;color:var(--soft);}
+
+  .prod-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;}
+  .prod{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;transition:.15s;}
+  .prod:hover{box-shadow:0 14px 34px -22px rgba(19,40,64,.4);transform:translateY(-2px);}
+  .prod .thumb{height:150px;display:flex;align-items:center;justify-content:center;position:relative;}
+  .prod .thumb .ic{width:56px;height:56px;color:rgba(255,255,255,.9);stroke-width:1.4;}
+  .prod .thumb .sku{position:absolute;top:10px;left:10px;background:rgba(0,0,0,.28);color:#fff;font-size:10.5px;font-weight:600;padding:3px 8px;border-radius:6px;font-family:var(--ui);}
+  .prod .body{padding:14px 15px 16px;display:flex;flex-direction:column;flex:1;}
+  .prod h3{font-family:var(--disp);font-size:14.5px;margin:0 0 6px;color:var(--ink);line-height:1.25;min-height:36px;}
+  .prod .spec{font-size:12px;color:var(--soft);margin:0 0 12px;flex:1;}
+  .prod .foot{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+  .prod .price{font-family:var(--disp);font-weight:800;font-size:19px;color:var(--navy);}
+  .prod .price small{font-size:11px;font-weight:500;color:var(--soft);}
+  .prod .add{background:var(--blue);color:#fff;border:none;border-radius:9px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none;}
+  .prod .add:hover{background:var(--blue-dark);}
+
+  /* ---- stats band ---- */
+  .band{background:var(--navy);color:#fff;}
+  .band .wrap{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;padding:40px 22px;}
+  .stat b{font-family:var(--disp);font-weight:800;font-size:34px;color:#ffd694;display:block;line-height:1;}
+  .stat span{font-size:13.5px;color:#c9d6e6;}
+
+  /* ---- testimonials ---- */
+  .tgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+  .tcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;}
+  .tcard .stars{color:var(--amber);font-size:14px;letter-spacing:2px;margin-bottom:10px;}
+  .tcard p{font-size:14px;color:var(--ink);margin:0 0 16px;}
+  .tcard .who{display:flex;align-items:center;gap:11px;}
+  .tcard .av{width:38px;height:38px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--disp);font-weight:700;font-size:15px;}
+  .tcard .who b{font-family:var(--disp);font-size:13.5px;display:block;}
+  .tcard .who span{font-size:12px;color:var(--soft);}
+
+  /* ---- assistance (inline host) ---- */
+  .assist{background:var(--card);border-top:1px solid var(--line);}
+  .assist .box{background:linear-gradient(120deg,#eef4fb,#f7fafd);border:1px solid var(--line);border-radius:18px;padding:28px;}
+  .assist h2{font-family:var(--disp);font-weight:800;font-size:24px;margin:0 0 6px;color:var(--navy);}
+  .assist p.sub{margin:0 0 18px;color:var(--soft);}
+  #inline-host:empty::after{content:"Astuce démo : la pastille « Affichage » en bas à gauche permet d'afficher l'assistant ici, en bulle, ou en plein écran.";display:block;color:var(--soft);font-style:italic;font-size:13.5px;}
+
+  /* ---- footer ---- */
+  footer.site{background:var(--navy);color:#aebccd;font-size:13.5px;}
+  footer.site .cols{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:26px;padding:44px 0 26px;}
+  footer.site .logo{color:#fff;margin-bottom:10px;}
+  footer.site p{margin:0 0 6px;max-width:34ch;color:#9db0c4;}
+  footer.site h4{font-family:var(--disp);color:#fff;font-size:13px;letter-spacing:.04em;text-transform:uppercase;margin:0 0 12px;}
+  footer.site ul{list-style:none;margin:0;padding:0;}
+  footer.site li{margin-bottom:8px;}
+  footer.site a:hover{color:#fff;}
+  footer.site .legal{border-top:1px solid rgba(255,255,255,.1);padding:16px 0 34px;color:#7f92a8;font-size:12px;}
+
+  /* ---- demo control (discret) ---- */
+  #demo-ctrl{position:fixed;left:18px;bottom:18px;z-index:2147482000;display:flex;align-items:center;gap:8px;
+    background:rgba(19,40,64,.94);color:#fff;border-radius:999px;padding:6px 8px 6px 14px;
+    box-shadow:0 10px 26px -12px rgba(0,0,0,.5);font-family:var(--disp);font-size:12px;}
+  #demo-ctrl .lbl{color:#9db0c4;font-weight:600;}
+  #demo-ctrl .grp{display:flex;background:rgba(255,255,255,.08);border-radius:999px;padding:2px;}
+  #demo-ctrl button{border:none;background:transparent;color:#cdd9e7;font-family:var(--disp);font-weight:600;font-size:12px;padding:6px 11px;border-radius:999px;cursor:pointer;}
+  #demo-ctrl button.active{background:var(--amber);color:#33230a;}
+
+  @media(max-width:900px){
+    .hero .wrap{grid-template-columns:1fr;} .trust .wrap{grid-template-columns:repeat(2,1fr);}
+    .cat-grid,.prod-grid{grid-template-columns:repeat(2,1fr);} .tgrid{grid-template-columns:1fr;}
+    .band .wrap{grid-template-columns:repeat(2,1fr);} footer.site .cols{grid-template-columns:1fr 1fr;}
+    .search{display:none;}
+  }
+  @media(max-width:560px){#demo-ctrl .lbl{display:none;}}
+</style>
+</head>
+<body>
+
+<!-- utility bar -->
+<div class="util"><div class="wrap">
+  <span>📍 Laval, QC — succursale ouverte lun-ven 6h30-17h</span>
+  <span class="spacer"></span>
+  <a href="#">Suivi de commande</a>
+  <a href="#"><b>Ouvrir un compte commercial</b></a>
+</div></div>
+
+<!-- header -->
+<header class="site"><div class="wrap">
+  <div class="logo">Boréale <em>Équipement</em></div>
+  <div class="search">
+    <svg class="ic" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+    <input placeholder="Rechercher un produit, un SKU (ex. BOR-TP24)…">
+  </div>
+  <div class="hactions">
+    <a href="#"><svg class="ic" viewBox="0 0 24 24"><path d="M20 21a8 8 0 1 0-16 0"/><circle cx="12" cy="7" r="4"/></svg>Compte</a>
+    <a href="#" class="cart"><svg class="ic" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></svg>Panier<span class="badge">3</span></a>
+  </div>
+</div></header>
+
+<!-- category nav -->
+<nav class="cats"><div class="wrap">
+  <a href="#">Thermopompes</a><a href="#">Climatisation</a><a href="#">Chauffe-eau</a>
+  <a href="#">Plomberie</a><a href="#">Ventilation</a><a href="#">Pièces</a>
+  <span class="promo"><span class="dot"></span>Livraison gratuite dès 5 000 $ net</span>
+</div></nav>
+
+<!-- hero -->
+<section class="hero" style="padding:0;"><div class="wrap">
+  <div>
+    <span class="tag">Prix entrepreneur</span>
+    <h1>L'équipement de vos chantiers, en stock.</h1>
+    <p>Thermopompes, chauffe-eau, plomberie et ventilation — aux prix entrepreneur. Ramassage au comptoir en 2 h, livraison locale le lendemain.</p>
+    <div class="hero-cta">
+      <button class="btn btn-amber">Voir le catalogue
+        <svg class="ic" viewBox="0 0 24 24" style="stroke:#33230a;"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></button>
+      <button class="btn btn-ghost">Ouvrir un compte</button>
+    </div>
+  </div>
+  <div class="promo-card">
+    <h3>Aubaines de la semaine</h3>
+    <div class="promo-row"><span>Thermopompe murale 24 000 BTU</span><b>1 890 $</b></div>
+    <div class="promo-row"><span>Chauffe-eau instantané au gaz</span><b>1 340 $</b></div>
+    <div class="promo-row"><span>Pompe de puisard 1/2 HP</span><b>189 $</b></div>
+  </div>
+</div></section>
+
+<!-- trust strip -->
+<div class="trust"><div class="wrap">
+  <div class="item"><svg class="ic" viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"/><path d="M16 8h4l3 3v5h-7z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg><div><b>Livraison 24 h</b><span>rayon de 60 km</span></div></div>
+  <div class="item"><svg class="ic" viewBox="0 0 24 24"><path d="M12 2v20M2 12h20"/><circle cx="12" cy="12" r="9"/></svg><div><b>Ramassage 2 h</b><span>au comptoir</span></div></div>
+  <div class="item"><svg class="ic" viewBox="0 0 24 24"><path d="M12 2 4 6v6c0 5 3.4 8 8 10 4.6-2 8-5 8-10V6z"/></svg><div><b>Garanties fabricant</b><span>jusqu'à 10 ans</span></div></div>
+  <div class="item"><svg class="ic" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg><div><b>3 200+ produits</b><span>en inventaire</span></div></div>
+</div></div>
+
+<!-- categories -->
+<section><div class="wrap">
+  <div class="sec-head"><h2>Nos catégories</h2><a href="#">Tout voir →</a></div>
+  <div class="cat-grid">
+    <div class="cat-tile"><div class="badge"><svg class="ic" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="12" rx="2"/><path d="M6 20h.01M10 20h.01M14 20h.01M18 20h.01"/></svg></div><h3>Thermopompes</h3><p>Murales et centrales, jusqu'à -25 °C</p></div>
+    <div class="cat-tile"><div class="badge"><svg class="ic" viewBox="0 0 24 24"><path d="M12 2v6M12 22a6 6 0 0 0 6-6c0-4-6-10-6-10S6 12 6 16a6 6 0 0 0 6 6z"/></svg></div><h3>Chauffe-eau</h3><p>Électriques, au gaz, instantanés</p></div>
+    <div class="cat-tile"><div class="badge"><svg class="ic" viewBox="0 0 24 24"><path d="M4 4h4v8a4 4 0 0 0 8 0V4h4"/><path d="M12 12v8"/></svg></div><h3>Plomberie</h3><p>PEX, valves, pompes, raccords</p></div>
+    <div class="cat-tile"><div class="badge"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M6 6l2 2M16 16l2 2M18 6l-2 2M8 16l-2 2"/></svg></div><h3>Ventilation</h3><p>VRC, hottes, échangeurs d'air</p></div>
+  </div>
+</div></section>
+
+<!-- products -->
+<section style="padding-top:0;"><div class="wrap">
+  <div class="sec-head"><h2>Produits populaires</h2><a href="#">Voir le catalogue complet →</a></div>
+  <div class="prod-grid" id="products"></div>
+</div></section>
+
+<!-- stats band -->
+<div class="band"><div class="wrap">
+  <div class="stat"><b>18 ans</b><span>au service des entrepreneurs</span></div>
+  <div class="stat"><b>4 200</b><span>comptes commerciaux actifs</span></div>
+  <div class="stat"><b>2 h</b><span>ramassage au comptoir</span></div>
+  <div class="stat"><b>60 km</b><span>livraison locale gratuite*</span></div>
+</div></div>
+
+<!-- testimonials -->
+<section><div class="wrap">
+  <div class="sec-head"><h2>Ce que disent les entrepreneurs</h2></div>
+  <div class="tgrid">
+    <div class="tcard"><div class="stars">★★★★★</div><p>« Le comptoir est prêt en deux heures, comme promis. Ça change tout quand on est sur un chantier. »</p><div class="who"><div class="av">MT</div><div><b>Martin T.</b><span>Plomberie Rive-Nord</span></div></div></div>
+    <div class="tcard"><div class="stars">★★★★★</div><p>« Prix entrepreneur clairs, jamais de surprise. L'ouverture de compte a pris deux jours. »</p><div class="who"><div class="av">SG</div><div><b>Sophie G.</b><span>Confort CVC inc.</span></div></div></div>
+    <div class="tcard"><div class="stars">★★★★★</div><p>« Bon inventaire, et quand un produit manque ils proposent un équivalent tout de suite. »</p><div class="who"><div class="av">KL</div><div><b>Karl L.</b><span>Entretien KL</span></div></div></div>
+  </div>
+</div></section>
+
+<!-- assistance (inline host) -->
+<section class="assist"><div class="wrap">
+  <div class="box">
+    <h2>Une question sur un produit, une garantie, un retour ?</h2>
+    <p class="sub">Notre assistant répond à partir de nos documents, source à l'appui.</p>
+    <div id="inline-host"></div>
+  </div>
+</div></section>
+
+<!-- footer -->
+<footer class="site">
+  <div class="wrap cols">
+    <div>
+      <div class="logo">Boréale <em style="color:#ffd694;">Équipement</em></div>
+      <p>Distributeur d'équipement CVC et plomberie pour entrepreneurs. Laval, Québec.</p>
+      <p>450 555-0170 · service@boreale-equipement.ca</p>
+    </div>
+    <div><h4>Produits</h4><ul><li><a href="#">Thermopompes</a></li><li><a href="#">Chauffe-eau</a></li><li><a href="#">Plomberie</a></li><li><a href="#">Ventilation</a></li></ul></div>
+    <div><h4>Compte</h4><ul><li><a href="#">Ouvrir un compte</a></li><li><a href="#">Mes commandes</a></li><li><a href="#">Prix entrepreneur</a></li><li><a href="#">Facturation</a></li></ul></div>
+    <div><h4>Aide</h4><ul><li><a href="#">Livraison</a></li><li><a href="#">Garanties &amp; retours</a></li><li><a href="#">FAQ</a></li><li><a href="#">Nous joindre</a></li></ul></div>
+  </div>
+  <div class="wrap legal">Maquette de démonstration — le site et l'entreprise sont fictifs. L'assistant, lui, est réel et répond sur de vrais documents.</div>
+</footer>
+
+<!-- contrôle de démo (discret) -->
+<div id="demo-ctrl">
+  <span class="lbl">Affichage</span>
+  <div class="grp" id="switch">
+    <button data-mode="floating" class="active">Bulle</button>
+    <button data-mode="inline">Intégré</button>
+    <button data-mode="fullscreen">Plein écran</button>
+  </div>
+</div>
+
+<script src="/widget.js"></script>
+<script>
+  // Produits (issus du catalogue) — vignettes colorées par catégorie
+  const PRODUCTS = [
+    { n:"Thermopompe murale 24 000 BTU", sku:"BOR-TP24", s:"SEER2 20,5 · -25 °C · R-32", p:"1 890", c:"#1c4e80", ic:'<rect x="2" y="4" width="20" height="12" rx="2"/><path d="M6 20h.01M10 20h.01M14 20h.01M18 20h.01"/>' },
+    { n:"Chauffe-eau instantané au gaz", sku:"BOR-CEI", s:"9,8 GPM · 11 000–199 000 BTU/h", p:"1 340", c:"#b06a12", ic:'<path d="M12 2v6M12 22a6 6 0 0 0 6-6c0-4-6-10-6-10S6 12 6 16a6 6 0 0 0 6 6z"/>' },
+    { n:"Ventilateur récupérateur (VRC)", sku:"BOR-VRC200", s:"200 PCM · récupération 78 %", p:"1 120", c:"#2a7d6b", ic:'<circle cx="12" cy="12" r="3"/><path d="M12 4v3M12 17v3M4 12h3M17 12h3"/>' },
+    { n:"Pompe de puisard 1/2 HP fonte", sku:"BOR-POMPE05", s:"3 600 GPH · flotteur inclus", p:"189", c:"#4a5568", ic:'<path d="M4 4h4v8a4 4 0 0 0 8 0V4h4"/><path d="M12 12v8"/>' },
+    { n:"Thermopompe centrale 3 tonnes", sku:"BOR-TP36", s:"SEER2 16,0 · compat. fournaise", p:"3 250", c:"#1c4e80", ic:'<rect x="2" y="4" width="20" height="12" rx="2"/><path d="M6 20h12"/>' },
+    { n:"Chauffe-eau électrique 50 gal", sku:"BOR-CE50", s:"Double élément 4500 W · gar. 8 ans", p:"620", c:"#b06a12", ic:'<rect x="7" y="2" width="10" height="20" rx="5"/>' },
+    { n:"Tuyau PEX-a 3/4 po (100 m)", sku:"BOR-PEX34", s:"Certifié NSF · max 93 °C", p:"210", c:"#4a5568", ic:'<path d="M4 8c8 0 8 8 16 8M4 16c8 0 8-8 16-8"/>' },
+    { n:"Hotte de cuisine 30 po", sku:"BOR-HOTTE30", s:"600 PCM · évacuation ext.", p:"340", c:"#2a7d6b", ic:'<path d="M3 7h18l-2 5H5z"/><path d="M7 12v5M17 12v5"/>' },
+  ];
+  const cartSvg = '<svg class="ic" viewBox="0 0 24 24" style="stroke:#fff;width:18px;height:18px;"><path d="M12 5v14M5 12h14"/></svg>';
+  document.getElementById("products").innerHTML = PRODUCTS.map(p => `
+    <div class="prod">
+      <div class="thumb" style="background:linear-gradient(135deg, ${p.c}, ${p.c}cc);">
+        <span class="sku">${p.sku}</span>
+        <svg class="ic" viewBox="0 0 24 24">${p.ic}</svg>
+      </div>
+      <div class="body">
+        <h3>${p.n}</h3>
+        <p class="spec">${p.s}</p>
+        <div class="foot"><div class="price">${p.p} $ <small>net</small></div>
+          <button class="add" title="Ajouter">${cartSvg}</button></div>
+      </div>
+    </div>`).join("");
+
+  // Widget + sélecteur de modes
+  const buttons = document.querySelectorAll("#switch button");
+  const host = document.getElementById("inline-host");
+  function setMode(mode){
+    DocAssistant.unmountAll();
+    host.innerHTML = "";
+    if(mode === "inline"){ DocAssistant.mount({ mode:"inline", target: host }); host.scrollIntoView({behavior:"smooth",block:"center"}); }
+    else if(mode === "fullscreen"){ DocAssistant.mount({ mode:"fullscreen" }); }
+    else { DocAssistant.mount({ mode:"floating" }); }
+    buttons.forEach(b => b.classList.toggle("active", b.dataset.mode === mode));
+  }
+  buttons.forEach(b => b.addEventListener("click", () => setMode(b.dataset.mode)));
+  setMode("floating");
+</script>
+</body>
+</html>
