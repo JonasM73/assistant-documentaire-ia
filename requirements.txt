@@ -1,6 +1,22 @@
+# Serveur web
+fastapi>=0.110.0
+uvicorn>=0.29.0
+pydantic>=2.0.0
+
+# Pipeline RAG
 chromadb>=0.5.0
-openai>=1.30.0
-streamlit>=1.36.0
-python-dotenv>=1.0.0
-# Optionnel : uniquement si LLM_PROVIDER=anthropic
+fastembed>=0.3.0
+
+# Lecture des documents
+pdfplumber>=0.11.0
+pypdf>=4.0.0
+
+# ModÃ¨les de langage
 anthropic>=0.34.0
+openai>=1.30.0
+
+# Utilitaires
+python-dotenv>=1.0.0
+
+# Interface Streamlit (optionnelle en production, utile en local)
+streamlit>=1.36.0
