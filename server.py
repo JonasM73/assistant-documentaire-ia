@@ -12,13 +12,16 @@ Réutilise le même index vectoriel (chroma_db) que la version Streamlit —
 aucune ré-indexation nécessaire.
 """
 
-import os
+import os, sys
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "core"))
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 import rag_core
+import recherche_hybride
+recherche_hybride.activer()
 
 WEB_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "web")
 

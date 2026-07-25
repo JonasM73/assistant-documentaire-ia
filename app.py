@@ -7,11 +7,13 @@ Lancement :
 Prérequis : avoir lancé `python ingest.py` au moins une fois.
 """
 
-import os
+import os, sys
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "core"))
 import streamlit as st
 from rag_core import (answer_question, TOP_K,
                       resolve_llm_provider, resolve_embedding_provider)
-
+import recherche_hybride
+recherche_hybride.activer()
 # --- Personnalisation client : change ces deux lignes pour chaque démo -------
 CLIENT_NAME = os.environ.get("CLIENT_NAME", "Boréale Équipement")
 ASSISTANT_NAME = os.environ.get("ASSISTANT_NAME", "Assistant documentaire")

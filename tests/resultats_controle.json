@@ -1,0 +1,308 @@
+[
+  {
+    "modele": "claude-haiku-4-5",
+    "compteur": {
+      "exacte": 13,
+      "refus_ok": 4,
+      "manque": 3,
+      "halluc": 0
+    },
+    "exactes_possibles": 16,
+    "refus_possibles": 4,
+    "details": [
+      {
+        "id": "F01",
+        "type": "factuelle",
+        "verdict": "exacte",
+        "detail": "valeur attendue présente",
+        "reponse": "Le prix HT du module BX-1003 est **63.95 EUR**.\n\nCe module appartient à la catégorie Sécurité et est actuellement en stock.\n\nSources : 01_catalogue_produits_complexe.pdf"
+      },
+      {
+        "id": "F02",
+        "type": "factuelle",
+        "verdict": "exacte",
+        "detail": "valeur attendue présente",
+        "reponse": "Le module **BX-1005** est classé dans la catégorie **Capteurs**.\n\nSources : 01_catalogue_produits_complexe.pdf"
+      },
+      {
+        "id": "F03",
+        "type": "factuelle",
+        "verdict": "manque",
+        "detail": "a refusé alors qu'il y avait une réponse (faux refus)",
+        "reponse": "Je ne trouve pas cette information dans les documents fournis.\n\nLes extraits disponibles contiennent une grille tarifaire détaillant les prix de différentes prestations techniques selon les offres (Essentiel, Pro, Premium), mais ils ne mentionnent pas de montant de commande minimale.\n\nJe vous invite à contacter le service commercial ou le support client pour connaître les conditions de commande minimale.\n\nSources : 02_grille_tarifaire_multi_colonnes.pdf"
+      },
+      {
+        "id": "F04",
+        "type": "factuelle",
+        "verdict": "exacte",
+        "detail": "valeur attendue présente",
+        "reponse": "Le prix HT du module BX-1017 est **29.90 EUR**.\n\nSources : 01_catalogue_produits_complexe.pdf"
+      },
+      {
+        "id": "F05",
+        "type": "factuelle",
+        "verdict": "exacte",
+        "detail": "valeur attendue présente",
+        "reponse": "Le tarif Premium de la prestation S001 (Prestation technique 1) est de **129 €** par heure.\n\nSources : 02_grille_tarifaire_multi_colonnes.pdf"
+      },
+      {
+        "id": "F06",
+        "type": "factuelle",
+        "verdict": "exacte",
+        "detail": "valeur attendue présente",
+        "reponse": "Selon la grille tarifaire ALTAIR SERVICES, le tarif **Essentiel de la prestation S004 est de 60 €** (pour une unité de mois).\n\nSources : 02_grille_tarifaire_multi_colonnes.pdf"
+      },
+      {
+        "id": "F07",
+        "type": "factuelle",
+        "verdict": "exacte",
+        "detail": "valeur attendue présente",
+        "reponse": "Selon la grille tarifaire, le tarif **Pro de la prestation S007 est 124 €**.\n\nCette prestation technique 7 est facturée par lot, avec un délai de 8 jours.\n\nSources : 02_grille_tarifaire_multi_colonnes.pdf"
+      },
+      {
+        "id": "F08",
+        "type": "factuelle",
+        "verdict": "exacte",
+        "detail": "valeur attendue présente",
+        "reponse": "Selon la grille tarifaire d'Altair Services, **la validité est de 30 jours**.\n\nSources : 02_grille_tarifaire_multi_colonnes.pdf"
+      },
+      {
+        "id": "F09",
+        "type": "factuelle",
+        "verdict": "manque",
+        "detail": "a refusé alors qu'il y avait une réponse (faux refus)",
+        "reponse": "Je ne trouve pas cette information dans les documents fournis.\n\nLes extraits du manuel opérationnel décrivent les procédures de traitement des demandes et exceptions, ainsi que les responsabilités des différentes équipes (support, opérations, facturation, qualité), mais ils ne précisent pas de seuil de montant financier déclenchant une escalade.\n\nJe vous invite à contacter le service opérations ou le responsable de dossier pour obtenir cette information.\n\nSources : 03_manuel_procedures_mise_en_page_mixte.pdf"
+      },
+      {
+        "id": "F10",
+        "type": "factuelle",
+        "verdict": "exacte",
+        "detail": "valeur attendue présente",
+        "reponse": "Selon les documents fournis, l'**étape 4 est sous la responsabilité du service Qualité**.\n\nCette étape doit être complétée dans un délai de **45 minutes**, et la preuve attendue est un journal, ticket ou validation 4.\n\nSources : 03_manuel_procedures_mise_en_page_mixte.pdf"
+      },
+      {
+        "id": "F11",
+        "type": "factuelle",
+        "verdict": "exacte",
+        "detail": "valeur attendue présente",
+        "reponse": "Selon le document fourni, le délai associé à l'étape 3 est de **35 minutes**.\n\nCette étape est sous la responsabilité du Manager, et la preuve attendue est un Journal, ticket ou validation 3.\n\nSources : 03_manuel_procedures_mise_en_page_mixte.pdf"
+      },
+      {
+        "id": "F12",
+        "type": "factuelle",
+        "verdict": "exacte",
+        "detail": "valeur attendue présente",
+        "reponse": "Selon le document, **une exception doit être approuvée par un responsable de niveau 2** et enregistrée dans le journal des décisions.\n\nSources : 03_manuel_procedures_mise_en_page_mixte.pdf"
+      },
+      {
+        "id": "S01",
+        "type": "suivi",
+        "verdict": "exacte",
+        "detail": "valeur attendue présente",
+        "reponse": "La catégorie du module **BX-1003** est **Sécurité**.\n\nSources : 01_catalogue_produits_complexe.pdf"
+      },
+      {
+        "id": "S02",
+        "type": "suivi",
+        "verdict": "exacte",
+        "detail": "valeur attendue présente",
+        "reponse": "Le tarif Premium de la prestation S001 est de **129 €** par heure.\n\nSources : 02_grille_tarifaire_multi_colonnes.pdf"
+      },
+      {
+        "id": "S03",
+        "type": "suivi",
+        "verdict": "exacte",
+        "detail": "valeur attendue présente",
+        "reponse": "Selon les documents fournis, **la Qualité** est responsable de l'étape 4.\n\nCette étape doit être complétée dans un délai de **45 minutes**, et la preuve attendue est un journal, un ticket ou une validation 4.\n\nSources : 03_manuel_procedures_mise_en_page_mixte.pdf"
+      },
+      {
+        "id": "S04",
+        "type": "suivi",
+        "verdict": "manque",
+        "detail": "a refusé alors qu'il y avait une réponse (faux refus)",
+        "reponse": "Je ne trouve pas cette information dans les documents fournis. Les extraits disponibles concernent uniquement une étape de procédure interne (étape 8 de contrôle qualité avec un délai de 85 minutes).\n\nPour connaître les conditions de garantie, je vous invite à contacter le service client ou le service commercial concerné."
+      },
+      {
+        "id": "N01",
+        "type": "sans_reponse",
+        "verdict": "refus_ok",
+        "detail": "refus attendu, refus obtenu",
+        "reponse": "Je ne trouve pas cette information dans les documents.\n\nLe produit BX-2000 n'apparaît pas dans le catalogue fourni. Les références disponibles incluent BX-1002, BX-1080, BX-1155, BX-1004 et BX-1140, mais pas BX-2000.\n\nJe vous invite à contacter le service commercial ou à consulter une version à jour du catalogue pour obtenir les informations sur ce produit."
+      },
+      {
+        "id": "N02",
+        "type": "sans_reponse",
+        "verdict": "refus_ok",
+        "detail": "refus attendu, refus obtenu",
+        "reponse": "Je ne trouve pas cette information dans les documents. Le code S500 n'apparaît pas dans la grille tarifaire fournie.\n\nJe vous invite à contacter le service commercial ou le support pour connaître le tarif de cette prestation.\n\nSources : 02_grille_tarifaire_multi_colonnes.pdf"
+      },
+      {
+        "id": "N03",
+        "type": "sans_reponse",
+        "verdict": "refus_ok",
+        "detail": "refus attendu, refus obtenu",
+        "reponse": "Je ne trouve pas cette information dans les documents.\n\nLes extraits fournis contiennent uniquement un catalogue de produits industriels (modules BX). Ils ne traitent pas de politique de télétravail ou de ressources humaines.\n\nPour obtenir cette information, je vous invite à contacter le service des Ressources Humaines ou la direction de votre entreprise."
+      },
+      {
+        "id": "H01",
+        "type": "hors_perimetre",
+        "verdict": "refus_ok",
+        "detail": "refus attendu, refus obtenu",
+        "reponse": "Je ne peux pas répondre à cette question. Ma fonction est de répondre uniquement à partir des documents fournis, qui concernent des procédures internes de l'entreprise.\n\nLa question sur la capitale de l'Australie relève de la culture générale et ne figure pas dans les extraits disponibles.\n\nSi vous avez des questions sur les procédures documentées (comme l'Étape 5 du manuel de procédures), je serais ravi de vous aider."
+      }
+    ]
+  },
+  {
+    "modele": "claude-sonnet-4-6",
+    "compteur": {
+      "exacte": 14,
+      "refus_ok": 4,
+      "manque": 2,
+      "halluc": 0
+    },
+    "exactes_possibles": 16,
+    "refus_possibles": 4,
+    "details": [
+      {
+        "id": "F01",
+        "type": "factuelle",
+        "verdict": "exacte",
+        "detail": "valeur attendue présente",
+        "reponse": "Le module **BX-1003** (Module industriel 003, catégorie Sécurité) est affiché au prix de **63,95 EUR HT** et est actuellement **en stock**.\n\nSources : 01_catalogue_produits_complexe.pdf"
+      },
+      {
+        "id": "F02",
+        "type": "factuelle",
+        "verdict": "exacte",
+        "detail": "valeur attendue présente",
+        "reponse": "Le module **BX-1005** est classé dans la catégorie **Capteurs**.\n\nSources : 01_catalogue_produits_complexe.pdf"
+      },
+      {
+        "id": "F03",
+        "type": "factuelle",
+        "verdict": "manque",
+        "detail": "a refusé alors qu'il y avait une réponse (faux refus)",
+        "reponse": "Je ne trouve pas cette information dans les documents. Les extraits disponibles ne mentionnent aucune commande minimale.\n\nPour obtenir cette information, je vous invite à contacter directement le service commercial de l'entreprise.\n\nSources : 02_grille_tarifaire_multi_colonnes.pdf"
+      },
+      {
+        "id": "F04",
+        "type": "factuelle",
+        "verdict": "exacte",
+        "detail": "valeur attendue présente",
+        "reponse": "Le prix HT du module **BX-1017** est de **29,90 EUR**.\n\nIl est à noter que ce produit est disponible **sur commande** uniquement.\n\nSources : 01_catalogue_produits_complexe.pdf"
+      },
+      {
+        "id": "F05",
+        "type": "factuelle",
+        "verdict": "exacte",
+        "detail": "valeur attendue présente",
+        "reponse": "Le tarif **Premium** de la prestation **S001 (Prestation technique 1)** est de **129 € / heure**, avec un délai de 2 jours.\n\n> ⚠️ Note : des frais additionnels sont possibles selon le périmètre retenu.\n\nSources : 02_grille_tarifaire_multi_colonnes.pdf"
+      },
+      {
+        "id": "F06",
+        "type": "factuelle",
+        "verdict": "exacte",
+        "detail": "valeur attendue présente",
+        "reponse": "Le tarif **Essentiel** de la prestation **S004** (Prestation technique 4) est de **60 € / mois**.\n\n> À noter : des frais additionnels sont possibles selon le périmètre retenu.\n\nSources : 02_grille_tarifaire_multi_colonnes.pdf"
+      },
+      {
+        "id": "F07",
+        "type": "factuelle",
+        "verdict": "exacte",
+        "detail": "valeur attendue présente",
+        "reponse": "Le tarif **Pro** de la prestation **S007** (Prestation technique 7, unité : lot) est de **124 €**, avec un délai de 8 jours.\n\n> ⚠️ Notez que des frais additionnels sont possibles selon le périmètre retenu.\n\nSources : 02_grille_tarifaire_multi_colonnes.pdf"
+      },
+      {
+        "id": "F08",
+        "type": "factuelle",
+        "verdict": "exacte",
+        "detail": "valeur attendue présente",
+        "reponse": "La grille tarifaire d'**Altair Services** a une durée de validité de **30 jours**.\n\n> ⚠️ Il est également précisé que **le devis signé prévaut sur la grille tarifaire** en cas de contradiction.\n\nSources : 02_grille_tarifaire_multi_colonnes.pdf"
+      },
+      {
+        "id": "F09",
+        "type": "factuelle",
+        "verdict": "manque",
+        "detail": "a refusé alors qu'il y avait une réponse (faux refus)",
+        "reponse": "Je ne trouve pas cette information dans les documents. Les extraits fournis décrivent les objectifs et le champ d'application des procédures de traitement des demandes et exceptions, mais ne mentionnent aucun seuil de montant financier déclenchant une escalade.\n\nPour obtenir cette information, je vous invite à contacter le service **opérations** ou **facturation**, qui sont dans le champ d'application de ces procédures (DOC-OPS-2026).\n\nSources : 03_manuel_procedures_mise_en_page_mixte.pdf"
+      },
+      {
+        "id": "F10",
+        "type": "factuelle",
+        "verdict": "exacte",
+        "detail": "valeur attendue présente",
+        "reponse": "D'après les documents, le **responsable de l'étape 4** est le service **Qualité**.\n\n- **Délai alloué :** 45 minutes\n- **Preuve attendue :** Journal, ticket ou validation 4\n\nSources : 03_manuel_procedures_mise_en_page_mixte.pdf"
+      },
+      {
+        "id": "F11",
+        "type": "factuelle",
+        "verdict": "exacte",
+        "detail": "valeur attendue présente",
+        "reponse": "D'après les documents, le délai associé à l'**étape 3** est de **35 minutes**.\n\nCette étape est placée sous la responsabilité du **Manager**, et la preuve attendue est un **journal, ticket ou validation 3**.\n\nSources : 03_manuel_procedures_mise_en_page_mixte.pdf"
+      },
+      {
+        "id": "F12",
+        "type": "factuelle",
+        "verdict": "exacte",
+        "detail": "valeur attendue présente",
+        "reponse": "D'après le document, **toute exception doit être approuvée par un responsable de niveau 2** et enregistrée dans le journal des décisions.\n\nDe plus, si le risque financier associé **dépasse 2 500 EUR**, le dossier doit être transmis au responsable et la réponse au demandeur doit être suspendue dans l'attente de cette approbation.\n\nSources : 03_manuel_procedures_mise_en_page_mixte.pdf"
+      },
+      {
+        "id": "S01",
+        "type": "suivi",
+        "verdict": "exacte",
+        "detail": "valeur attendue présente",
+        "reponse": "Le module **BX-1003** appartient à la catégorie **Sécurité**.\n\nSources : 01_catalogue_produits_complexe.pdf"
+      },
+      {
+        "id": "S02",
+        "type": "suivi",
+        "verdict": "exacte",
+        "detail": "valeur attendue présente",
+        "reponse": "Le tarif **Premium** de la prestation **S001 (Prestation technique 1)** est de **129 € / heure**, avec un délai de 2 jours.\n\n> ⚠️ Des frais additionnels sont possibles selon le périmètre retenu.\n\nSources : 02_grille_tarifaire_multi_colonnes.pdf"
+      },
+      {
+        "id": "S03",
+        "type": "suivi",
+        "verdict": "exacte",
+        "detail": "valeur attendue présente",
+        "reponse": "D'après les documents, le **service Qualité** est responsable de l'étape 4.\n\nVoici le détail :\n- **Délai** : 45 minutes\n- **Preuve attendue** : Journal, ticket ou validation 4\n\nSources : 03_manuel_procedures_mise_en_page_mixte.pdf"
+      },
+      {
+        "id": "S04",
+        "type": "suivi",
+        "verdict": "exacte",
+        "detail": "valeur attendue présente",
+        "reponse": "Selon le catalogue Boréale Distribution 2026, la garantie applicable aux modules industriels est de **12 à 36 mois selon la référence**.\n\nJe vous recommande de vérifier la garantie spécifique à la référence qui vous intéresse avant toute commande, car elle peut varier d'un produit à l'autre.\n\nSources : 01_catalogue_produits_complexe.pdf"
+      },
+      {
+        "id": "N01",
+        "type": "sans_reponse",
+        "verdict": "refus_ok",
+        "detail": "refus attendu, refus obtenu",
+        "reponse": "Je ne trouve pas cette information dans les documents. Le module BX-2000 n'apparaît dans aucun des extraits disponibles.\n\nJe vous invite à contacter le service commercial pour obtenir le prix de ce produit.\n\nSources : 01_catalogue_produits_complexe.pdf"
+      },
+      {
+        "id": "N02",
+        "type": "sans_reponse",
+        "verdict": "refus_ok",
+        "detail": "refus attendu, refus obtenu",
+        "reponse": "Je ne trouve pas cette information dans les documents. Le code **S500** n'apparaît pas dans les extraits de la grille tarifaire qui m'ont été fournis.\n\nJe vous invite à contacter le service commercial ou tarifaire de l'entreprise pour obtenir le tarif correspondant à cette prestation.\n\nSources : 02_grille_tarifaire_multi_colonnes.pdf"
+      },
+      {
+        "id": "N03",
+        "type": "sans_reponse",
+        "verdict": "refus_ok",
+        "detail": "refus attendu, refus obtenu",
+        "reponse": "Je ne trouve pas cette information dans les documents.\n\nLes extraits disponibles concernent uniquement un catalogue de produits industriels (références, prix, disponibilités et conditions de commande). Aucune information relative à une politique de télétravail n'y figure.\n\nPour obtenir une réponse à cette question, je vous invite à contacter directement le service des Ressources Humaines de votre entreprise."
+      },
+      {
+        "id": "H01",
+        "type": "hors_perimetre",
+        "verdict": "refus_ok",
+        "detail": "refus attendu, refus obtenu",
+        "reponse": "Je suis désolé, mais cette question porte sur la culture générale et ne fait pas partie de mon périmètre. Mon rôle est uniquement de répondre aux questions à partir des documents fournis.\n\nSi vous avez des questions relatives aux procédures décrites dans les documents à ma disposition, je suis là pour vous aider !"
+      }
+    ]
+  }
+]

@@ -9,6 +9,10 @@ En production, l'embedding OpenAI (get_embedding_function) est bien plus précis
 Lancer :  python test_pipeline.py
 """
 
+import os, sys
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "core"))
+
+
 import hashlib
 import re
 import chromadb.utils.embedding_functions as ef_mod

@@ -43,10 +43,9 @@ CHUNK_OVERLAP = int(os.environ.get("CHUNK_OVERLAP", "150"))  # caractères
 TOP_K = int(os.environ.get("TOP_K", "8"))                    # chunks récupérés
 
 # --- Identité / cadrage (utilisés dans le cadre de comportement) ------------ #
-COMPANY_NAME = os.environ.get("CLIENT_NAME", "Boréale Équipement")
+COMPANY_NAME = os.environ.get("CLIENT_NAME", "l'entreprise")
 CONTACT_INFO = os.environ.get(
-    "ASSISTANT_CONTACT",
-    "le service à la clientèle (450 555-0170, service@boreale-equipement.ca)")
+    "ASSISTANT_CONTACT", "le service concerné")
 
 EMBEDDING_MODEL = os.environ.get("EMBEDDING_MODEL", "text-embedding-3-small")
 OPENAI_MODEL = os.environ.get("OPENAI_MODEL", "gpt-4o-mini")
@@ -292,12 +291,14 @@ SYSTEM_PROMPT = textwrap.dedent(f"""\
     - Termine par tes sources sous la forme : Sources : <fichiers>.
 
     PÉRIMÈTRE
-    - Tu réponds seulement aux questions concernant {COMPANY_NAME} et le contenu
-      de ses documents (produits, prix, garanties, retours, procédures, RH,
-      service client).
-    - Pour toute demande hors de ce périmètre (culture générale, actualité, autre
-      entreprise, rédaction libre, calculs sans rapport, etc.), décline poliment
-      et rappelle ton rôle, sans t'exécuter.
+    - Tu réponds à toute question dont la réponse figure dans les extraits de
+      documents fournis, quel que soit le nom de l'organisation ou du produit
+      qui y apparaît. Les documents peuvent mentionner plusieurs entités : cela
+      ne restreint jamais ton périmètre. Ta seule limite est ce que contiennent
+      les extraits.
+    - Pour une demande sans rapport avec les documents (culture générale,
+      actualité, rédaction libre, calculs sans lien), décline poliment et
+      rappelle ton rôle, sans t'exécuter.
 
     TON ET CONDUITE
     - Reste courtois, professionnel et neutre en toutes circonstances.
