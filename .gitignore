@@ -1,41 +1,16 @@
-# ── Secrets — NE JAMAIS committer ──────────────────────────────
+# Secrets — NE JAMAIS envoyer sur GitHub
 .env
-.env.*
-!.env.example
+.env.local
+*.key
 
-# ── Python ─────────────────────────────────────────────────────
-__pycache__/
-*.py[cod]
-*.egg-info/
-.venv/
+# Environnement Python
 venv/
-env/
-ENV/
+__pycache__/
+*.pyc
 
-# ── Base vectorielle (régénérée par `python ingest.py`) ─────────
+# Index reconstruit automatiquement au déploiement
 chroma_db/
 
-# ── Modèles / caches téléchargés (fastembed, HuggingFace) ──────
-.cache/
-*.onnx
-
-# ── Documents clients (ne jamais pousser les vrais fichiers) ───
-# Décommente si tu mets de vrais documents de client dans data/ :
-# data/
-
-# ── Systèmes d'exploitation ────────────────────────────────────
+# Fichiers système
 .DS_Store
 Thumbs.db
-desktop.ini
-
-# ── Éditeurs / IDE ─────────────────────────────────────────────
-.vscode/
-.idea/
-*.swp
-*~
-
-# ── Node (au cas où) ───────────────────────────────────────────
-node_modules/
-
-# ── Logs ───────────────────────────────────────────────────────
-*.log
