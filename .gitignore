@@ -8,8 +8,12 @@ venv/
 __pycache__/
 *.pyc
 
-# Index reconstruit automatiquement au déploiement
+# Index vectoriel : données, pas du code. Vit sur le volume persistant (Railway).
 chroma_db/
+
+# Documents uploadés par les clients via /admin.html (sur le volume, potentiellement confidentiels).
+# NB : ne pas ignorer le dossier des PDF de démo Boréale s'ils sont ailleurs.
+/data/uploads/
 
 # Fichiers système
 .DS_Store

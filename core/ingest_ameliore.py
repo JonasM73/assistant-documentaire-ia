@@ -165,6 +165,44 @@ def chunks_document(path: str) -> tuple[list[str], str]:
             return rag_core.chunk_text(d.text), "paragraphes"
     return [], "vide"
 
+# --- Indexation incrémentale (upload / suppression) ------------------------ #
+
+def _ouvrir_collection(chroma_dir: str = None, embedding_function=None):
+    """Ouvre (ou crée) la collection Chroma avec la même fonction d'embedding
+    que le reste du pipeline."""
+    import chromadb
+    chroma_dir = chroma_dir or rag_core.CHROMA_DIR
+    client = chromadb.PersistentClient(path=chroma_dir)
+    ef = embedding_function or rag_core.get_embedding_function()
+    return client.get_or_create_collection(
+        name=rag_core.COLLECTION_NAME, embedding_function=ef,
+        metadata={"hnsw:space": "cosine"})
+
+
+def index_file(path: str, chroma_dir: str = None, embedding_function=None) -> int:
+    """Indexe UN fichier. Supprime d'abord ses anciens vecteurs (un ré-upload du
+    même nom vaut donc mise à jour propre), puis ajoute les nouveaux chunks.
+    Retourne le nombre de chunks indexés."""
+    source = os.path.basename(path)
+    col = _ouvrir_collection(chroma_dir, embedding_function)
+    try:
+        col.delete(where={"source": source})
+    except Exception:
+        pass
+    chunks, _methode = chunks_document(path)
+    if not chunks:
+        return 0
+    ids = [f"{source}::chunk-{i}" for i in range(len(chunks))]
+    metas = [{"source": source, "chunk": i} for i in range(len(chunks))]
+    for i in range(0, len(chunks), 100):
+        col.add(ids=ids[i:i+100], documents=chunks[i:i+100], metadatas=metas[i:i+100])
+    return len(chunks)
+
+
+def deindex_file(source: str, chroma_dir: str = None, embedding_function=None) -> None:
+    """Supprime de l'index tous les vecteurs d'un fichier (par son nom)."""
+    col = _ouvrir_collection(chroma_dir, embedding_function)
+    col.delete(where={"source": os.path.basename(source)})
 
 def build_index_ameliore(data_dir: str = None, chroma_dir: str = None,
                          embedding_function=None, reset: bool = True,

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gestion des documents — Assistant</title>
+<style>
+  :root{--navy:#132840;--blue:#0B5CAD;--blue-dark:#08497f;--ink:#1a2431;--soft:#5b6b7d;
+        --bg:#F5F7FA;--card:#fff;--line:#E3E8EE;--ok:#177245;--danger:#c0392b;
+        --ui:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;}
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--ui);font-size:15px;}
+  .wrap{max-width:760px;margin:0 auto;padding:32px 22px 60px;}
+  h1{font-size:24px;color:var(--navy);margin:0 0 4px;}
+  .sub{color:var(--soft);margin:0 0 26px;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;margin-bottom:20px;}
+  .card h2{font-size:16px;color:var(--navy);margin:0 0 14px;}
+  .drop{border:2px dashed var(--line);border-radius:12px;padding:26px;text-align:center;color:var(--soft);
+        cursor:pointer;transition:.15s;}
+  .drop:hover,.drop.over{border-color:var(--blue);background:#f2f7fd;color:var(--blue);}
+  .drop input{display:none;}
+  table{width:100%;border-collapse:collapse;}
+  th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);font-size:14px;}
+  th{color:var(--soft);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.04em;}
+  td .sz{color:var(--soft);font-size:12.5px;}
+  .del{background:transparent;border:1px solid var(--line);color:var(--danger);border-radius:8px;
+       padding:6px 12px;cursor:pointer;font-size:13px;font-weight:600;}
+  .del:hover{background:#fdecea;border-color:var(--danger);}
+  .empty{color:var(--soft);font-style:italic;padding:16px 8px;}
+  .msg{margin-top:12px;font-size:14px;min-height:20px;}
+  .msg.ok{color:var(--ok);} .msg.err{color:var(--danger);}
+  .spin{display:inline-block;width:14px;height:14px;border:2px solid var(--line);
+        border-top-color:var(--blue);border-radius:50%;animation:sp .7s linear infinite;vertical-align:-2px;margin-right:6px;}
+  @keyframes sp{to{transform:rotate(360deg);}}
+  #gate{position:fixed;inset:0;z-index:9999;background:linear-gradient(120deg,#132840,#1c3a5c);
+        display:flex;align-items:center;justify-content:center;}
+  #gate .box{background:#fff;border-radius:16px;padding:32px;width:min(360px,90vw);}
+  #gate h2{margin:0 0 8px;font-size:20px;color:var(--navy);}
+  #gate p{margin:0 0 18px;color:var(--soft);font-size:14px;}
+  #gate input{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;font-size:15px;margin-bottom:10px;}
+  #gate .err{color:var(--danger);font-size:13px;min-height:18px;margin-bottom:8px;}
+  #gate button{width:100%;padding:12px;border:none;border-radius:10px;background:var(--blue);color:#fff;
+               font-weight:700;font-size:15px;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<div id="gate">
+  <div class="box">
+    <h2>Gestion des documents</h2>
+    <p>Entrez le mot de passe administrateur pour gérer les documents de l'assistant.</p>
+    <input id="gate-pw" type="password" placeholder="Mot de passe admin">
+    <div class="err" id="gate-err"></div>
+    <button id="gate-btn">Entrer</button>
+  </div>
+</div>
+
+<div class="wrap">
+  <h1>Documents de l'assistant</h1>
+  <p class="sub">Ajoutez ou retirez des fichiers. L'assistant se met à jour tout seul : pas de commande à lancer.</p>
+
+  <div class="card">
+    <h2>Ajouter un document</h2>
+    <label class="drop" id="drop">
+      <input type="file" id="file" accept=".pdf,.doc,.docx,.txt,.md">
+      Glissez un fichier ici, ou cliquez pour choisir.<br>
+      <small>PDF, Word, texte ou Markdown — 20 Mo max.</small>
+    </label>
+    <div class="msg" id="up-msg"></div>
+  </div>
+
+  <div class="card">
+    <h2>Documents indexés</h2>
+    <table>
+      <thead><tr><th>Fichier</th><th></th></tr></thead>
+      <tbody id="list"><tr><td class="empty" colspan="2">Chargement…</td></tr></tbody>
+    </table>
+    <div class="msg" id="list-msg"></div>
+  </div>
+</div>
+
+<script>
+const PW_KEY = "da_admin_password";
+function pw(){ return localStorage.getItem(PW_KEY) || ""; }
+function hdr(extra){ return Object.assign({ "X-API-Password": pw() }, extra || {}); }
+
+async function verify(p){
+  try { const r = await fetch("/api/admin/verify", { headers: { "X-API-Password": p } }); return r.status === 200; }
+  catch(e){ return false; }
+}
+async function gate(){
+  const g = document.getElementById("gate"), i = document.getElementById("gate-pw"),
+        e = document.getElementById("gate-err"), b = document.getElementById("gate-btn");
+  if (pw() && await verify(pw())) { g.remove(); return true; }
+  return new Promise(res => {
+    async function tryit(){
+      const v = (i.value||"").trim();
+      if(!v){ e.textContent = "Entrez un mot de passe."; return; }
+      b.disabled = true; e.textContent = "Vérification…";
+      if (await verify(v)) { localStorage.setItem(PW_KEY, v); g.remove(); res(true); }
+      else { b.disabled = false; e.textContent = "Mot de passe incorrect."; i.select(); }
+    }
+    b.onclick = tryit;
+    i.addEventListener("keydown", ev => { if(ev.key === "Enter") tryit(); });
+    i.focus();
+  });
+}
+
+function fmtSize(n){ return n < 1024 ? n+" o" : n < 1048576 ? (n/1024).toFixed(0)+" Ko" : (n/1048576).toFixed(1)+" Mo"; }
+
+async function loadList(){
+  const tb = document.getElementById("list"), m = document.getElementById("list-msg");
+  m.textContent = ""; m.className = "msg";
+  try {
+    const r = await fetch("/api/admin/files", { headers: hdr() });
+    if (r.status === 401){ localStorage.removeItem(PW_KEY); location.reload(); return; }
+    const d = await r.json();
+    if (!d.files.length){ tb.innerHTML = '<tr><td class="empty" colspan="2">Aucun document pour l\'instant.</td></tr>'; return; }
+    tb.innerHTML = d.files.map(f => `
+      <tr>
+        <td>${f.name} <span class="sz">· ${fmtSize(f.size)}</span></td>
+        <td style="text-align:right;"><button class="del" data-name="${encodeURIComponent(f.name)}">Supprimer</button></td>
+      </tr>`).join("");
+    tb.querySelectorAll(".del").forEach(btn => btn.onclick = () => del(decodeURIComponent(btn.dataset.name)));
+  } catch(e){ m.className = "msg err"; m.textContent = "Impossible de charger la liste."; }
+}
+
+async function del(name){
+  if (!confirm(`Supprimer « ${name} » ? L'assistant ne s'en servira plus.`)) return;
+  const m = document.getElementById("list-msg");
+  m.className = "msg"; m.innerHTML = '<span class="spin"></span>Suppression…';
+  const body = new FormData(); body.append("name", name);
+  try {
+    const r = await fetch("/api/admin/delete", { method:"POST", headers: hdr(), body });
+    if (r.status === 401){ localStorage.removeItem(PW_KEY); location.reload(); return; }
+    const d = await r.json();
+    if (!r.ok){ m.className="msg err"; m.textContent = d.detail || "Échec de la suppression."; return; }
+    m.className = "msg ok"; m.textContent = `« ${name} » supprimé.`;
+    loadList();
+  } catch(e){ m.className="msg err"; m.textContent = "Erreur réseau."; }
+}
+
+async function upload(file){
+  const m = document.getElementById("up-msg");
+  m.className = "msg"; m.innerHTML = '<span class="spin"></span>Envoi et indexation de « '+file.name+' »…';
+  const body = new FormData(); body.append("file", file);
+  try {
+    const r = await fetch("/api/admin/upload", { method:"POST", headers: hdr(), body });
+    if (r.status === 401){ localStorage.removeItem(PW_KEY); location.reload(); return; }
+    const d = await r.json();
+    if (!r.ok){ m.className="msg err"; m.textContent = d.detail || "Échec de l'envoi."; return; }
+    m.className = "msg ok"; m.textContent = `« ${d.name} » ajouté et indexé (${d.chunks} extraits). L'assistant est à jour.`;
+    loadList();
+  } catch(e){ m.className="msg err"; m.textContent = "Erreur réseau pendant l'envoi."; }
+}
+
+const drop = document.getElementById("drop"), fileInput = document.getElementById("file");
+fileInput.addEventListener("change", () => { if (fileInput.files[0]) upload(fileInput.files[0]); fileInput.value = ""; });
+["dragover","dragenter"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("over"); }));
+["dragleave","drop"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove("over"); }));
+drop.addEventListener("drop", e => { const f = e.dataTransfer.files[0]; if (f) upload(f); });
+
+gate().then(() => loadList());
+</script>
+</body>
+</html>

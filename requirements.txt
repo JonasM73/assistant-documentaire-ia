@@ -18,6 +18,6 @@ openai>=1.30.0
 
 # Utilitaires
 python-dotenv>=1.0.0
-
+python-multipart
 # Interface Streamlit (optionnelle en production, utile en local)
 streamlit>=1.36.0
