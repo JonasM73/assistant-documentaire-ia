@@ -150,6 +150,15 @@
 
   let styleInjected = false;
   let mounted = [];
+  
+  function getApiPassword() {
+    let pw = localStorage.getItem("da_api_password");
+    if (!pw) {
+      pw = (window.prompt("Mot de passe d'accès à l'assistant :") || "").trim();
+      if (pw) localStorage.setItem("da_api_password", pw);
+    }
+    return pw;
+  }
 
   function injectStyle() {
     if (styleInjected) return;
@@ -268,9 +277,18 @@
       try {
         const r = await fetch(cfg.apiBase + "/api/chat", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            "X-API-Password": getApiPassword()
+          },
           body: JSON.stringify({ question: text, history: historyToSend })
         });
+        if (r.status === 401) {
+          localStorage.removeItem("da_api_password");
+          t.bubble.innerHTML = "";
+          t.bubble.appendChild(el("p", null, "⚠️ Mot de passe incorrect ou manquant. Rechargez la page pour le ressaisir."));
+          return;
+        }
         const data = await r.json();
         t.bubble.innerHTML = "";
         if (data.error) {
