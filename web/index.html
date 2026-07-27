@@ -163,7 +163,15 @@
 </style>
 </head>
 <body>
-
+<div id="auth-gate" style="position:fixed;inset:0;z-index:2147483600;background:linear-gradient(120deg,#132840,#1c3a5c);display:flex;align-items:center;justify-content:center;font-family:'Bricolage Grotesque',system-ui,sans-serif;">
+  <div style="background:#fff;border-radius:16px;padding:32px;width:min(360px,90vw);box-shadow:0 24px 60px -20px rgba(0,0,0,.5);">
+    <h2 style="margin:0 0 8px;font-size:20px;color:#132840;">Accès protégé</h2>
+    <p style="margin:0 0 18px;color:#5b6b7d;font-size:14px;font-family:Inter,sans-serif;">Entrez le mot de passe pour accéder à l'assistant.</p>
+    <input id="auth-pw" type="password" placeholder="Mot de passe" style="width:100%;padding:12px;border:1px solid #E3E8EE;border-radius:10px;font-size:15px;outline:none;margin-bottom:10px;font-family:Inter,sans-serif;">
+    <div id="auth-err" style="color:#c0392b;font-size:13px;min-height:18px;margin-bottom:8px;font-family:Inter,sans-serif;"></div>
+    <button id="auth-btn" style="width:100%;padding:12px;border:none;border-radius:10px;background:#0B5CAD;color:#fff;font-weight:700;font-size:15px;cursor:pointer;font-family:'Bricolage Grotesque',sans-serif;">Entrer</button>
+  </div>
+</div>
 <!-- utility bar -->
 <div class="util"><div class="wrap">
   <span>📍 Laval, QC — succursale ouverte lun-ven 6h30-17h</span>
@@ -329,7 +337,31 @@
     buttons.forEach(b => b.classList.toggle("active", b.dataset.mode === mode));
   }
   buttons.forEach(b => b.addEventListener("click", () => setMode(b.dataset.mode)));
-  setMode("floating");
+  async function verifyPassword(pw){
+    try { const r = await fetch('/api/verify', { headers: { 'X-API-Password': pw } }); return r.status === 200; }
+    catch(e){ return false; }
+  }
+  async function ensureAuth(){
+    const gate = document.getElementById('auth-gate');
+    const input = document.getElementById('auth-pw');
+    const err = document.getElementById('auth-err');
+    const btn = document.getElementById('auth-btn');
+    const stored = localStorage.getItem('da_api_password');
+    if (stored && await verifyPassword(stored)) { gate.remove(); return; }
+    await new Promise(resolve => {
+      async function attempt(){
+        const pw = (input.value||'').trim();
+        if(!pw){ err.textContent = 'Entrez un mot de passe.'; return; }
+        btn.disabled = true; err.textContent = 'Vérification…';
+        if (await verifyPassword(pw)) { localStorage.setItem('da_api_password', pw); gate.remove(); resolve(); }
+        else { btn.disabled = false; err.textContent = 'Mot de passe incorrect.'; input.select(); }
+      }
+      btn.onclick = attempt;
+      input.addEventListener('keydown', e => { if(e.key==='Enter') attempt(); });
+      input.focus();
+    });
+  }
+  ensureAuth().then(() => setMode("floating"));
 </script>
 </body>
 </html>

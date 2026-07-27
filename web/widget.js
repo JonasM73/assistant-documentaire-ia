@@ -1,12 +1,4 @@
-/* widget.js — Assistant documentaire, widget de chat embarquable.
- *
- * Utilisation minimale sur n'importe quelle page :
- *   <script src="/widget.js"></script>
- *   <script>DocAssistant.mount({ mode: "floating" });</script>
- *
- * Modes : "floating" (bulle bas-droite), "inline" (dans un élément cible),
- *         "fullscreen" (plein écran).
- */
+/* widget.js — Assistant documentaire, widget de chat embarquable. */
 (function () {
   "use strict";
 
@@ -19,8 +11,6 @@
   }
   .da-root, .da-root *{box-sizing:border-box;}
   .da-root{font-family:var(--da-font);color:var(--da-ink);}
-
-  /* Launcher (bulle flottante) */
   .da-launcher{
     position:fixed;right:24px;bottom:24px;z-index:2147483000;
     display:flex;align-items:center;gap:10px;
@@ -34,8 +24,6 @@
   .da-launcher svg{width:22px;height:22px;flex:none;}
   .da-launcher .da-dot{position:absolute;top:10px;right:12px;width:9px;height:9px;
     background:var(--da-marker);border-radius:50%;box-shadow:0 0 0 3px var(--da-emerald);}
-
-  /* Panneau */
   .da-panel{
     display:flex;flex-direction:column;background:var(--da-card);
     border:1px solid var(--da-line);overflow:hidden;
@@ -56,8 +44,6 @@
     border-radius:0;border:none;
   }
   @keyframes da-pop{from{opacity:0;transform:scale(.94) translateY(8px);}to{opacity:1;transform:none;}}
-
-  /* En-tête */
   .da-head{
     display:flex;align-items:center;gap:12px;padding:16px 18px;
     background:var(--da-ink);color:#fff;
@@ -70,8 +56,6 @@
   .da-head .da-close{margin-left:auto;background:transparent;border:none;color:#9fb0aa;
     cursor:pointer;font-size:22px;line-height:1;padding:4px 6px;border-radius:8px;}
   .da-head .da-close:hover{color:#fff;background:rgba(255,255,255,.08);}
-
-  /* Zone messages */
   .da-body{flex:1;overflow-y:auto;padding:18px;background:var(--da-paper);
     font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;}
   .da-intro{color:var(--da-ink-soft);font-size:14px;line-height:1.5;margin:0 0 14px;}
@@ -80,7 +64,6 @@
     border-radius:12px;padding:11px 13px;font-size:13.5px;color:var(--da-ink);cursor:pointer;
     font-family:inherit;transition:border-color .12s ease, background .12s ease;line-height:1.35;}
   .da-chip-q:hover{border-color:var(--da-emerald);background:#fff;}
-
   .da-msg{margin:0 0 14px;display:flex;}
   .da-msg.user{justify-content:flex-end;}
   .da-bubble{max-width:88%;padding:11px 14px;border-radius:14px;font-size:14px;line-height:1.5;}
@@ -94,7 +77,6 @@
   .da-bubble a{color:var(--da-emerald);}
   .da-bubble code{background:var(--da-paper);border:1px solid var(--da-line);
     padding:1px 5px;border-radius:5px;font-size:12.5px;}
-
   .da-sources{margin-top:9px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
   .da-src-chip{display:inline-flex;align-items:center;gap:6px;
     font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:11px;color:var(--da-ink);
@@ -106,14 +88,11 @@
   .da-extracts pre{white-space:pre-wrap;font-size:11.5px;background:var(--da-paper);
     border:1px solid var(--da-line);border-radius:8px;padding:10px;margin:8px 0 0;
     max-height:160px;overflow:auto;font-family:'IBM Plex Mono',ui-monospace,monospace;}
-
   .da-typing{display:inline-flex;gap:4px;padding:12px 14px;}
   .da-typing span{width:7px;height:7px;border-radius:50%;background:var(--da-ink-soft);
     opacity:.4;animation:da-blink 1s infinite;}
   .da-typing span:nth-child(2){animation-delay:.2s;} .da-typing span:nth-child(3){animation-delay:.4s;}
   @keyframes da-blink{0%,100%{opacity:.25;transform:translateY(0);}50%{opacity:.9;transform:translateY(-2px);}}
-
-  /* Saisie */
   .da-foot{padding:12px;border-top:1px solid var(--da-line);background:var(--da-card);
     display:flex;gap:9px;align-items:flex-end;}
   .da-foot textarea{flex:1;resize:none;border:1px solid var(--da-line);border-radius:11px;
@@ -127,7 +106,6 @@
   .da-send svg{width:19px;height:19px;}
   .da-poweredby{font-size:10.5px;color:var(--da-ink-soft);text-align:center;padding:6px;
     font-family:system-ui,sans-serif;background:var(--da-card);}
-
   @media (max-width:480px){
     .da-panel.da-floating{width:calc(100vw - 24px);right:12px;bottom:12px;height:calc(100vh - 90px);}
     .da-launcher{right:14px;bottom:14px;}
@@ -150,14 +128,10 @@
 
   let styleInjected = false;
   let mounted = [];
-  
+
+  // Le mot de passe est validé par l'écran d'accueil (index.html) et stocké ici.
   function getApiPassword() {
-    let pw = localStorage.getItem("da_api_password");
-    if (!pw) {
-      pw = (window.prompt("Mot de passe d'accès à l'assistant :") || "").trim();
-      if (pw) localStorage.setItem("da_api_password", pw);
-    }
-    return pw;
+    return localStorage.getItem("da_api_password") || "";
   }
 
   function injectStyle() {
@@ -173,13 +147,11 @@
     return t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   }
 
-  // Rendu markdown minimal : gras, code, liens, listes, paragraphes.
   function renderMarkdown(text) {
     const inline = (s) => esc(s)
       .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
       .replace(/`([^`]+?)`/g, "<code>$1</code>")
       .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
-
     const blocks = text.split(/\n{2,}/);
     let html = "";
     for (const block of blocks) {
@@ -286,7 +258,7 @@
         if (r.status === 401) {
           localStorage.removeItem("da_api_password");
           t.bubble.innerHTML = "";
-          t.bubble.appendChild(el("p", null, "⚠️ Mot de passe incorrect ou manquant. Rechargez la page pour le ressaisir."));
+          t.bubble.appendChild(el("p", null, "⚠️ Session expirée. Rechargez la page pour ressaisir le mot de passe."));
           return;
         }
         const data = await r.json();
@@ -350,7 +322,7 @@
       const panel = buildPanel(cfg, "da-fullscreen", true);
       root.appendChild(panel);
       document.body.appendChild(root);
-    } else { // floating
+    } else {
       const launcher = el("button", "da-launcher", ICON_CHAT + "<span>Une question ?</span><span class='da-dot'></span>");
       let panel = null;
       launcher.onclick = () => {

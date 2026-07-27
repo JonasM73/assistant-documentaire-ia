@@ -118,7 +118,10 @@ def health():
             "auth": "activée" if DEMO_PASSWORD else "désactivée",
             "rate_limit": RATE_LIMIT}
 
-
+@app.get("/api/verify")
+def verify(_=Depends(verifier_mot_de_passe)):
+    """Protégé : renvoie 200 si le mot de passe est bon, 401 sinon."""
+    return {"ok": True}
 @app.post("/api/chat")
 @limiter.limit(RATE_LIMIT)
 def chat(request: Request, inp: ChatIn, _=Depends(verifier_mot_de_passe)):
