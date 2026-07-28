@@ -171,6 +171,10 @@ LOCAL_EMBEDDING_MODEL = os.environ.get(
     "LOCAL_EMBEDDING_MODEL",
     "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2")
 
+# Taille des lots passés à ONNX. Petit = pic mémoire faible (crucial sur un
+# container à 1 Go : un lot de 100 chunks d'un coup provoque un OOM).
+EMBED_BATCH = int(os.environ.get("EMBED_BATCH", "8"))
+
 _LOCAL_EF = None
 
 
@@ -185,7 +189,8 @@ class _FastEmbedMultilingual(embedding_functions.EmbeddingFunction):
         self._model_name = model_name
 
     def __call__(self, input):
-        return [list(map(float, v)) for v in self._model.embed(list(input))]
+        return [list(map(float, v))
+                for v in self._model.embed(list(input), batch_size=EMBED_BATCH)]
 
     def name(self):
         return "fastembed-multilingual"
