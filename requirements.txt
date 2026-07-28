@@ -1,23 +1,30 @@
+# Versions ÉPINGLÉES = celles du déploiement validé (build Railway du 27/07/2026).
+# Ne pas repasser en ">=" : fastembed a déjà changé le comportement d'un modèle
+# entre deux versions (mean pooling vs CLS) — un déploiement avec une version
+# flottante peut dégrader silencieusement la récupération chez un client.
+
 # Serveur web
-fastapi>=0.110.0
-uvicorn>=0.29.0
-pydantic>=2.0.0
-slowapi>=0.1.9
+fastapi==0.140.7
+uvicorn==0.51.0
+pydantic==2.13.4
+slowapi==0.1.10
 
 # Pipeline RAG
-chromadb>=0.5.0
-fastembed>=0.3.0
+chromadb==1.5.9
+fastembed==0.8.0
 
 # Lecture des documents
-pdfplumber>=0.11.0
-pypdf>=4.0.0
+pdfplumber==0.11.10
+pypdf==6.14.2
+python-docx==1.1.2
 
 # Modèles de langage
-anthropic>=0.34.0
-openai>=1.30.0
+anthropic==0.120.0
+openai==2.49.0
 
 # Utilitaires
-python-dotenv>=1.0.0
-python-multipart
+python-dotenv==1.2.2
+python-multipart==0.0.32
+
 # Interface Streamlit (optionnelle en production, utile en local)
-streamlit>=1.36.0
+streamlit==1.60.0
