@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Un assistant IA qui répond aux questions de vos équipes et de vos clients à partir de vos propres documents — réponse en secondes, source citée. Pour PME.">
+<meta property="og:title" content="Assistant IA sur vos documents — pour PME">
+<meta property="og:description" content="Vos équipes arrêtent de chercher l'info dans 40 fichiers. Réponse en secondes, source citée. Démo en 2 minutes.">
+<meta property="og:type" content="website">
+<title>Assistant IA sur vos documents — pour PME</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F3F4F1; --card:#FFFFFF;
+    --ink:#15211D; --ink-soft:#586460;
+    --emerald:#0E6E57; --emerald-dark:#0A5443; --marker:#C6F24E;
+    --line:#DBDED7;
+    --mono:'IBM Plex Mono',ui-monospace,monospace;
+    --display:'Bricolage Grotesque',system-ui,sans-serif;
+    --body:'Newsreader',Georgia,serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0;background:var(--paper);color:var(--ink);
+    font-family:var(--body);font-size:18.5px;line-height:1.55;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 24px;}
+  h1,h2,h3,.eyebrow,.btn,.chip,.pricebig{font-family:var(--display);}
+  a{color:var(--emerald);}
+  .eyebrow{font-size:13px;letter-spacing:.14em;text-transform:uppercase;
+    font-weight:700;color:var(--emerald);margin:0 0 14px;}
+
+  /* ---------- top bar ---------- */
+  .topbar{border-bottom:1px solid var(--line);}
+  .topbar .wrap{display:flex;align-items:center;justify-content:space-between;padding-top:18px;padding-bottom:18px;}
+  .brand{font-family:var(--display);font-weight:800;font-size:18px;letter-spacing:-.01em;}
+  .brand span{color:var(--emerald);}
+  .toplink{font-family:var(--display);font-weight:600;font-size:15px;text-decoration:none;color:var(--ink);
+    border-bottom:2px solid var(--marker);padding-bottom:2px;}
+
+  /* ---------- hero ---------- */
+  .hero .wrap{padding-top:58px;padding-bottom:54px;text-align:center;}
+  h1{font-weight:800;font-size:clamp(36px,5.6vw,58px);line-height:1.04;
+    letter-spacing:-.025em;margin:0 auto 20px;max-width:20ch;}
+  .mark{background:linear-gradient(transparent 55%, var(--marker) 55%);padding:0 3px;}
+  .lead{font-size:21px;color:var(--ink-soft);max-width:52ch;margin:0 auto 14px;}
+  .who{font-family:var(--display);font-weight:600;font-size:14.5px;color:var(--ink-soft);margin:0 auto 30px;}
+  .who b{color:var(--emerald);}
+  .cta-row{display:flex;gap:16px;align-items:center;justify-content:center;flex-wrap:wrap;}
+  .btn{display:inline-block;background:var(--emerald);color:#fff;text-decoration:none;
+    font-weight:700;font-size:17px;padding:15px 28px;border-radius:10px;
+    transition:background .15s ease,transform .15s ease;}
+  .btn:hover{background:var(--emerald-dark);transform:translateY(-1px);}
+  .btn-ghost{font-family:var(--display);font-weight:600;font-size:16px;text-decoration:none;
+    color:var(--ink);border-bottom:2px solid var(--marker);padding-bottom:2px;}
+  .badges{display:flex;flex-wrap:wrap;gap:10px;margin-top:30px;justify-content:center;}
+  .badge-pill{display:inline-flex;align-items:center;gap:8px;font-family:var(--display);font-weight:600;
+    font-size:13.5px;color:var(--ink);background:var(--card);border:1px solid var(--line);
+    border-radius:999px;padding:8px 14px;}
+  .badge-pill::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--emerald);flex:none;}
+
+  /* ---------- sections ---------- */
+  section{border-top:1px solid var(--line);}
+  section .wrap{padding-top:60px;padding-bottom:60px;}
+  h2{font-weight:700;font-size:clamp(25px,3.2vw,32px);letter-spacing:-.02em;margin:0 0 8px;}
+  .sec-sub{color:var(--ink-soft);margin:0 0 30px;font-size:18px;}
+
+  /* ---------- démo + FAQ côte à côte ---------- */
+  .demo-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:34px;align-items:start;}
+  .video-col{position:sticky;top:24px;}
+  .video-frame{position:relative;padding-top:56.25%;border-radius:16px;overflow:hidden;
+    background:var(--ink);box-shadow:0 24px 60px -30px rgba(21,33,29,.55);border:1px solid var(--line);}
+  .video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
+  .video-cap{font-family:var(--display);font-weight:600;font-size:14px;color:var(--ink-soft);
+    margin:14px 2px 0;display:flex;align-items:center;gap:8px;}
+  .video-cap::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--emerald);}
+  .faq details{border:1px solid var(--line);border-radius:12px;background:var(--card);
+    margin-bottom:10px;padding:0 20px;}
+  .faq summary{font-family:var(--display);font-weight:700;font-size:16.5px;cursor:pointer;
+    padding:15px 0;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:16px;}
+  .faq summary::-webkit-details-marker{display:none;}
+  .faq summary::after{content:"+";color:var(--emerald);font-size:22px;line-height:1;flex:none;}
+  .faq details[open] summary::after{content:"\2013";}
+  .faq details p{margin:0 0 18px;color:var(--ink-soft);font-size:16px;line-height:1.55;}
+
+  /* ---------- offre : inclus / options ---------- */
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:26px;}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px;}
+  .panel.out{background:transparent;border-style:dashed;}
+  .panel h3{font-size:14px;font-family:var(--display);font-weight:700;letter-spacing:.02em;
+    text-transform:uppercase;margin:0 0 16px;}
+  .panel.in h3{color:var(--emerald);}
+  .panel.out h3{color:var(--ink-soft);}
+  ul.clean{list-style:none;margin:0;padding:0;}
+  ul.clean li{position:relative;padding-left:26px;margin-bottom:12px;font-size:16.5px;line-height:1.45;}
+  ul.clean.in li::before{content:"";position:absolute;left:1px;top:8px;width:12px;height:7px;
+    border-left:2.5px solid var(--emerald);border-bottom:2.5px solid var(--emerald);transform:rotate(-45deg);}
+  ul.clean.out li::before{content:"";position:absolute;left:4px;top:11px;width:12px;height:2px;background:var(--ink-soft);}
+
+  /* ---------- étapes ---------- */
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;}
+  .step .num{font-family:var(--display);font-weight:800;font-size:30px;color:var(--emerald);line-height:1;margin-bottom:10px;}
+  .step h3{font-family:var(--display);font-weight:700;font-size:18px;margin:0 0 6px;}
+  .step p{margin:0;color:var(--ink-soft);font-size:16px;line-height:1.5;}
+
+  /* ---------- prix ---------- */
+  .price{background:var(--ink);color:var(--paper);border-radius:18px;padding:42px;text-align:center;}
+  .price .eyebrow{color:var(--marker);}
+  .pricebig{font-weight:800;font-size:clamp(42px,6.5vw,60px);line-height:1;margin:6px 0 4px;letter-spacing:-.02em;}
+  .pricebig small{font-size:22px;font-weight:500;color:#9fb0aa;}
+  .price .maint{font-family:var(--display);font-weight:600;font-size:16.5px;color:var(--marker);margin:10px 0 0;}
+  .price .note{color:#9fb0aa;font-size:15.5px;max-width:52ch;margin:14px auto 28px;}
+  .price .btn{background:var(--marker);color:var(--ink);}
+  .price .btn:hover{background:#b6e23c;}
+
+  /* ---------- final ---------- */
+  .final{text-align:center;}
+  .final h2{margin:0 auto 8px;max-width:24ch;}
+  .final .sec-sub{max-width:48ch;margin-left:auto;margin-right:auto;}
+
+  footer{border-top:1px solid var(--line);}
+  footer .wrap{padding-top:30px;padding-bottom:40px;color:var(--ink-soft);font-size:15.5px;
+    display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;}
+
+  @media (max-width:860px){
+    .demo-grid{grid-template-columns:1fr;}
+    .video-col{position:static;}
+    .cols,.steps{grid-template-columns:1fr;}
+    body{font-size:17.5px;}
+    .price{padding:30px 22px;}
+    .toplink{display:none;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .btn:hover{transform:none;} html{scroll-behavior:auto;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wrap">
+    <div class="brand">Assistant<span>·</span>docs</div>
+    <a class="toplink" href="#reserver">Réserver 15 min →</a>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">IA sur vos documents · pour PME</p>
+    <h1>Vos équipes arrêtent de chercher l'info dans <span class="mark">40 fichiers</span>.</h1>
+    <p class="lead">Un assistant IA qui répond aux questions de vos équipes ou de vos clients à partir de <em>vos</em> documents — procédures, catalogues, contrats, FAQ. Réponse en secondes, source citée. Livré fonctionnel sur une instance à votre nom.</p>
+    <p class="who">Pour les PME qui croulent sous les documents : <b>cabinets comptables &amp; juridiques · distributeurs · cliniques · franchises · e-commerce</b></p>
+    <div class="cta-row">
+      <a class="btn" href="#reserver">Réserver un appel de 15 min</a>
+      <a class="btn-ghost" href="#demo">Voir la démo en 2 minutes</a>
+    </div>
+    <div class="badges">
+      <span class="badge-pill">Réponses sourcées</span>
+      <span class="badge-pill">N'invente jamais</span>
+      <span class="badge-pill">Vos documents restent sur votre instance</span>
+    </div>
+  </div>
+</header>
+
+<section id="demo">
+  <div class="wrap">
+    <p class="eyebrow">La démo &amp; vos questions</p>
+    <h2>Voyez-le fonctionner — et posez-vous les bonnes questions.</h2>
+    <p class="sec-sub">2 minutes de démonstration réelle à gauche, les réponses aux inquiétudes qu'on me pose le plus souvent à droite.</p>
+    <div class="demo-grid">
+      <div class="video-col">
+        <div class="video-frame">
+          <iframe src="https://www.youtube-nocookie.com/embed/zOcjEhi_-oY?rel=0&modestbranding=1"
+            title="Assistant IA sur vos documents — démo"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen loading="lazy"></iframe>
+        </div>
+        <p class="video-cap">Démo réelle : réponse sourcée, question de suivi, refus quand l'info n'existe pas, ajout d'un document en direct.</p>
+      </div>
+      <div class="faq">
+        <details open>
+          <summary>Où sont stockés nos documents ?</summary>
+          <p>Sur une instance ouverte à votre nom, avec votre moyen de paiement. Vos documents y sont stockés et indexés ; au moment de répondre, seuls les extraits pertinents sont envoyés au fournisseur du modèle de langage, qui, sur ses offres professionnelles, ne les utilise pas pour entraîner ses modèles. Après livraison, je n'en conserve aucune copie.</p>
+        </details>
+        <details>
+          <summary>Et s'il invente une réponse ?</summary>
+          <p>Il est cadré pour répondre uniquement à partir de vos documents et chaque réponse cite son document d'origine, extraits consultables en un clic. Quand l'information n'y figure pas, il le dit plutôt que de deviner. Avant livraison, je passe un jeu de questions de contrôle sur vos propres documents et je vous remets le résultat chiffré.</p>
+        </details>
+        <details>
+          <summary>Pourquoi pas simplement ChatGPT ?</summary>
+          <p>ChatGPT répond à partir du web, et il faut lui redonner vos fichiers à chaque conversation. Ici, l'assistant connaît vos documents en permanence, cite ses sources, refuse de répondre quand l'info n'y est pas — et vos équipes ne téléversent rien nulle part.</p>
+        </details>
+        <details>
+          <summary>Combien ça coûte par mois après la livraison ?</summary>
+          <p>Deux abonnements, à votre nom et sous votre contrôle : l'hébergement (~10 à 20 $ CAD/mois) et l'usage du modèle (~2 à 7 $ CAD/mois pour ~500 questions, soit ~0,005 $ la question). Total : environ 15 à 25 $ CAD par mois, plafonnable. L'indexation ne coûte rien.</p>
+        </details>
+        <details>
+          <summary>Nos documents changent souvent.</summary>
+          <p>Vous ajoutez, remplacez ou retirez vos fichiers vous-même depuis une page de gestion protégée — l'assistant se met à jour automatiquement, aucune commande technique. Et si vous préférez déléguer, c'est inclus dans le forfait maintenance.</p>
+        </details>
+        <details>
+          <summary>Faut-il être technique de notre côté ?</summary>
+          <p>Non. Vous fournissez vos documents (PDF, Word, texte — tableaux compris), je livre un lien fonctionnel. Vos équipes posent leurs questions en langage normal.</p>
+        </details>
+        <details>
+          <summary>Et le RGPD / la Loi 25 ? Et si on arrête ?</summary>
+          <p>Une annexe de sous-traitance est jointe au devis quand des documents sont concernés : finalité, durée, mesures de sécurité. Et si vous arrêtez : vous supprimez l'instance, tout disparaît avec — documents, index, historique. Rien ailleurs.</p>
+        </details>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="offre">
+  <div class="wrap">
+    <p class="eyebrow">Ce que vous obtenez</p>
+    <h2>Un périmètre écrit noir sur blanc.</h2>
+    <p class="sec-sub">Tout est dans le devis — jamais de facture surprise.</p>
+    <div class="cols">
+      <div class="panel in">
+        <h3>Inclus dans la mission</h3>
+        <ul class="clean in">
+          <li>Lecture de vos documents PDF, Word et texte (volume convenu à l'avance).</li>
+          <li>Widget de questions-réponses sur votre site ou en usage interne — à vos couleurs.</li>
+          <li>Réponses sourcées, extraits consultables en un clic.</li>
+          <li>Déploiement sur une instance à votre nom, mise en service comprise.</li>
+          <li>Page de gestion des documents en libre-service.</li>
+          <li>Un aller-retour d'ajustement après la livraison.</li>
+        </ul>
+      </div>
+      <div class="panel out">
+        <h3>En option ou sur devis séparé</h3>
+        <ul class="clean out">
+          <li>Forfait maintenance mensuel (surveillance, réindexation, correctifs).</li>
+          <li>Tableau de bord d'usage : questions les plus posées, taux de refus.</li>
+          <li>Intégrations à vos logiciels internes (intranet, CRM).</li>
+          <li>OCR de PDF scannés · volumes massifs de documents.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="fonctionnement">
+  <div class="wrap">
+    <p class="eyebrow">Comment ça marche</p>
+    <h2>Trois étapes, un livrable qui fonctionne.</h2>
+    <p class="sec-sub">&nbsp;</p>
+    <div class="steps">
+      <div class="step"><div class="num">01</div><h3>Appel de 15 minutes</h3><p>On identifie où vos équipes perdent du temps et sur quels documents l'assistant aura le plus d'impact.</p></div>
+      <div class="step"><div class="num">02</div><h3>Construction sur vos documents</h3><p>Je monte l'assistant sur votre contenu réel. Vous recevez un lien fonctionnel, pas des diapositives.</p></div>
+      <div class="step"><div class="num">03</div><h3>Livraison et ajustement</h3><p>Vos équipes testent, je corrige un tour, l'assistant est à vous — périmètre écrit dans le devis.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="prix">
+  <div class="wrap">
+    <div class="price">
+      <p class="eyebrow">Tarif de lancement</p>
+      <div class="pricebig">500&nbsp;€<small> / 800 $ CAD · première mission</small></div>
+      <p class="maint">+ forfait maintenance optionnel : 100 à 150 $ CAD / mois</p>
+      <p class="note">Tarif consenti aux premières PME en échange d'un témoignage — il augmente dès les premières références. Acompte de 50 % pour démarrer, solde à la livraison.</p>
+      <a class="btn" href="#reserver">Réserver mon appel</a>
+    </div>
+  </div>
+</section>
+
+<section id="reserver" class="final">
+  <div class="wrap">
+    <p class="eyebrow">On en parle ?</p>
+    <h2>15 minutes pour voir ce que ça donne sur vos documents.</h2>
+    <p class="sec-sub">Avant tout devis, je vous montre le résultat sur vos propres fichiers.</p>
+    <div class="cta-row">
+      <a class="btn" href="https://calendar.app.google/fmK8RGhTGHzwuksp7">Choisir un créneau</a>
+      <a class="btn-ghost" href="#demo">Ou revoir la démo</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div>Jonas Mionnet — Freelance IA &amp; automatisation — France &amp; Québec</div>
+    <div><a href="mailto:jonas@jonasmionnet.com">jonas@jonasmionnet.com</a> · <a href="https://www.linkedin.com/in/jonas-mionnet-5339012a0">LinkedIn</a> · <a href="mentions-legales.html">Mentions légales</a></div>
+  </div>
+</footer>
+
+</body>
+</html>
