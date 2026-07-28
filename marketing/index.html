@@ -75,6 +75,29 @@
   .video-cap{font-family:var(--display);font-weight:600;font-size:14px;color:var(--ink-soft);
     margin:14px 2px 0;display:flex;align-items:center;gap:8px;}
   .video-cap::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--emerald);}
+  .try-live{margin-top:16px;background:var(--card);border:1px dashed var(--line);border-radius:12px;
+    padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+  .try-live p{margin:0;font-size:15.5px;color:var(--ink-soft);}
+  .try-btn{font-family:var(--display);font-weight:700;font-size:14.5px;color:var(--emerald);
+    background:transparent;border:2px solid var(--emerald);border-radius:9px;padding:9px 16px;cursor:pointer;
+    transition:background .15s ease,color .15s ease;}
+  .try-btn:hover{background:var(--emerald);color:#fff;}
+  #pw-modal{position:fixed;inset:0;z-index:9999;background:rgba(21,33,29,.55);display:none;
+    align-items:center;justify-content:center;padding:20px;}
+  #pw-modal.open{display:flex;}
+  #pw-modal .box{background:var(--card);border-radius:16px;padding:28px;width:min(360px,92vw);
+    box-shadow:0 30px 80px -30px rgba(0,0,0,.6);}
+  #pw-modal h3{font-family:var(--display);font-weight:700;font-size:19px;margin:0 0 6px;}
+  #pw-modal p{font-family:var(--body);font-size:15px;color:var(--ink-soft);margin:0 0 16px;}
+  #pw-modal input{width:100%;padding:11px 13px;border:1.5px solid var(--line);border-radius:10px;
+    font-size:15px;margin-bottom:8px;outline:none;font-family:system-ui,sans-serif;}
+  #pw-modal input:focus{border-color:var(--emerald);}
+  #pw-modal .err{color:#c0392b;font-size:13px;min-height:18px;margin-bottom:8px;font-family:system-ui,sans-serif;}
+  #pw-modal .row{display:flex;gap:10px;}
+  #pw-modal button{font-family:var(--display);font-weight:700;font-size:15px;border-radius:9px;
+    padding:11px 18px;cursor:pointer;border:none;}
+  #pw-modal .go{flex:1;background:var(--emerald);color:#fff;}
+  #pw-modal .cancel{background:transparent;color:var(--ink-soft);border:1.5px solid var(--line);}
   .faq details{border:1px solid var(--line);border-radius:12px;background:var(--card);
     margin-bottom:10px;padding:0 20px;}
   .faq summary{font-family:var(--display);font-weight:700;font-size:16.5px;cursor:pointer;
@@ -177,6 +200,10 @@
             allowfullscreen loading="lazy"></iframe>
         </div>
         <p class="video-cap">Démo réelle : réponse sourcée, question de suivi, refus quand l'info n'existe pas, ajout d'un document en direct.</p>
+        <div class="try-live">
+          <p>Vous avez reçu un code d'accès lors de notre échange ?</p>
+          <button class="try-btn" id="try-btn">Essayer l'assistant en direct</button>
+        </div>
       </div>
       <div class="faq">
         <details open>
@@ -286,5 +313,87 @@
   </div>
 </footer>
 
+<div id="pw-modal" role="dialog" aria-modal="true">
+  <div class="box">
+    <h3>Essayer l'assistant</h3>
+    <p>Entrez le code d'accès reçu lors de notre échange. L'assistant de démonstration répond sur les documents d'une entreprise fictive (Boréale Équipement).</p>
+    <input id="pw-input" type="password" placeholder="Code d'accès" autocomplete="off">
+    <div class="err" id="pw-err"></div>
+    <div class="row">
+      <button class="go" id="pw-go">Lancer l'assistant</button>
+      <button class="cancel" id="pw-cancel">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var API = "https://assistant-documentaire-demo-production.up.railway.app";
+  var modal = document.getElementById("pw-modal"),
+      input = document.getElementById("pw-input"),
+      err = document.getElementById("pw-err"),
+      go = document.getElementById("pw-go"),
+      cancel = document.getElementById("pw-cancel"),
+      tryBtn = document.getElementById("try-btn");
+
+  function verify(pw){
+    return fetch(API + "/api/verify", { headers: { "X-API-Password": pw } })
+      .then(function(r){ return r.status === 200; })
+      .catch(function(){ return false; });
+  }
+  function loadWidget(){
+    return new Promise(function(res, rej){
+      if (window.DocAssistant) return res();
+      var s = document.createElement("script");
+      s.src = API + "/widget.js";
+      s.onload = res; s.onerror = rej;
+      document.head.appendChild(s);
+    });
+  }
+  function mountAssistant(){
+    loadWidget().then(function(){
+      window.DocAssistant.mount({
+        mode: "floating",
+        apiBase: API,
+        assistantName: "Assistant documentaire",
+        clientName: "Boréale Équipement (démo)"
+      });
+      tryBtn.textContent = "Assistant lancé — voir en bas à droite";
+      tryBtn.disabled = true;
+    }).catch(function(){
+      err.textContent = "Impossible de charger l'assistant. Réessayez plus tard.";
+    });
+  }
+  tryBtn.addEventListener("click", function(){
+    var stored = localStorage.getItem("da_api_password") || "";
+    if (stored) {
+      verify(stored).then(function(ok){
+        if (ok) { mountAssistant(); }
+        else { localStorage.removeItem("da_api_password"); modal.classList.add("open"); input.focus(); }
+      });
+    } else { modal.classList.add("open"); input.focus(); }
+  });
+  function attempt(){
+    var pw = (input.value || "").trim();
+    if (!pw) { err.textContent = "Entrez le code d'accès."; return; }
+    go.disabled = true; err.textContent = "Vérification…";
+    verify(pw).then(function(ok){
+      go.disabled = false;
+      if (ok) {
+        localStorage.setItem("da_api_password", pw);
+        err.textContent = "";
+        modal.classList.remove("open");
+        mountAssistant();
+      } else {
+        err.textContent = "Code incorrect.";
+        input.select();
+      }
+    });
+  }
+  go.addEventListener("click", attempt);
+  input.addEventListener("keydown", function(e){ if (e.key === "Enter") attempt(); });
+  cancel.addEventListener("click", function(){ modal.classList.remove("open"); err.textContent = ""; });
+})();
+</script>
 </body>
 </html>
