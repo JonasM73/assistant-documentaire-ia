@@ -11,6 +11,10 @@ Protections, configurables via .env :
   3. CORS : seuls les domaines listés dans ALLOWED_ORIGINS peuvent appeler l'API.
   4. Limite de débit : RATE_LIMIT requêtes par minute et par IP sur /api/chat.
 
+Option tableau de bord (LOG_QUESTIONS) : journal des questions opt-in (JSONL :
+date, question, sources, refus — rien d'autre) et statistiques d'usage servies
+par /api/admin/stats, affichées dans gestion.html.
+
 Lancement :
     python -m uvicorn server:app --reload
 puis ouvrir http://localhost:8000
@@ -20,6 +24,7 @@ import os
 import re
 import glob
 import sys
+import time
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "core"))
 
 from fastapi import FastAPI, Request, Header, HTTPException, Depends
@@ -43,6 +48,7 @@ except Exception:
 import rag_core
 import recherche_hybride
 import ingest_ameliore
+import journal
 recherche_hybride.activer()
 
 WEB_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "web")
@@ -129,6 +135,8 @@ def _warmup():
             print("ATTENTION : aucune protection admin (ni ADMIN_PASSWORD ni DEMO_PASSWORD).")
         print(f"CORS autorisé pour : {ALLOWED_ORIGINS}")
         print(f"Limite de débit /api/chat : {RATE_LIMIT}")
+        print("Journal des questions : "
+              + (f"actif → {journal.chemin()}" if journal.actif() else "désactivé (LOG_QUESTIONS)"))
     except Exception as e:
         print(f"Préchargement ignoré ({e}). Avez-vous lancé `python ingest.py` ?")
 
@@ -141,7 +149,8 @@ def health():
             "llm": rag_core.resolve_llm_provider(),
             "auth": "activée" if DEMO_PASSWORD else "désactivée",
             "admin": "séparé" if ADMIN_PASSWORD else ("repli chat" if DEMO_PASSWORD else "désactivé"),
-            "rate_limit": RATE_LIMIT}
+            "rate_limit": RATE_LIMIT,
+            "journal": "actif" if journal.actif() else "désactivé"}
 
 
 @app.get("/api/verify")
@@ -158,7 +167,12 @@ def chat(request: Request, inp: ChatIn, _=Depends(verifier_mot_de_passe)):
         return JSONResponse({"error": "Question vide."}, status_code=400)
     try:
         history = [{"role": t.role, "content": t.content} for t in inp.history]
+        t0 = time.time()
         res = rag_core.answer_question(question, history=history)
+        # Journal des questions (option tableau de bord) : opt-in via
+        # LOG_QUESTIONS — question/date/sources/refus + durée de réponse.
+        journal.enregistrer(question, res.sources, journal.est_refus(res.answer),
+                            duree=time.time() - t0)
         return {"answer": res.answer, "sources": res.sources, "chunks": res.chunks}
     except Exception as e:
         return JSONResponse({"error": str(e)}, status_code=500)
@@ -208,6 +222,29 @@ def admin_upload(file: UploadFile = File(...), _=Depends(verifier_admin)):
     except Exception as e:
         raise HTTPException(500, f"Enregistré mais indexation échouée : {e}")
     return {"ok": True, "name": name, "chunks": n}
+
+
+@app.get("/api/admin/stats")
+def admin_stats(_=Depends(verifier_admin)):
+    """Protégé (mot de passe admin) : statistiques d'usage tirées du journal
+    des questions. Les questions sont regroupées par SENS grâce au modèle
+    d'embedding local (déjà chargé pour l'index — coût zéro, rien ne sort de
+    l'instance) ; repli sur un regroupement par formulation si le modèle est
+    indisponible. Renvoie actif=false si le journal n'est pas activé."""
+    try:
+        ef = rag_core.get_embedding_function()
+    except Exception:
+        ef = None
+    return journal.stats(embed_fn=ef)
+
+
+@app.get("/api/admin/questions")
+def admin_questions(debut: str = "", fin: str = "", q: str = "",
+                    limite: int = 100, _=Depends(verifier_admin)):
+    """Protégé (mot de passe admin) : recherche dans le journal des questions.
+    Filtres : debut/fin (AAAA-MM-JJ, bornes incluses) et q (texte contenu
+    dans la question). Sert l'explorateur de la page gestion.html."""
+    return journal.rechercher(debut=debut, fin=fin, texte=q, limite=limite)
 
 
 @app.post("/api/admin/delete")

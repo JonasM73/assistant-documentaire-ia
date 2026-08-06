@@ -3,74 +3,95 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gestion des documents — Assistant</title>
+<title>Administration — Assistant documentaire</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#0B1220; --bg2:#0E172A; --card:#121D33; --card2:#16233D;
-    --line:rgba(148,178,215,.14); --line2:rgba(148,178,215,.25);
-    --ink:#E7EEF8; --soft:#8CA0BB; --faint:#5D7191;
-    --blue:#4C9BF5; --blue-soft:rgba(76,155,245,.14);
-    --amber:#F5B04C; --amber-soft:rgba(245,176,76,.12);
-    --ok:#34D399; --ok-soft:rgba(52,211,153,.12);
-    --danger:#F87171; --danger-soft:rgba(248,113,113,.12);
+    --bg:#F6F7FB; --card:#FFFFFF;
+    --line:#E8EAF2; --line2:#D9DEEB;
+    --ink:#101828; --soft:#475467; --faint:#98A2B3;
+    --accent:#4F46E5; --accent2:#6366F1; --accent-soft:#EEF2FF; --accent-line:#C7D2FE;
+    --amber:#D97706; --amber-soft:#FEF6E7;
+    --ok:#059669; --ok-soft:#ECFDF3;
+    --danger:#DC2626; --danger-soft:#FEF2F2;
     --disp:'Bricolage Grotesque',system-ui,sans-serif;
     --ui:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
     --mono:ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+    --shadow:0 1px 2px rgba(16,24,40,.05),0 1px 3px rgba(16,24,40,.06);
+    --shadow-lg:0 12px 32px -12px rgba(16,24,40,.16);
   }
   *{box-sizing:border-box;}
   body{
-    margin:0;background:var(--bg);color:var(--ink);
+    margin:0;color:var(--ink);
     font-family:var(--ui);font-size:14.5px;line-height:1.5;
-    -webkit-font-smoothing:antialiased;
-    background-image:
-      radial-gradient(900px 420px at 85% -10%, rgba(76,155,245,.10), transparent 60%),
-      radial-gradient(700px 380px at -10% 110%, rgba(245,176,76,.06), transparent 60%);
+    -webkit-font-smoothing:antialiased;min-height:100vh;
+    background:
+      radial-gradient(1100px 520px at 92% -8%, rgba(99,102,241,.10), transparent 60%),
+      radial-gradient(900px 460px at -8% 34%, rgba(14,165,233,.07), transparent 60%),
+      radial-gradient(circle at 1px 1px, rgba(148,163,199,.16) 1px, transparent 1.6px) 0 0/26px 26px,
+      var(--bg);
     background-attachment:fixed;
-    min-height:100vh;
   }
-  .wrap{max-width:860px;margin:0 auto;padding:36px 22px 80px;}
 
-  /* ---------- top bar ---------- */
-  .top{display:flex;align-items:center;gap:14px;margin-bottom:28px;flex-wrap:wrap;}
-  .mark{width:42px;height:42px;border-radius:12px;flex:none;
-    background:linear-gradient(135deg,var(--blue),#2E6FC4);
+  /* ---------- barre supérieure + onglets ---------- */
+  .top{
+    position:sticky;top:0;z-index:100;
+    background:rgba(255,255,255,.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--line);
+  }
+  .top-inner{max-width:1020px;margin:0 auto;padding:14px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+  .mark{width:40px;height:40px;border-radius:12px;flex:none;
+    background:linear-gradient(135deg,var(--accent2),var(--accent));
     display:flex;align-items:center;justify-content:center;
-    box-shadow:0 8px 24px -10px rgba(76,155,245,.55);}
-  .mark svg{width:22px;height:22px;stroke:#fff;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;}
-  .top h1{font-family:var(--disp);font-weight:800;font-size:22px;letter-spacing:-.01em;margin:0;line-height:1.15;}
-  .top .sub{margin:2px 0 0;color:var(--soft);font-size:13px;}
-  .stats{margin-left:auto;display:flex;gap:10px;}
-  .stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 14px;text-align:right;}
-  .stat b{font-family:var(--disp);font-weight:700;font-size:17px;display:block;line-height:1.1;color:var(--ink);}
-  .stat span{font-size:11px;color:var(--faint);text-transform:uppercase;letter-spacing:.05em;font-weight:600;}
+    box-shadow:0 8px 20px -8px rgba(79,70,229,.5);}
+  .mark svg{width:21px;height:21px;stroke:#fff;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;}
+  .top h1{font-family:var(--disp);font-weight:800;font-size:18px;letter-spacing:-.01em;margin:0;line-height:1.15;}
+  .top .sub{margin:1px 0 0;color:var(--faint);font-size:12.5px;}
+  .tabs{margin-left:auto;display:flex;background:#EEF0F6;border-radius:12px;padding:4px;gap:2px;}
+  .tabs button{
+    border:none;background:transparent;color:var(--soft);font-family:var(--ui);
+    font-weight:600;font-size:13.5px;padding:8px 18px;border-radius:9px;cursor:pointer;
+    display:flex;align-items:center;gap:7px;transition:.15s;
+  }
+  .tabs button svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+  .tabs button:hover{color:var(--ink);}
+  .tabs button.on{background:#fff;color:var(--ink);box-shadow:var(--shadow);}
 
-  /* ---------- cards ---------- */
-  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;margin-bottom:18px;}
+  .wrap{max-width:1020px;margin:0 auto;padding:26px 22px 80px;}
+
+  /* ---------- cartes / panneaux ---------- */
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;
+    margin-bottom:16px;box-shadow:var(--shadow);}
   .card h2{font-family:var(--disp);font-weight:700;font-size:15px;margin:0 0 14px;display:flex;align-items:center;gap:8px;}
   .card h2 .hint{margin-left:auto;font-family:var(--ui);font-weight:500;font-size:12px;color:var(--faint);}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 20px;
+    box-shadow:var(--shadow);}
+  .panel h3{font-family:var(--disp);font-size:13.5px;font-weight:700;margin:0 0 3px;}
+  .panel-sub{font-size:12px;color:var(--faint);margin:0 0 10px;line-height:1.45;}
+
+  .sec-head{display:flex;align-items:center;gap:12px;margin:4px 0 14px;flex-wrap:wrap;}
+  .sec-head h2{font-family:var(--disp);font-weight:800;font-size:17px;margin:0;letter-spacing:-.01em;}
 
   /* ---------- dropzone ---------- */
   .drop{
     position:relative;border:1.5px dashed var(--line2);border-radius:14px;
     padding:34px 20px;text-align:center;color:var(--soft);cursor:pointer;
-    transition:border-color .15s ease, background .15s ease, transform .15s ease;
-    display:block;background:var(--bg2);
+    transition:border-color .15s ease, background .15s ease;
+    display:block;background:#FBFCFE;
   }
-  .drop:hover,.drop.over{border-color:var(--blue);background:var(--blue-soft);color:var(--ink);}
-  .drop.over{transform:scale(1.005);}
+  .drop:hover,.drop.over{border-color:var(--accent);background:var(--accent-soft);}
   .drop input{display:none;}
-  .drop .ic-up{width:34px;height:34px;margin:0 auto 10px;border-radius:10px;
-    background:var(--blue-soft);display:flex;align-items:center;justify-content:center;}
-  .drop .ic-up svg{width:18px;height:18px;stroke:var(--blue);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+  .drop .ic-up{width:36px;height:36px;margin:0 auto 10px;border-radius:11px;
+    background:var(--accent-soft);display:flex;align-items:center;justify-content:center;}
+  .drop .ic-up svg{width:18px;height:18px;stroke:var(--accent);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
   .drop b{color:var(--ink);font-weight:600;}
   .drop small{display:block;margin-top:6px;color:var(--faint);font-size:12px;}
 
-  /* ---------- upload queue ---------- */
+  /* ---------- file d'attente d'envoi ---------- */
   .queue{margin-top:14px;display:flex;flex-direction:column;gap:8px;}
-  .qitem{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:11px 14px;
+  .qitem{background:#FBFCFE;border:1px solid var(--line);border-radius:12px;padding:11px 14px;
     display:grid;grid-template-columns:auto 1fr auto;gap:4px 12px;align-items:center;
     animation:fade .2s ease;}
   @keyframes fade{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}}
@@ -80,67 +101,232 @@
   .qitem .qstate.err{color:var(--danger);}
   .qitem .badge{grid-row:span 2;}
   .qitem .qpct{grid-row:span 2;font-family:var(--mono);font-size:12px;color:var(--faint);min-width:38px;text-align:right;}
-  .qbar{grid-column:1 / -1;height:4px;border-radius:99px;background:rgba(148,178,215,.12);overflow:hidden;margin-top:6px;}
+  .qbar{grid-column:1 / -1;height:4px;border-radius:99px;background:#EEF0F6;overflow:hidden;margin-top:6px;}
   .qbar i{display:block;height:100%;width:0%;border-radius:99px;
-    background:linear-gradient(90deg,var(--blue),#7FB8F8);transition:width .25s ease;}
+    background:linear-gradient(90deg,var(--accent2),var(--accent));transition:width .25s ease;}
   .qbar.indet i{width:35%;animation:slide 1.1s ease-in-out infinite;}
   @keyframes slide{0%{margin-left:-35%;}100%{margin-left:100%;}}
   .qbar.done i{background:var(--ok);width:100%;}
   .qbar.fail i{background:var(--danger);width:100%;}
 
-  /* ---------- file type badge ---------- */
+  /* ---------- pastille type de fichier ---------- */
   .badge{width:38px;height:38px;border-radius:10px;flex:none;
     display:flex;align-items:center;justify-content:center;
     font-family:var(--disp);font-weight:700;font-size:10px;letter-spacing:.03em;}
   .badge.pdf {background:var(--danger-soft);color:var(--danger);}
-  .badge.docx,.badge.doc{background:var(--blue-soft);color:var(--blue);}
-  .badge.txt {background:rgba(148,178,215,.14);color:var(--soft);}
+  .badge.docx,.badge.doc{background:var(--accent-soft);color:var(--accent);}
+  .badge.txt {background:#F2F4F7;color:var(--soft);}
   .badge.md  {background:var(--amber-soft);color:var(--amber);}
 
-  /* ---------- file list ---------- */
+  /* ---------- liste des fichiers ---------- */
   .row{display:flex;align-items:center;gap:13px;padding:11px 6px;border-bottom:1px solid var(--line);}
   .row:last-child{border-bottom:none;}
   .row .meta{flex:1;min-width:0;}
   .row .name{font-size:13.5px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .row .sz{font-size:12px;color:var(--faint);font-family:var(--mono);}
-  .del{background:transparent;border:1px solid var(--line);color:var(--soft);border-radius:9px;
+  .del{background:transparent;border:1px solid var(--line);color:var(--faint);border-radius:9px;
     width:34px;height:34px;cursor:pointer;flex:none;display:flex;align-items:center;justify-content:center;
     transition:.12s;}
   .del svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;}
-  .del:hover{background:var(--danger-soft);border-color:var(--danger);color:var(--danger);}
-  .empty{color:var(--faint);font-style:italic;padding:18px 6px;font-size:13.5px;}
+  .del:hover{background:var(--danger-soft);border-color:#FCA5A5;color:var(--danger);}
+  .empty{color:var(--faint);font-style:italic;padding:16px 6px;font-size:13.5px;}
   .msg{margin-top:10px;font-size:13px;min-height:19px;color:var(--soft);}
   .msg.ok{color:var(--ok);} .msg.err{color:var(--danger);}
   .spin{display:inline-block;width:13px;height:13px;border:2px solid var(--line2);
-    border-top-color:var(--blue);border-radius:50%;animation:sp .7s linear infinite;
+    border-top-color:var(--accent);border-radius:50%;animation:sp .7s linear infinite;
     vertical-align:-2px;margin-right:6px;}
   @keyframes sp{to{transform:rotate(360deg);}}
+  .chips{margin-left:auto;display:flex;gap:8px;}
+  .chip{background:#F2F4F9;border:1px solid var(--line);border-radius:10px;padding:5px 12px;
+    font-size:12px;color:var(--soft);}
+  .chip b{font-family:var(--disp);font-weight:700;color:var(--ink);margin-right:4px;}
 
   .foot-note{color:var(--faint);font-size:12px;text-align:center;margin-top:26px;}
 
-  /* ---------- gate ---------- */
+  /* ---------- sélecteur de période ---------- */
+  .seg{margin-left:auto;display:flex;background:#EEF0F6;border-radius:11px;padding:3px;gap:2px;}
+  .seg button{border:none;background:transparent;color:var(--soft);font-family:var(--ui);
+    font-weight:600;font-size:12.5px;padding:6px 14px;border-radius:8px;cursor:pointer;transition:.12s;}
+  .seg button:hover{color:var(--ink);}
+  .seg button.on{background:#fff;color:var(--accent);box-shadow:var(--shadow);}
+
+  /* ---------- KPIs ---------- */
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px;}
+  .kpi{position:relative;background:var(--card);border:1px solid var(--line);border-radius:16px;
+    padding:16px 18px;overflow:hidden;box-shadow:var(--shadow);}
+  .kpi::before{content:"";position:absolute;inset:0 auto 0 0;width:3px;
+    background:linear-gradient(180deg,var(--accent2),var(--accent));border-radius:0 3px 3px 0;}
+  .kpi.amber::before{background:linear-gradient(180deg,#F59E0B,var(--amber));}
+  .kpi b{font-family:var(--disp);font-weight:800;font-size:26px;display:block;line-height:1.1;letter-spacing:-.01em;}
+  .kpi span{font-size:10.5px;color:var(--faint);text-transform:uppercase;letter-spacing:.06em;
+    font-weight:700;display:block;margin-top:3px;}
+  .kpi .delta{position:absolute;top:14px;right:14px;font-size:11px;font-weight:700;
+    border-radius:8px;padding:2px 7px;font-family:var(--mono);}
+  .kpi .delta.up{color:var(--ok);background:var(--ok-soft);}
+  .kpi .delta.down{color:var(--danger);background:var(--danger-soft);}
+  .kpi .delta.flat{color:var(--faint);background:#F2F4F7;}
+  .donut{position:absolute;top:15px;right:15px;width:38px;height:38px;border-radius:50%;}
+  .donut::after{content:"";position:absolute;inset:5px;border-radius:50%;background:var(--card);}
+
+  /* ---------- graphe ---------- */
+  .chart-wrap{background:var(--card);border:1px solid var(--line);border-radius:16px;
+    padding:18px 18px 12px;margin-bottom:14px;box-shadow:var(--shadow);}
+  .chart-head{display:flex;align-items:baseline;gap:10px;margin-bottom:12px;flex-wrap:wrap;}
+  .chart-head h3{font-family:var(--disp);font-size:13.5px;font-weight:700;margin:0;}
+  .stat-legend{margin-left:auto;display:flex;gap:14px;font-size:11px;color:var(--faint);}
+  .stat-legend i{display:inline-block;width:8px;height:8px;border-radius:3px;margin-right:5px;}
+  .stat-legend .lg-q i{background:var(--accent);} .stat-legend .lg-r i{background:#F59E0B;}
+  .bars{display:flex;align-items:flex-end;gap:4px;height:120px;}
+  .bars .b{flex:1;display:flex;flex-direction:column;justify-content:flex-end;height:100%;
+    border-radius:4px;transition:background .12s;}
+  .bars .b:hover{background:#F2F4F9;}
+  .bars .b i{display:block;border-radius:3px 3px 0 0;min-height:2px;
+    background:linear-gradient(180deg,#8B93F8,var(--accent));}
+  .bars .b i.r{background:linear-gradient(180deg,#FBBF24,#F59E0B);margin-bottom:1px;}
+  .bar-labels{display:flex;gap:4px;margin-top:6px;}
+  .bar-labels span{flex:1;text-align:center;font-size:9.5px;color:var(--faint);
+    font-family:var(--mono);white-space:nowrap;}
+
+  /* ---------- panneaux sujets / documents ---------- */
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;}
+  .topic{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);align-items:flex-start;}
+  .topic:last-child{border-bottom:none;padding-bottom:2px;}
+  .topic .rank{flex:none;width:22px;height:22px;border-radius:7px;display:flex;align-items:center;
+    justify-content:center;font-family:var(--disp);font-weight:800;font-size:11px;
+    background:#F2F4F7;color:var(--soft);margin-top:1px;}
+  .topic .rank.r1{background:var(--accent-soft);color:var(--accent);}
+  .topic .rank.r2{background:#E0E7FF;color:#4338CA;}
+  .topic .rank.r3{background:#EEF0F6;color:var(--ink);}
+  .topic .tmeta{flex:1;min-width:0;}
+  .topic .ttxt{font-size:13px;font-weight:500;line-height:1.35;}
+  .topic .tsub{font-size:11.5px;color:var(--faint);margin-top:2px;}
+  .topic .tsub .tref{color:var(--amber);font-weight:600;}
+  .qn{font-family:var(--mono);font-size:12px;color:var(--accent);background:var(--accent-soft);
+    border-radius:8px;padding:2px 8px;flex:none;font-weight:600;}
+  .src-row{display:flex;align-items:center;gap:10px;padding:8px 0;}
+  .src-row .sname{flex:none;width:45%;font-size:12.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .src-row .sbar{flex:1;height:7px;border-radius:99px;background:#EEF0F6;overflow:hidden;}
+  .src-row .sbar i{display:block;height:100%;border-radius:99px;
+    background:linear-gradient(90deg,var(--accent),#8B93F8);}
+  .src-row .sn{flex:none;font-family:var(--mono);font-size:11.5px;color:var(--soft);
+    min-width:30px;text-align:right;}
+
+  /* ---------- questions sans réponse ---------- */
+  .gap-panel{background:linear-gradient(180deg,#FFFBF2,#FFFDF8);
+    border:1px solid #F3DFB6;border-radius:16px;padding:18px 20px;margin-bottom:14px;
+    box-shadow:var(--shadow);}
+  .gap-panel h3{font-family:var(--disp);font-size:13.5px;font-weight:700;margin:0 0 3px;color:#B45309;}
+  .gap-panel .panel-sub{color:#8A6420;}
+  .gap-row{display:flex;gap:10px;align-items:baseline;padding:7px 0;border-bottom:1px solid #F3E8CE;}
+  .gap-row:last-child{border-bottom:none;padding-bottom:2px;}
+  .gap-row .qtxt{flex:1;min-width:0;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .gap-row .qn{background:#FDEBC8;color:#B45309;}
+
+  /* ---------- explorateur de questions ---------- */
+  .filters{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:6px;}
+  .filters label{font-size:12px;color:var(--faint);font-weight:600;}
+  .filters input[type=date], .filters input[type=search]{
+    border:1px solid var(--line2);border-radius:10px;padding:8px 11px;font-family:var(--ui);
+    font-size:13px;color:var(--ink);background:#fff;outline:none;transition:border-color .12s, box-shadow .12s;}
+  .filters input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft);}
+  .filters input[type=search]{flex:1;min-width:170px;}
+  .presets{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
+  .presets button{border:1px solid var(--line);background:#fff;color:var(--soft);border-radius:99px;
+    font-family:var(--ui);font-weight:600;font-size:12px;padding:5px 12px;cursor:pointer;transition:.12s;}
+  .presets button:hover{border-color:var(--accent-line);color:var(--accent);background:var(--accent-soft);}
+  .res-count{font-size:12px;color:var(--faint);margin:4px 0 6px;}
+  .qrow{display:flex;align-items:baseline;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);}
+  .qrow:last-child{border-bottom:none;}
+  .qrow .qdate{font-family:var(--mono);font-size:11px;color:var(--faint);flex:none;}
+  .qrow .qmeta{flex:1;min-width:0;}
+  .qrow .qtxt{font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .qrow .qsrc{font-size:11px;color:var(--faint);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .pill-refus{flex:none;font-size:10px;font-weight:700;letter-spacing:.04em;color:#B45309;
+    background:#FDEBC8;border-radius:8px;padding:2px 8px;text-transform:uppercase;}
+
+  .privacy{display:flex;gap:8px;align-items:center;margin-top:14px;font-size:11.5px;color:var(--faint);}
+  .privacy svg{width:13px;height:13px;stroke:var(--ok);flex:none;fill:none;stroke-width:2;
+    stroke-linecap:round;stroke-linejoin:round;}
+  .journal-off{background:var(--amber-soft);border:1px solid #F3DFB6;border-radius:14px;
+    padding:14px 16px;font-size:13px;color:#8A6420;}
+  .journal-off b{color:#B45309;}
+  .journal-off code{font-family:var(--mono);font-size:12px;color:var(--ink);
+    background:#fff;border:1px solid var(--line);border-radius:6px;padding:1px 6px;}
+
+  /* ---------- bandeau héro + KPIs v4 ---------- */
+  .hero{position:relative;border-radius:20px;overflow:hidden;margin-bottom:14px;
+    background:linear-gradient(120deg,#EEF2FF 0%,#F5F3FF 48%,#EFF6FF 100%);
+    border:1px solid #E2E6F8;padding:22px 22px 20px;box-shadow:var(--shadow);}
+  .hero::before{content:"";position:absolute;width:460px;height:460px;border-radius:50%;
+    background:radial-gradient(circle,rgba(99,102,241,.16),transparent 65%);top:-280px;right:-90px;}
+  .hero::after{content:"";position:absolute;width:380px;height:380px;border-radius:50%;
+    background:radial-gradient(circle,rgba(14,165,233,.13),transparent 65%);bottom:-250px;left:-70px;}
+  .hero > *{position:relative;z-index:1;}
+  .hero .sec-head{margin:0 0 16px;}
+  .hero .sec-head h2{font-size:19px;}
+  .hero .sec-sub{font-size:12.5px;color:var(--soft);margin:-12px 0 16px;}
+
+  .kpis5{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;}
+  .kpi5{position:relative;background:rgba(255,255,255,.85);backdrop-filter:blur(6px);
+    border:1px solid rgba(255,255,255,.95);border-radius:14px;padding:13px 15px 26px;
+    box-shadow:0 1px 2px rgba(16,24,40,.05);overflow:hidden;}
+  .kpi5 b{font-family:var(--disp);font-weight:800;font-size:23px;line-height:1.1;display:block;letter-spacing:-.01em;}
+  .kpi5 small{font-size:9.5px;color:var(--faint);text-transform:uppercase;letter-spacing:.06em;
+    font-weight:700;display:block;margin-top:3px;}
+  .kpi5 .delta{position:absolute;top:11px;right:11px;font-size:10.5px;font-weight:700;
+    border-radius:7px;padding:1px 6px;font-family:var(--mono);}
+  .kpi5 .delta.up{color:var(--ok);background:var(--ok-soft);}
+  .kpi5 .delta.down{color:var(--danger);background:var(--danger-soft);}
+  .kpi5 .spark{position:absolute;left:0;right:0;bottom:0;height:24px;pointer-events:none;}
+  .kpi5 .spark svg{display:block;width:100%;height:24px;}
+  .kpi5 .donut{position:absolute;bottom:10px;right:12px;top:auto;width:34px;height:34px;}
+  .kpi5 .donut::after{inset:4.5px;background:#fff;}
+
+  .bento{display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-bottom:14px;}
+  .chart-svg{display:block;width:100%;height:auto;}
+  .callouts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
+  .callout{background:#FBFCFE;border:1px solid var(--line);border-radius:12px;padding:10px 12px;}
+  .callout b{font-family:var(--disp);font-weight:800;font-size:16px;display:block;line-height:1.15;}
+  .callout small{font-size:9.5px;color:var(--faint);text-transform:uppercase;letter-spacing:.05em;font-weight:700;}
+  .mini-label{font-size:10.5px;color:var(--faint);font-weight:700;text-transform:uppercase;
+    letter-spacing:.05em;margin:10px 0 5px;}
+  .wk-row{display:flex;align-items:center;gap:8px;padding:2.5px 0;}
+  .wk-row .wname{flex:none;width:34px;font-size:11px;color:var(--soft);font-weight:600;}
+  .wk-row .wbar{flex:1;height:8px;border-radius:99px;background:#EEF0F6;overflow:hidden;}
+  .wk-row .wbar i{display:block;height:100%;border-radius:99px;
+    background:linear-gradient(90deg,#38BDF8,var(--accent2));}
+  .wk-row .wn{flex:none;font-family:var(--mono);font-size:10.5px;color:var(--faint);min-width:24px;text-align:right;}
+  .trend{display:inline-flex;align-items:center;gap:3px;font-size:10.5px;font-weight:700;
+    color:var(--ok);background:var(--ok-soft);border-radius:7px;padding:1px 7px;}
+
+  @media(max-width:860px){.kpis5{grid-template-columns:repeat(3,1fr);}.bento{grid-template-columns:1fr;}}
+  @media(max-width:560px){.kpis5{grid-template-columns:repeat(2,1fr);}}
+
+  /* ---------- porte d'entrée ---------- */
   #gate{position:fixed;inset:0;z-index:9999;background:var(--bg);
-    background-image:radial-gradient(800px 500px at 50% -10%, rgba(76,155,245,.14), transparent 60%);
     display:flex;align-items:center;justify-content:center;padding:20px;}
-  #gate .box{background:var(--card);border:1px solid var(--line2);border-radius:18px;padding:32px;
-    width:min(380px,92vw);box-shadow:0 30px 80px -30px rgba(0,0,0,.7);}
+  #gate .box{background:#fff;border:1px solid var(--line);border-radius:18px;padding:32px;
+    width:min(380px,92vw);box-shadow:var(--shadow-lg);}
   #gate .mark{margin-bottom:16px;}
   #gate h2{font-family:var(--disp);font-weight:800;margin:0 0 6px;font-size:20px;}
   #gate p{margin:0 0 18px;color:var(--soft);font-size:13.5px;}
   #gate input{width:100%;padding:12px 14px;border:1px solid var(--line2);border-radius:11px;
-    font-size:15px;margin-bottom:10px;background:var(--bg2);color:var(--ink);outline:none;
-    font-family:var(--ui);transition:border-color .12s;}
-  #gate input:focus{border-color:var(--blue);}
+    font-size:15px;margin-bottom:10px;background:#fff;color:var(--ink);outline:none;
+    font-family:var(--ui);transition:border-color .12s, box-shadow .12s;}
+  #gate input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft);}
   #gate .err{color:var(--danger);font-size:12.5px;min-height:18px;margin-bottom:8px;}
   #gate button{width:100%;padding:12px;border:none;border-radius:11px;
-    background:linear-gradient(135deg,var(--blue),#2E6FC4);color:#fff;
+    background:linear-gradient(135deg,var(--accent2),var(--accent));color:#fff;
     font-family:var(--disp);font-weight:700;font-size:15px;cursor:pointer;transition:.12s;}
-  #gate button:hover{filter:brightness(1.1);}
+  #gate button:hover{filter:brightness(1.07);}
   #gate button:disabled{opacity:.6;cursor:wait;}
 
-  @media(max-width:620px){
-    .stats{margin-left:0;width:100%;}
-    .stat{flex:1;text-align:left;}
+  @media(max-width:720px){
+    .kpis{grid-template-columns:repeat(2,1fr);}
+    .grid2{grid-template-columns:1fr;}
+    .tabs{margin-left:0;width:100%;}
+    .tabs button{flex:1;justify-content:center;}
+    .chips{margin-left:0;}
   }
 </style>
 </head>
@@ -149,43 +335,99 @@
 <div id="gate">
   <div class="box">
     <div class="mark"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
-    <h2>Gestion des documents</h2>
-    <p>Entrez le mot de passe administrateur pour gérer les documents de l'assistant.</p>
+    <h2>Espace d'administration</h2>
+    <p>Entrez le mot de passe administrateur pour gérer les documents et consulter les statistiques.</p>
     <input id="gate-pw" type="password" placeholder="Mot de passe admin" autocomplete="current-password">
     <div class="err" id="gate-err"></div>
     <button id="gate-btn">Entrer</button>
   </div>
 </div>
 
-<div class="wrap">
-  <div class="top">
+<header class="top">
+  <div class="top-inner">
     <div class="mark"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h5"/></svg></div>
     <div>
-      <h1>Documents de l'assistant</h1>
-      <p class="sub">Ajoutez ou retirez des fichiers — l'assistant se met à jour tout seul.</p>
+      <h1>Assistant documentaire</h1>
+      <p class="sub">Espace d'administration</p>
     </div>
-    <div class="stats">
-      <div class="stat"><b id="st-count">–</b><span>documents</span></div>
-      <div class="stat"><b id="st-size">–</b><span>au total</span></div>
+    <nav class="tabs" id="tabs">
+      <button class="on" data-tab="docs">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+        Documents
+      </button>
+      <button data-tab="stats">
+        <svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15v3M12 10v8M17 6v12"/></svg>
+        Statistiques
+      </button>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- ==================== ONGLET DOCUMENTS ==================== -->
+  <section id="tab-docs">
+    <div class="sec-head">
+      <h2>Documents de l'assistant</h2>
+      <div class="chips">
+        <span class="chip"><b id="st-count">–</b>documents</span>
+        <span class="chip"><b id="st-size">–</b>au total</span>
+      </div>
     </div>
-  </div>
 
-  <div class="card">
-    <h2>Ajouter des documents <span class="hint">PDF, Word, texte, Markdown · 20 Mo max</span></h2>
-    <label class="drop" id="drop">
-      <input type="file" id="file" accept=".pdf,.doc,.docx,.txt,.md" multiple>
-      <span class="ic-up"><svg viewBox="0 0 24 24"><path d="M12 17V5"/><path d="m6 11 6-6 6 6"/><path d="M4 19h16"/></svg></span>
-      <b>Glissez vos fichiers ici</b>, ou cliquez pour choisir.
-      <small>Plusieurs fichiers à la fois — chacun est indexé automatiquement.</small>
-    </label>
-    <div class="queue" id="queue"></div>
-  </div>
+    <div class="card">
+      <h2>Ajouter des documents <span class="hint">PDF, Word, texte, Markdown · 20 Mo max</span></h2>
+      <label class="drop" id="drop">
+        <input type="file" id="file" accept=".pdf,.doc,.docx,.txt,.md" multiple>
+        <span class="ic-up"><svg viewBox="0 0 24 24"><path d="M12 17V5"/><path d="m6 11 6-6 6 6"/><path d="M4 19h16"/></svg></span>
+        <b>Glissez vos fichiers ici</b>, ou cliquez pour choisir.
+        <small>Plusieurs fichiers à la fois — chacun est indexé automatiquement, l'assistant se met à jour tout seul.</small>
+      </label>
+      <div class="queue" id="queue"></div>
+    </div>
 
-  <div class="card">
-    <h2>Documents indexés</h2>
-    <div id="list"><div class="empty">Chargement…</div></div>
-    <div class="msg" id="list-msg"></div>
-  </div>
+    <div class="card">
+      <h2>Documents indexés</h2>
+      <div id="list"><div class="empty">Chargement…</div></div>
+      <div class="msg" id="list-msg"></div>
+    </div>
+  </section>
+
+  <!-- ==================== ONGLET STATISTIQUES ==================== -->
+  <section id="tab-stats" hidden>
+    <div class="hero">
+      <div class="sec-head">
+        <h2>Statistiques d'usage</h2>
+        <span class="seg" id="stats-seg" style="display:none">
+          <button data-p="7">7 j</button>
+          <button data-p="14" class="on">14 j</button>
+          <button data-p="30">30 j</button>
+        </span>
+      </div>
+      <p class="sec-sub" id="hero-sub"></p>
+      <div id="kpi-zone"></div>
+    </div>
+
+    <div id="stats-body"><div class="empty">Chargement…</div></div>
+
+    <div class="panel" id="explorer" style="display:none">
+      <h3>Explorer les questions</h3>
+      <p class="panel-sub">Retrouvez les questions posées un jour précis ou sur une période, avec une recherche par mot.</p>
+      <div class="filters">
+        <label>Du</label><input type="date" id="f-debut">
+        <label>au</label><input type="date" id="f-fin">
+        <input type="search" id="f-q" placeholder="Rechercher un mot (ex. garantie, prix…)">
+      </div>
+      <div class="presets">
+        <button data-preset="jour">Aujourd'hui</button>
+        <button data-preset="7">7 derniers jours</button>
+        <button data-preset="30">30 derniers jours</button>
+        <button data-preset="tout">Tout</button>
+      </div>
+      <div class="res-count" id="explorer-count"></div>
+      <div id="explorer-res"><div class="empty">Chargement…</div></div>
+    </div>
+  </section>
 
   <p class="foot-note">Espace d'administration · les modifications sont prises en compte immédiatement par l'assistant.</p>
 </div>
@@ -199,6 +441,16 @@ function fmtSize(n){ return n < 1024 ? n+" o" : n < 1048576 ? (n/1024).toFixed(0
 function extOf(name){ const e = (name.split(".").pop()||"").toLowerCase(); return ["pdf","doc","docx","txt","md"].includes(e) ? e : "txt"; }
 function badge(name){ const e = extOf(name); return '<span class="badge '+e+'">'+e.toUpperCase()+'</span>'; }
 function expired(){ localStorage.removeItem(PW_KEY); location.reload(); }
+function fmtJour(iso){ const [,m,d] = (iso||"").split("-"); return d + "/" + m; }
+function fmtHeure(iso){ return (iso||"").slice(11,16); }
+function pluriel(n, mot){ return n + " " + mot + (n > 1 ? "s" : ""); }
+
+/* ---------- onglets ---------- */
+document.querySelectorAll("#tabs button").forEach(b => b.onclick = () => {
+  document.querySelectorAll("#tabs button").forEach(x => x.classList.toggle("on", x === b));
+  document.getElementById("tab-docs").hidden  = b.dataset.tab !== "docs";
+  document.getElementById("tab-stats").hidden = b.dataset.tab !== "stats";
+});
 
 /* ---------- porte d'entrée (mot de passe admin) ---------- */
 async function verify(p){
@@ -375,7 +627,352 @@ drop.addEventListener("drop", e => {
   if (fs.length) enqueue(fs);
 });
 
-gate().then(() => loadList());
+/* ==================== STATISTIQUES ==================== */
+let STATS = null;
+let PERIODE = 14;
+
+function deltaChip(actuel, precedent){
+  if (!precedent) return "";  // pas de période de comparaison complète
+  const v = Math.round((actuel - precedent) / precedent * 100);
+  if (Math.abs(v) < 1) return '<span class="delta flat">=</span>';
+  const cls = v > 0 ? "up" : "down", fleche = v > 0 ? "▲" : "▼";
+  return `<span class="delta ${cls}" title="vs ${PERIODE} jours précédents">${fleche} ${Math.abs(v)}%</span>`;
+}
+
+/* Courbe lissée : suite de segments cubiques passant par les points. */
+function pathLisse(pts){
+  if (!pts.length) return "";
+  let d = `M${pts[0][0].toFixed(1)},${pts[0][1].toFixed(1)}`;
+  for (let i = 1; i < pts.length; i++){
+    const [x0,y0] = pts[i-1], [x1,y1] = pts[i], mx = (x0 + x1) / 2;
+    d += ` C${mx.toFixed(1)},${y0.toFixed(1)} ${mx.toFixed(1)},${y1.toFixed(1)} ${x1.toFixed(1)},${y1.toFixed(1)}`;
+  }
+  return d;
+}
+
+/* Graphe principal : aire lissée (questions) + courbe ambre (refus), SVG pur. */
+function svgVolume(jours){
+  const W = 680, H = 190, P = {t:16, r:12, b:24, l:30};
+  const iw = W - P.l - P.r, ih = H - P.t - P.b;
+  const max = Math.max(2, ...jours.map(j => j.questions));
+  const X = i => P.l + (jours.length < 2 ? iw/2 : i * iw / (jours.length - 1));
+  const Y = v => P.t + ih - v / max * ih;
+  const ptsQ = jours.map((j,i) => [X(i), Y(j.questions)]);
+  const ptsR = jours.map((j,i) => [X(i), Y(j.refus)]);
+  const ligne = pathLisse(ptsQ);
+  const aire = ligne + ` L${(W-P.r).toFixed(1)},${P.t+ih} L${P.l},${P.t+ih} Z`;
+
+  let grille = "";
+  for (let g = 1; g <= 3; g++){
+    const v = Math.round(max * g / 3), y = Y(v);
+    grille += `<line x1="${P.l}" y1="${y}" x2="${W-P.r}" y2="${y}" stroke="#E8EAF2" stroke-dasharray="3 4"/>
+      <text x="${P.l-6}" y="${y+3}" text-anchor="end" font-size="9" fill="#98A2B3">${v}</text>`;
+  }
+  const pas = Math.max(1, Math.round(jours.length / 5));
+  let xl = "";
+  jours.forEach((j,i) => {
+    if (i % pas === 0 || i === jours.length - 1)
+      xl += `<text x="${X(i)}" y="${H-7}" text-anchor="middle" font-size="9" fill="#98A2B3">${fmtJour(j.date)}</text>`;
+  });
+  const hits = jours.map((j,i) => {
+    const x0 = i === 0 ? P.l : (X(i-1)+X(i))/2, x1 = i === jours.length-1 ? W-P.r : (X(i)+X(i+1))/2;
+    return `<rect x="${x0.toFixed(1)}" y="${P.t}" width="${(x1-x0).toFixed(1)}" height="${ih}" fill="transparent">
+      <title>${esc(fmtJour(j.date) + " — " + pluriel(j.questions, "question") + ", " + j.refus + " refus")}</title></rect>`;
+  }).join("");
+  const dernier = ptsQ[ptsQ.length-1];
+  return `<svg class="chart-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="Volume de questions par jour">
+    <defs>
+      <linearGradient id="gQ" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#6366F1" stop-opacity=".30"/>
+        <stop offset="1" stop-color="#6366F1" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+    ${grille}
+    <path d="${aire}" fill="url(#gQ)"/>
+    <path d="${ligne}" fill="none" stroke="#4F46E5" stroke-width="2.4" stroke-linecap="round"/>
+    <path d="${pathLisse(ptsR)}" fill="none" stroke="#F59E0B" stroke-width="1.7" stroke-linecap="round"/>
+    ${dernier ? `<circle cx="${dernier[0].toFixed(1)}" cy="${dernier[1].toFixed(1)}" r="3.4" fill="#4F46E5" stroke="#fff" stroke-width="1.5"/>` : ""}
+    ${xl}${hits}
+  </svg>`;
+}
+
+/* Sparkline miniature pour la tuile « questions ». */
+function svgSpark(jours){
+  const W = 120, H = 24;
+  const max = Math.max(1, ...jours.map(j => j.questions));
+  const X = i => jours.length < 2 ? W/2 : i * W / (jours.length - 1);
+  const Y = v => 2 + (H - 4) - v / max * (H - 4);
+  const pts = jours.map((j,i) => [X(i), Y(j.questions)]);
+  const ligne = pathLisse(pts);
+  return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
+    <path d="${ligne} L${W},${H} L0,${H} Z" fill="#6366F1" opacity=".14"/>
+    <path d="${ligne}" fill="none" stroke="#6366F1" stroke-width="1.6" opacity=".7"/>
+  </svg>`;
+}
+
+function renderStats(){
+  const box = document.getElementById("stats-body"), s = STATS;
+  const kpiZone = document.getElementById("kpi-zone");
+  const heroSub = document.getElementById("hero-sub");
+  if (!s) return;
+
+  if (!s.actif && !s.total){
+    document.getElementById("stats-seg").style.display = "none";
+    document.getElementById("explorer").style.display = "none";
+    kpiZone.innerHTML = ""; heroSub.textContent = "";
+    box.innerHTML = `
+      <div class="journal-off">
+        <b>Journal désactivé.</b> Aucune question n'est enregistrée pour l'instant.
+        Pour alimenter ces statistiques, mettez <code>LOG_QUESTIONS=1</code> dans la
+        configuration de l'instance. Le journal ne conserve que la question, la date,
+        les sources citées et le refus éventuel — aucune donnée personnelle.
+      </div>`;
+    return;
+  }
+  document.getElementById("stats-seg").style.display = "flex";
+  document.getElementById("explorer").style.display = "block";
+
+  /* ----- fenêtre sélectionnée + fenêtre précédente (tendance) ----- */
+  const tous = s.par_jour || [];
+  const jours = tous.slice(-PERIODE);
+  const avant = tous.slice(-2 * PERIODE, -PERIODE);
+  const somme = a => a.reduce((x,j) => x + j.questions, 0);
+  const sommeR = a => a.reduce((x,j) => x + j.refus, 0);
+  const nQ = somme(jours), nR = sommeR(jours);
+  // Tendance : seulement si le journal couvre TOUTE la période précédente
+  // (sinon un journal récent afficherait une hausse artificielle géante).
+  const premierActif = tous.findIndex(j => j.questions > 0);
+  const debutAvant = tous.length - 2 * PERIODE;
+  const comparable = premierActif !== -1 && debutAvant >= 0 && premierActif <= debutAvant;
+  const nQav = comparable && avant.length === PERIODE ? somme(avant) : 0;
+  const txRefus = nQ ? Math.round(nR / nQ * 100) : 0;
+  const moyenne = (nQ / PERIODE).toFixed(1).replace(".0", "");
+
+  heroSub.textContent = `L'activité de votre assistant sur les ${PERIODE} derniers jours — ` +
+    `${pluriel(nQ, "question")}, ${nR} refus.`;
+
+  /* ----- KPIs (bandeau héro) ----- */
+  kpiZone.innerHTML = `
+    <div class="kpis5">
+      <div class="kpi5">
+        <b>${nQ}</b><small>questions · ${PERIODE} j</small>
+        ${deltaChip(nQ, nQav)}
+        <div class="spark">${svgSpark(jours)}</div>
+      </div>
+      <div class="kpi5">
+        <b>${txRefus}%</b><small>taux de refus</small>
+        <div class="donut" style="background:conic-gradient(#F59E0B ${txRefus}%, #EEF0F6 0)"></div>
+      </div>
+      <div class="kpi5">
+        <b>${s.duree_moyenne != null ? s.duree_moyenne.toString().replace(".", ",") + " s" : "–"}</b>
+        <small>temps de réponse moyen</small>
+      </div>
+      <div class="kpi5">
+        <b>${moyenne}</b><small>questions / jour</small>
+      </div>
+      <div class="kpi5">
+        <b>${s.nb_sujets ?? (s.sujets||[]).length}</b><small>sujets distincts</small>
+      </div>
+    </div>`;
+
+  /* ----- rythme d'utilisation (heures + jours de semaine) ----- */
+  const heures = s.par_heure || [];
+  const maxH = Math.max(1, ...heures);
+  const heurePointe = heures.indexOf(Math.max(...heures, 0));
+  const barresH = heures.map((n, h) => `
+    <div class="b" title="${esc(h + " h — " + pluriel(n, "question"))}">
+      <i style="height:${n ? Math.max(3, Math.round(n / maxH * 100)) : 0}%"></i>
+    </div>`).join("");
+  const labelsH = heures.map((_, h) =>
+    `<span>${h % 6 === 0 || h === 23 ? h + "h" : ""}</span>`).join("");
+  const nomsJours = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
+  const sem = s.par_semaine || [];
+  const maxW = Math.max(1, ...sem);
+  const jourPointe = sem.length ? nomsJours[sem.indexOf(Math.max(...sem))] : "–";
+  const barresW = sem.map((n, i) => `
+    <div class="wk-row">
+      <span class="wname">${nomsJours[i]}</span>
+      <div class="wbar"><i style="width:${Math.round(n / maxW * 100)}%"></i></div>
+      <span class="wn">${n}</span>
+    </div>`).join("");
+
+  const graphe = `
+    <div class="bento">
+      <div class="chart-wrap" style="margin-bottom:0">
+        <div class="chart-head">
+          <h3>Volume de questions</h3>
+          <div class="stat-legend">
+            <span class="lg-q"><i></i>Questions</span>
+            <span class="lg-r"><i></i>Refus (info absente)</span>
+          </div>
+        </div>
+        ${svgVolume(jours)}
+      </div>
+      <div class="panel">
+        <h3>Rythme d'utilisation</h3>
+        <p class="panel-sub">Sur l'ensemble du journal.</p>
+        <div class="callouts">
+          <div class="callout"><b>${heures.some(n => n) ? heurePointe + " h" : "–"}</b><small>heure de pointe</small></div>
+          <div class="callout"><b>${jourPointe}</b><small>jour le plus actif</small></div>
+        </div>
+        <div class="mini-label">Par heure de la journée</div>
+        <div class="bars" style="height:56px">${barresH}</div>
+        <div class="bar-labels">${labelsH}</div>
+        <div class="mini-label">Par jour de semaine</div>
+        ${barresW}
+      </div>
+    </div>`;
+
+  /* ----- sujets les plus demandés (regroupés par sens) ----- */
+  const noteGroupe = s.groupement === "semantique"
+    ? "Regroupées par sens : les formulations différentes d'une même question comptent ensemble."
+    : "Regroupées par formulation (modèle d'embedding indisponible).";
+  const sujets = (s.sujets || []).slice(0, 6).map((f, i) => {
+    const infos = [];
+    if (f.formulations > 1) infos.push(pluriel(f.formulations, "formulation"));
+    if (f.refus) infos.push(`<span class="tref">${f.refus} refus</span>`);
+    // En hausse : nettement plus demandé cette semaine que la précédente.
+    const hausse = (f.n_7j || 0) >= 3 && (f.n_7j || 0) > (f.n_prec || 0);
+    const title = f.exemples && f.exemples.length
+      ? "Autres formulations :\n— " + f.exemples.join("\n— ") : "";
+    return `
+      <div class="topic" title="${esc(title)}">
+        <span class="rank r${Math.min(i+1,3)}">${i+1}</span>
+        <div class="tmeta">
+          <div class="ttxt">${esc(f.question)} ${hausse ? '<span class="trend" title="Plus demandé cette semaine que la précédente">▲ en hausse</span>' : ""}</div>
+          ${infos.length ? `<div class="tsub">${infos.join(" · ")}</div>` : ""}
+        </div>
+        <span class="qn">×${f.n}</span>
+      </div>`;
+  }).join("") || '<div class="empty">Pas encore assez de questions.</div>';
+
+  /* ----- documents les plus cités ----- */
+  const maxS = Math.max(1, ...(s.sources || []).map(x => x.n));
+  const sources = (s.sources || []).map(x => `
+    <div class="src-row">
+      <div class="sname" title="${esc(x.source)}">${esc(x.source)}</div>
+      <div class="sbar"><i style="width:${Math.round(x.n / maxS * 100)}%"></i></div>
+      <span class="sn">×${x.n}</span>
+    </div>`).join("") || '<div class="empty">Aucune source citée pour l\'instant.</div>';
+
+  /* ----- questions restées sans réponse ----- */
+  const gaps = (s.sans_reponse || []).length ? `
+    <div class="gap-panel">
+      <h3>Questions restées sans réponse</h3>
+      <p class="panel-sub">Vos utilisateurs demandent ceci, mais la réponse n'est pas dans les
+      documents indexés. Ajouter le bon document comble le manque immédiatement.</p>
+      ${s.sans_reponse.map(g => `
+        <div class="gap-row">
+          <div class="qtxt" title="${esc(g.question)}">${esc(g.question)}</div>
+          <span class="qn">×${g.n}</span>
+        </div>`).join("")}
+    </div>` : "";
+
+  box.innerHTML = `
+    ${graphe}
+    <div class="grid2">
+      <div class="panel">
+        <h3>Sujets les plus demandés</h3>
+        <p class="panel-sub">${noteGroupe}</p>
+        ${sujets}
+      </div>
+      <div class="panel">
+        <h3>Documents les plus cités</h3>
+        <p class="panel-sub">Les documents qui servent le plus dans les réponses.</p>
+        ${sources}
+      </div>
+    </div>
+    ${gaps}
+    <div class="privacy">
+      <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      ${s.total} questions enregistrées au total · le journal ne conserve que la question, la date,
+      les sources et le refus — aucune donnée personnelle, tout reste sur votre instance.
+    </div>
+    ${!s.actif ? '<div class="journal-off" style="margin-top:12px"><b>Journal désactivé.</b> Ces chiffres proviennent d\'un journal antérieur — mettez <code>LOG_QUESTIONS=1</code> pour reprendre l\'enregistrement.</div>' : ""}`;
+}
+
+async function loadStats(){
+  const box = document.getElementById("stats-body");
+  try {
+    const r = await fetch("/api/admin/stats", { headers: hdr() });
+    if (r.status === 401){ expired(); return; }
+    STATS = await r.json();
+    renderStats();
+    chercher();
+  } catch(e){
+    box.innerHTML = '<div class="empty">Impossible de charger les statistiques.</div>';
+  }
+}
+
+document.querySelectorAll("#stats-seg button").forEach(b => b.onclick = () => {
+  document.querySelectorAll("#stats-seg button").forEach(x => x.classList.toggle("on", x === b));
+  PERIODE = parseInt(b.dataset.p, 10);
+  renderStats();
+});
+
+/* ---------- explorateur : filtre par date + recherche ---------- */
+const fDebut = document.getElementById("f-debut");
+const fFin   = document.getElementById("f-fin");
+const fQ     = document.getElementById("f-q");
+
+function isoLocal(d){
+  const tz = d.getTimezoneOffset() * 60000;
+  return new Date(d - tz).toISOString().slice(0, 10);
+}
+
+async function chercher(){
+  const res = document.getElementById("explorer-res");
+  const cnt = document.getElementById("explorer-count");
+  try {
+    const params = new URLSearchParams({
+      debut: fDebut.value || "", fin: fFin.value || "", q: fQ.value.trim(), limite: "100"
+    });
+    const r = await fetch("/api/admin/questions?" + params, { headers: hdr() });
+    if (r.status === 401){ expired(); return; }
+    const d = await r.json();
+    const s_ = d.total > 1 ? "s" : "";
+    cnt.textContent = d.total
+      ? `${d.total} question${s_} trouvée${s_}`
+        + (d.total > d.questions.length ? ` — les ${d.questions.length} plus récentes affichées` : "")
+      : "";
+    if (!d.questions.length){
+      res.innerHTML = '<div class="empty">Aucune question sur ces critères.</div>';
+      return;
+    }
+    res.innerHTML = d.questions.map(x => `
+      <div class="qrow">
+        <span class="qdate">${esc(fmtJour(x.date.slice(0,10)))} ${esc(fmtHeure(x.date))}</span>
+        <div class="qmeta">
+          <div class="qtxt" title="${esc(x.question)}">${esc(x.question)}</div>
+          ${x.sources && x.sources.length ? `<div class="qsrc">Sources : ${esc(x.sources.join(", "))}</div>` : ""}
+        </div>
+        ${x.refus ? '<span class="pill-refus">refus</span>' : ""}
+      </div>`).join("");
+  } catch(e){
+    res.innerHTML = '<div class="empty">Recherche impossible pour l\'instant.</div>';
+  }
+}
+
+let chercherTimer = null;
+function chercherBientot(){ clearTimeout(chercherTimer); chercherTimer = setTimeout(chercher, 250); }
+fDebut.addEventListener("change", chercher);
+fFin.addEventListener("change", chercher);
+fQ.addEventListener("input", chercherBientot);
+
+document.querySelectorAll(".presets button").forEach(b => b.onclick = () => {
+  const auj = new Date();
+  if (b.dataset.preset === "jour"){
+    fDebut.value = fFin.value = isoLocal(auj);
+  } else if (b.dataset.preset === "tout"){
+    fDebut.value = fFin.value = ""; fQ.value = "";
+  } else {
+    const d = new Date(auj); d.setDate(d.getDate() - (parseInt(b.dataset.preset, 10) - 1));
+    fDebut.value = isoLocal(d); fFin.value = isoLocal(auj);
+  }
+  chercher();
+});
+
+gate().then(() => { loadList(); loadStats(); });
 </script>
 </body>
 </html>
