@@ -698,21 +698,30 @@ document.querySelectorAll("#tabs button").forEach(b => b.onclick = () => {
 });
 
 /* ---------- porte d'entrée (mot de passe admin) ---------- */
+/* Trois issues distinctes : bon mot de passe, mauvais mot de passe, serveur
+   injoignable. Les confondre affichait « Mot de passe incorrect » alors que le
+   serveur était simplement arrêté. */
 async function verify(p){
-  try { const r = await fetch("/api/admin/verify", { headers: { "X-API-Password": p } }); return r.status === 200; }
-  catch(e){ return false; }
+  try { const r = await fetch("/api/admin/verify", { headers: { "X-API-Password": p } });
+        return r.status === 200 ? "ok" : "refuse"; }
+  catch(e){ return "reseau"; }
 }
 async function gate(){
   const g = document.getElementById("gate"), i = document.getElementById("gate-pw"),
         e = document.getElementById("gate-err"), b = document.getElementById("gate-btn");
-  if (pw() && await verify(pw())) { g.remove(); return true; }
+  if (pw() && await verify(pw()) === "ok") { g.remove(); return true; }
   return new Promise(res => {
     async function tryit(){
       const v = (i.value||"").trim();
       if(!v){ e.textContent = "Entrez un mot de passe."; return; }
       b.disabled = true; e.textContent = "Vérification…";
-      if (await verify(v)) { setPw(v); g.remove(); res(true); }
-      else { b.disabled = false; e.textContent = "Mot de passe incorrect."; i.select(); }
+      const issue = await verify(v);
+      if (issue === "ok") { setPw(v); g.remove(); res(true); return; }
+      b.disabled = false;
+      e.textContent = issue === "reseau"
+        ? "Serveur injoignable. Vérifiez qu'il est démarré, puis réessayez."
+        : "Mot de passe incorrect.";
+      i.select();
     }
     b.onclick = tryit;
     i.addEventListener("keydown", ev => { if(ev.key === "Enter") tryit(); });

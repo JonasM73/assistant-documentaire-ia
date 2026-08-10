@@ -153,6 +153,51 @@
   #demo-ctrl button{border:none;background:transparent;color:#cdd9e7;font-family:var(--disp);font-weight:600;font-size:12px;padding:6px 11px;border-radius:999px;cursor:pointer;}
   #demo-ctrl button.active{background:var(--amber);color:#33230a;}
 
+  /* ---- porte d'entrée de l'assistant ----
+     Elle appartient à l'ASSISTANT, pas à la boutique : elle reprend donc le
+     langage visuel du widget et de gestion.html (encre + émeraude, halos,
+     grain, surfaces posées par la lumière), et non la charte bleu/ambre de
+     Boréale. C'est aussi ce qu'un client voit en premier. */
+  #auth-gate{position:fixed;inset:0;z-index:2147483600;display:flex;align-items:center;
+    justify-content:center;padding:22px;
+    background:linear-gradient(150deg,#0B1512 0%,#14332A 52%,#0C6A54 165%);
+    font-family:'Inter',system-ui,sans-serif;}
+  #auth-gate::before{content:"";position:absolute;inset:0;pointer-events:none;
+    background:
+      radial-gradient(760px 420px at 78% -10%, rgba(19,153,122,.34), transparent 64%),
+      radial-gradient(560px 380px at 12% 108%, rgba(198,242,78,.16), transparent 64%);}
+  #auth-gate::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.05;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");}
+  #auth-gate .box{position:relative;background:rgba(255,255,255,.98);border-radius:24px;
+    padding:34px;width:min(400px,94vw);
+    box-shadow:0 8px 18px -10px rgba(11,21,18,.4), 0 40px 80px -30px rgba(0,0,0,.6),
+               inset 0 1px 0 rgba(255,255,255,1);}
+  #auth-gate .glyph{width:44px;height:44px;border-radius:14px;margin-bottom:18px;
+    background:linear-gradient(135deg,#0C6A54,#13997A);display:flex;align-items:center;
+    justify-content:center;
+    box-shadow:0 10px 22px -10px rgba(12,106,84,.95), inset 0 1px 0 rgba(255,255,255,.3);}
+  #auth-gate .glyph svg{width:21px;height:21px;stroke:#fff;fill:none;stroke-width:1.9;
+    stroke-linecap:round;stroke-linejoin:round;}
+  #auth-gate h2{font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:800;
+    margin:0 0 8px;font-size:22px;letter-spacing:-.028em;color:#0B1512;}
+  #auth-gate p{margin:0 0 20px;color:#4A5A53;font-size:13.5px;line-height:1.55;}
+  #auth-gate input{width:100%;padding:13px 15px;border:none;border-radius:13px;font-size:15px;
+    margin-bottom:11px;background:#F6F7F4;color:#101E19;outline:none;font-family:inherit;
+    box-shadow:inset 0 0 0 1px rgba(11,21,18,.055), inset 0 1px 2px rgba(11,21,18,.05);
+    transition:box-shadow .2s cubic-bezier(.22,.75,.24,1), background .2s cubic-bezier(.22,.75,.24,1);}
+  #auth-gate input:focus{background:#fff;
+    box-shadow:inset 0 0 0 1.5px #13997A, 0 0 0 4px rgba(19,153,122,.14);}
+  #auth-gate .err{color:#C2352C;font-size:12.5px;min-height:19px;margin-bottom:9px;font-weight:500;}
+  #auth-gate button{width:100%;padding:13px;border:none;border-radius:13px;
+    background:linear-gradient(135deg,#0C6A54,#13997A);color:#fff;
+    font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;font-size:15px;
+    cursor:pointer;letter-spacing:-.012em;
+    box-shadow:0 6px 16px -8px rgba(12,106,84,.55), inset 0 1px 0 rgba(255,255,255,.2);
+    transition:transform .18s cubic-bezier(.22,.75,.24,1), box-shadow .18s cubic-bezier(.22,.75,.24,1);}
+  #auth-gate button:hover:not(:disabled){transform:translateY(-1.5px);
+    box-shadow:0 10px 22px -8px rgba(12,106,84,.62), inset 0 1px 0 rgba(255,255,255,.24);}
+  #auth-gate button:disabled{opacity:.6;cursor:wait;transform:none;}
+
   @media(max-width:900px){
     .hero .wrap{grid-template-columns:1fr;} .trust .wrap{grid-template-columns:repeat(2,1fr);}
     .cat-grid,.prod-grid{grid-template-columns:repeat(2,1fr);} .tgrid{grid-template-columns:1fr;}
@@ -163,13 +208,14 @@
 </style>
 </head>
 <body>
-<div id="auth-gate" style="position:fixed;inset:0;z-index:2147483600;background:linear-gradient(120deg,#132840,#1c3a5c);display:flex;align-items:center;justify-content:center;font-family:'Bricolage Grotesque',system-ui,sans-serif;">
-  <div style="background:#fff;border-radius:16px;padding:32px;width:min(360px,90vw);box-shadow:0 24px 60px -20px rgba(0,0,0,.5);">
-    <h2 style="margin:0 0 8px;font-size:20px;color:#132840;">Accès protégé</h2>
-    <p style="margin:0 0 18px;color:#5b6b7d;font-size:14px;font-family:Inter,sans-serif;">Entrez le mot de passe pour accéder à l'assistant.</p>
-    <input id="auth-pw" type="password" placeholder="Mot de passe" style="width:100%;padding:12px;border:1px solid #E3E8EE;border-radius:10px;font-size:15px;outline:none;margin-bottom:10px;font-family:Inter,sans-serif;">
-    <div id="auth-err" style="color:#c0392b;font-size:13px;min-height:18px;margin-bottom:8px;font-family:Inter,sans-serif;"></div>
-    <button id="auth-btn" style="width:100%;padding:12px;border:none;border-radius:10px;background:#0B5CAD;color:#fff;font-weight:700;font-size:15px;cursor:pointer;font-family:'Bricolage Grotesque',sans-serif;">Entrer</button>
+<div id="auth-gate">
+  <div class="box">
+    <div class="glyph"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+    <h2>Accès protégé</h2>
+    <p>Entrez le mot de passe pour accéder à l'assistant documentaire de cette démonstration.</p>
+    <input id="auth-pw" type="password" placeholder="Mot de passe" autocomplete="current-password">
+    <div id="auth-err" class="err"></div>
+    <button id="auth-btn" type="button">Entrer</button>
   </div>
 </div>
 <!-- utility bar -->
@@ -337,24 +383,36 @@
     buttons.forEach(b => b.classList.toggle("active", b.dataset.mode === mode));
   }
   buttons.forEach(b => b.addEventListener("click", () => setMode(b.dataset.mode)));
+  /* Trois issues distinctes : bon mot de passe, mauvais mot de passe, serveur
+     injoignable. Les confondre affichait « Mot de passe incorrect » alors que
+     le serveur était simplement arrêté. */
   async function verifyPassword(pw){
-    try { const r = await fetch('/api/verify', { headers: { 'X-API-Password': pw } }); return r.status === 200; }
-    catch(e){ return false; }
+    try { const r = await fetch('/api/verify', { headers: { 'X-API-Password': pw } });
+          return r.status === 200 ? 'ok' : 'refuse'; }
+    catch(e){ return 'reseau'; }
   }
+  function lire(cle){ try { return localStorage.getItem(cle) || ''; } catch(e){ return ''; } }
+  function ecrire(cle, v){ try { localStorage.setItem(cle, v); } catch(e){} }
+
   async function ensureAuth(){
     const gate = document.getElementById('auth-gate');
     const input = document.getElementById('auth-pw');
     const err = document.getElementById('auth-err');
     const btn = document.getElementById('auth-btn');
-    const stored = localStorage.getItem('da_api_password');
-    if (stored && await verifyPassword(stored)) { gate.remove(); return; }
+    const stored = lire('da_api_password');
+    if (stored && await verifyPassword(stored) === 'ok') { gate.remove(); return; }
     await new Promise(resolve => {
       async function attempt(){
         const pw = (input.value||'').trim();
         if(!pw){ err.textContent = 'Entrez un mot de passe.'; return; }
         btn.disabled = true; err.textContent = 'Vérification…';
-        if (await verifyPassword(pw)) { localStorage.setItem('da_api_password', pw); gate.remove(); resolve(); }
-        else { btn.disabled = false; err.textContent = 'Mot de passe incorrect.'; input.select(); }
+        const issue = await verifyPassword(pw);
+        if (issue === 'ok') { ecrire('da_api_password', pw); gate.remove(); resolve(); return; }
+        btn.disabled = false;
+        err.textContent = issue === 'reseau'
+          ? "Serveur injoignable. Vérifiez qu'il est démarré, puis réessayez."
+          : 'Mot de passe incorrect.';
+        input.select();
       }
       btn.onclick = attempt;
       input.addEventListener('keydown', e => { if(e.key==='Enter') attempt(); });
