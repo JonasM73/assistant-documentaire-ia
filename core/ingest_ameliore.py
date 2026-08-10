@@ -114,7 +114,26 @@ def _fiches_par_geometrie(page) -> list[str]:
 
 
 def chunks_pdf(path: str) -> tuple[list[str], str]:
-    """Retourne (chunks, méthode)."""
+    """Retourne (chunks, méthode).
+
+    Voie principale : extraction géométrique des tableaux via pdfplumber.
+    Si le PDF la met en échec (fichier partiellement corrompu, structure
+    exotique), on se rabat sur l'extraction texte simple de pypdf plutôt que
+    de perdre le document."""
+    try:
+        return _chunks_pdf_pdfplumber(path)
+    except Exception as e:
+        print(f"  ! pdfplumber a échoué sur {os.path.basename(path)} ({e}) — "
+              f"repli sur l'extraction texte simple.")
+    texte = (rag_core._read_pdf(path) or "").strip()
+    if not texte:
+        raise ValueError(
+            "PDF illisible : aucun texte n'a pu en être extrait. S'il s'agit "
+            "d'un document scanné, il faut d'abord le passer à l'OCR.")
+    return rag_core.chunk_text(texte), "paragraphes (repli)"
+
+
+def _chunks_pdf_pdfplumber(path: str) -> tuple[list[str], str]:
     fiches: list[str] = []
     textes_hors_tableau: list[str] = []
 
@@ -161,13 +180,16 @@ def chunks_pdf(path: str) -> tuple[list[str], str]:
 # --------------------------------------------------------------------------- #
 
 def chunks_document(path: str) -> tuple[list[str], str]:
+    """Découpe UN document, quel que soit son format supporté.
+
+    Lève une exception explicite si le fichier est illisible : l'appelant
+    (upload, indexation) doit pouvoir afficher un message net à l'utilisateur."""
     if os.path.splitext(path)[1].lower() == ".pdf":
         return chunks_pdf(path)
-    docs = rag_core.load_documents(os.path.dirname(path) or ".")
-    for d in docs:
-        if d.source == os.path.basename(path):
-            return rag_core.chunk_text(d.text), "paragraphes"
-    return [], "vide"
+    texte = rag_core.lire_document(path)
+    if not texte:
+        return [], "vide"
+    return rag_core.chunk_text(texte), "paragraphes"
 
 # --- Indexation incrémentale (upload / suppression) ------------------------ #
 
@@ -237,7 +259,13 @@ def build_index_ameliore(data_dir: str = None, chroma_dir: str = None,
     ids, texts, metas = [], [], []
     for path in paths:
         source = os.path.basename(path)
-        chunks, methode = chunks_document(path)
+        # Un document illisible est signalé puis ignoré : il ne doit pas faire
+        # échouer l'indexation de tout le corpus.
+        try:
+            chunks, methode = chunks_document(path)
+        except Exception as e:
+            print(f"  ! {source:48s} ignoré — {e}")
+            continue
         if verbeux:
             print(f"  {source:48s} {len(chunks):4d} chunks  ({methode})")
         for i, ch in enumerate(chunks):

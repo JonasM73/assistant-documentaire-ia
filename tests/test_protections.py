@@ -1,58 +1,159 @@
-"""Teste les 3 protections de server.py sans appeler d'API réelle."""
+"""
+test_protections.py — Protections et robustesse de server.py.
+
+Aucun appel réel : le cœur RAG est remplacé par un double, et le journal est
+redirigé vers un dossier temporaire. Les tests vérifient l'authentification,
+le CORS, la limite de débit, et le fait qu'AUCUNE panne interne ne remonte à
+l'utilisateur sous forme de trace technique.
+
+Lancement :  python -m pytest tests/test_protections.py -q
+"""
+
 import os
+
+# La configuration de server.py est lue à l'import : elle doit être posée avant.
+# (load_dotenv n'écrase pas une variable déjà définie — le .env local est donc
+#  neutralisé pour ces valeurs.)
 os.environ["DEMO_PASSWORD"] = "secret123"
+os.environ["ADMIN_PASSWORD"] = "admin456"
 os.environ["ALLOWED_ORIGINS"] = "https://client-autorise.com"
 os.environ["RATE_LIMIT"] = "3/minute"
+os.environ["LOG_QUESTIONS"] = "0"          # ne jamais écrire dans le vrai journal
 
+import pytest
 from fastapi.testclient import TestClient
+
+import rag_core
 import server
 
-ok = True
-def verdict(nom, cond):
-    global ok
-    print(f"  [{'PASS' if cond else 'FAIL'}] {nom}")
-    if not cond: ok = False
+CHAT = {"X-API-Password": "secret123"}
+ADMIN = {"X-API-Password": "admin456"}
 
-H = {"X-API-Password": "secret123"}
 
-# --- Auth : on utilise un client neuf pour ne pas polluer le compteur ---
-c = TestClient(server.app)
+class ReponseFactice:
+    answer = "Trois semaines de vacances. Sources : Manuel-employe.pdf."
+    sources = ["Manuel-employe.pdf"]
+    chunks = [{"source": "Manuel-employe.pdf", "chunk": 0, "text": "extrait"}]
 
-print("TEST 1 — sans mot de passe → 401")
-r = c.post("/api/chat", json={"question": "test"})
-verdict("401 sans mot de passe", r.status_code == 401)
 
-print("TEST 2 — mauvais mot de passe → 401")
-r = c.post("/api/chat", json={"question": "test"}, headers={"X-API-Password": "faux"})
-verdict("401 mauvais mot de passe", r.status_code == 401)
+@pytest.fixture
+def client(monkeypatch, tmp_path):
+    """Client HTTP neuf, compteur de débit remis à zéro, RAG simulé."""
+    monkeypatch.setattr(rag_core, "answer_question",
+                        lambda *a, **k: ReponseFactice())
+    monkeypatch.setenv("DATA_DIR", str(tmp_path / "data"))
+    server.limiter.reset()
+    return TestClient(server.app)
 
-print("TEST 3 — CORS domaine autorisé vs pirate")
-r_ok = c.options("/api/chat", headers={"Origin":"https://client-autorise.com","Access-Control-Request-Method":"POST"})
-verdict("domaine autorisé accepté", r_ok.headers.get("access-control-allow-origin")=="https://client-autorise.com")
-r_no = c.options("/api/chat", headers={"Origin":"https://pirate.com","Access-Control-Request-Method":"POST"})
-verdict("domaine pirate bloqué", r_no.headers.get("access-control-allow-origin")!="https://pirate.com")
 
-# --- Limite de débit : client TOUT NEUF, compteur repart de zéro ---
-# (le limiter compte par IP ; on réinitialise le storage pour un test propre)
-server.limiter.reset()
-c2 = TestClient(server.app)
-print("TEST 4 — limite 3/minute : 4e requête → 429")
-codes = [c2.post("/api/chat", json={"question": f"q{i}"}, headers=H).status_code for i in range(4)]
-print(f"       codes = {codes}")
-verdict("3 premières = 200", codes[:3] == [200,200,200])
-verdict("4e = 429", codes[3] == 429)
+# --------------------------------------------------------------------------- #
+# 1. Authentification
+# --------------------------------------------------------------------------- #
 
-# message clair du 429
-r429 = c2.post("/api/chat", json={"question":"x"}, headers=H)
-verdict("429 renvoie un message", r429.status_code==429 and len(r429.text)>0)
-print(f"       message 429 = {r429.text[:80]}")
+def test_chat_sans_mot_de_passe(client):
+    assert client.post("/api/chat", json={"question": "test"}).status_code == 401
 
-# --- Requête pleinement valide après reset ---
-server.limiter.reset()
-c3 = TestClient(server.app)
-print("TEST 5 — requête autorisée complète → 200 + answer")
-r = c3.post("/api/chat", json={"question":"bonjour"}, headers=H)
-verdict("200 avec answer", r.status_code==200 and "answer" in r.json())
 
-print("\nRÉSULTAT :", "TOUS LES TESTS PASSENT" if ok else "DES TESTS ÉCHOUENT")
-import sys; sys.exit(0 if ok else 1)
+def test_chat_mauvais_mot_de_passe(client):
+    r = client.post("/api/chat", json={"question": "test"},
+                    headers={"X-API-Password": "faux"})
+    assert r.status_code == 401
+
+
+def test_verify(client):
+    assert client.get("/api/verify", headers=CHAT).status_code == 200
+    assert client.get("/api/verify").status_code == 401
+
+
+def test_admin_refuse_le_mot_de_passe_du_chat(client):
+    """Le mot de passe admin est bien distinct de celui du chat."""
+    assert client.get("/api/admin/verify", headers=CHAT).status_code == 401
+    assert client.get("/api/admin/verify", headers=ADMIN).status_code == 200
+
+
+def test_health_est_public(client):
+    r = client.get("/api/health")
+    assert r.status_code == 200 and r.json()["status"] == "ok"
+
+
+# --------------------------------------------------------------------------- #
+# 2. CORS
+# --------------------------------------------------------------------------- #
+
+def test_cors_domaine_autorise(client):
+    r = client.options("/api/chat", headers={
+        "Origin": "https://client-autorise.com",
+        "Access-Control-Request-Method": "POST"})
+    assert r.headers.get("access-control-allow-origin") == "https://client-autorise.com"
+
+
+def test_cors_domaine_pirate_bloque(client):
+    r = client.options("/api/chat", headers={
+        "Origin": "https://pirate.com",
+        "Access-Control-Request-Method": "POST"})
+    assert r.headers.get("access-control-allow-origin") != "https://pirate.com"
+
+
+# --------------------------------------------------------------------------- #
+# 3. Limite de débit
+# --------------------------------------------------------------------------- #
+
+def test_limite_de_debit(client):
+    codes = [client.post("/api/chat", json={"question": f"q{i}"},
+                         headers=CHAT).status_code for i in range(4)]
+    assert codes[:3] == [200, 200, 200]
+    assert codes[3] == 429
+    r = client.post("/api/chat", json={"question": "x"}, headers=CHAT)
+    assert r.status_code == 429 and r.text
+
+
+# --------------------------------------------------------------------------- #
+# 4. Requêtes valides et malformées
+# --------------------------------------------------------------------------- #
+
+def test_reponse_complete(client):
+    r = client.post("/api/chat", json={"question": "bonjour"}, headers=CHAT)
+    assert r.status_code == 200
+    d = r.json()
+    assert d["answer"] and d["sources"] == ["Manuel-employe.pdf"] and d["chunks"]
+
+
+def test_question_vide(client):
+    for question in ("", "   "):
+        r = client.post("/api/chat", json={"question": question}, headers=CHAT)
+        assert r.status_code == 400 and r.json()["error"]
+
+
+def test_corps_malforme(client):
+    """Un corps sans le champ `question` doit donner un 422 propre, jamais un 500."""
+    r = client.post("/api/chat", json={"pas_la_bonne_cle": 1}, headers=CHAT)
+    assert r.status_code == 422
+    assert "detail" in r.json()
+
+
+def test_historique_malforme_est_rejete_proprement(client):
+    r = client.post("/api/chat", json={"question": "salut", "history": "pas une liste"},
+                    headers=CHAT)
+    assert r.status_code == 422
+
+
+def test_panne_interne_reste_presentable(client, monkeypatch):
+    """Une exception inattendue ne doit jamais fuiter de trace technique."""
+    def boum(*a, **k):
+        raise RuntimeError("clé secrète sk-ant-XXXX dans le message")
+    monkeypatch.setattr(rag_core, "answer_question", boum)
+    r = client.post("/api/chat", json={"question": "test"}, headers=CHAT)
+    assert r.status_code == 500
+    corps = r.text
+    assert "sk-ant" not in corps and "Traceback" not in corps
+    assert r.json()["error"]
+
+
+def test_panne_de_modele_message_clair(client, monkeypatch):
+    """Une panne du fournisseur de LLM est expliquée en français."""
+    def indisponible(*a, **k):
+        raise rag_core.ModeleIndisponible("Le service est momentanément injoignable.")
+    monkeypatch.setattr(rag_core, "answer_question", indisponible)
+    r = client.post("/api/chat", json={"question": "test"}, headers=CHAT)
+    assert r.status_code == 503
+    assert "injoignable" in r.json()["error"]

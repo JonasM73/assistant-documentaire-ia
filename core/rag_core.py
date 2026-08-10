@@ -38,6 +38,14 @@ DATA_DIR = os.environ.get("DATA_DIR", "data")
 CHROMA_DIR = os.environ.get("CHROMA_DIR", "chroma_db")
 COLLECTION_NAME = os.environ.get("COLLECTION_NAME", "documents_client")
 
+
+class IndexIntrouvable(RuntimeError):
+    """L'index vectoriel n'existe pas encore (ingestion jamais lancée).
+
+    Erreur métier, pas technique : elle permet aux appelants de répondre
+    proprement « aucun document indexé » au lieu de laisser remonter une
+    exception interne de Chroma."""
+
 CHUNK_SIZE = int(os.environ.get("CHUNK_SIZE", "900"))        # caractères
 CHUNK_OVERLAP = int(os.environ.get("CHUNK_OVERLAP", "150"))  # caractères
 TOP_K = int(os.environ.get("TOP_K", "8"))                    # chunks récupérés
@@ -102,27 +110,51 @@ def _read_docx(path: str) -> str:
     return "\n\n".join(parts)
 
 
+def _read_text(path: str) -> str:
+    """Lecture .md/.txt tolérante : un fichier produit sous Windows n'est pas
+    toujours en UTF-8, et un octet illisible ne doit pas perdre le document."""
+    with open(path, "rb") as f:
+        brut = f.read()
+    for encodage in ("utf-8", "utf-8-sig", "cp1252", "latin-1"):
+        try:
+            return brut.decode(encodage)
+        except UnicodeDecodeError:
+            continue
+    return brut.decode("utf-8", errors="replace")
+
+
+# Extensions reconnues → lecteur dédié (None = texte brut).
+LECTEURS = {".md": _read_text, ".txt": _read_text, ".pdf": _read_pdf, ".docx": _read_docx}
+EXTENSIONS_SUPPORTEES = tuple(LECTEURS)
+
+
+def lire_document(path: str) -> str:
+    """Texte d'UN document, quel que soit son format supporté.
+
+    Lève une exception explicite si le format est inconnu ou le fichier
+    illisible — les appelants qui traitent un lot (load_documents) l'attrapent
+    pour ignorer le fichier fautif sans perdre les autres."""
+    ext = os.path.splitext(path)[1].lower()
+    lecteur = LECTEURS.get(ext)
+    if lecteur is None:
+        raise ValueError(f"Format non supporté : {ext or 'sans extension'}")
+    return (lecteur(path) or "").strip()
+
+
 def load_documents(data_dir: str = DATA_DIR) -> list[Doc]:
     """Charge .md, .txt, .pdf et .docx d'un dossier. La source citée reste le
-    nom de fichier."""
-    readers = {".md": None, ".txt": None, ".pdf": _read_pdf, ".docx": _read_docx}
+    nom de fichier. Un fichier illisible est signalé puis ignoré : un document
+    corrompu ne doit jamais faire échouer toute l'ingestion."""
     paths = []
-    for ext in readers:
+    for ext in LECTEURS:
         paths += glob.glob(os.path.join(data_dir, f"*{ext}"))
     docs: list[Doc] = []
     for p in sorted(set(paths)):
-        ext = os.path.splitext(p)[1].lower()
         try:
-            reader = readers.get(ext)
-            if reader is None:                       # .md / .txt
-                with open(p, "r", encoding="utf-8") as f:
-                    text = f.read()
-            else:
-                text = reader(p)
+            text = lire_document(p)
         except Exception as e:
             print(f"  ! Ignoré (illisible) : {os.path.basename(p)} — {e}")
             continue
-        text = (text or "").strip()
         if text:
             docs.append(Doc(source=os.path.basename(p), text=text))
     return docs
@@ -262,9 +294,19 @@ def build_index(embedding_function=None, data_dir: str = DATA_DIR,
 
 
 def get_collection(embedding_function=None, chroma_dir: str = CHROMA_DIR):
-    client = chromadb.PersistentClient(path=chroma_dir)
+    """Ouvre la collection existante. Lève IndexIntrouvable — et non une
+    exception interne de Chroma — tant que l'ingestion n'a pas été lancée."""
     ef = embedding_function or get_embedding_function()
-    return client.get_collection(name=COLLECTION_NAME, embedding_function=ef)
+    try:
+        client = chromadb.PersistentClient(path=chroma_dir)
+        return client.get_collection(name=COLLECTION_NAME, embedding_function=ef)
+    except IndexIntrouvable:
+        raise
+    except Exception as e:
+        raise IndexIntrouvable(
+            "Aucun index de documents n'est disponible. Lancez `python ingest.py` "
+            "pour indexer les documents."
+        ) from e
 
 
 # --------------------------------------------------------------------------- #
@@ -338,18 +380,30 @@ class RAGResult:
     chunks: list[dict]  # [{source, chunk, text}]
 
 
+def formater_resultats(res: dict) -> list[dict]:
+    """Convertit une réponse Chroma en liste d'extraits {source, chunk, text}.
+
+    Tolère toutes les formes dégradées que Chroma peut renvoyer (clé absente,
+    valeur None, listes de longueurs différentes) : partagé par la récupération
+    vectorielle simple et par la récupération hybride."""
+    docs = (res or {}).get("documents") or [[]]
+    metas = (res or {}).get("metadatas") or [[]]
+    docs = docs[0] if docs else []
+    metas = metas[0] if metas else []
+    out = []
+    for text, meta in zip(docs or [], metas or []):
+        meta = meta or {}
+        out.append({"source": meta.get("source", "?"),
+                    "chunk": meta.get("chunk", -1),
+                    "text": text or ""})
+    return out
+
+
 def retrieve(question: str, embedding_function=None, top_k: int = TOP_K,
              chroma_dir: str = CHROMA_DIR) -> list[dict]:
     collection = get_collection(embedding_function, chroma_dir)
-    res = collection.query(query_texts=[question], n_results=top_k)
-    out = []
-    docs = res.get("documents", [[]])[0]
-    metas = res.get("metadatas", [[]])[0]
-    for text, meta in zip(docs, metas):
-        out.append({"source": meta.get("source", "?"),
-                    "chunk": meta.get("chunk", -1),
-                    "text": text})
-    return out
+    res = collection.query(query_texts=[question], n_results=max(1, int(top_k or 1)))
+    return formater_resultats(res)
 
 
 def _format_context(chunks: list[dict]) -> str:
@@ -359,12 +413,28 @@ def _format_context(chunks: list[dict]) -> str:
     return "\n\n---\n\n".join(blocks)
 
 
-def _llm(system: str, user: str, history: list[dict] | None = None,
-         max_tokens: int = 1024) -> str:
-    """Appel LLM unifié (OpenAI ou Anthropic). `history` = tours précédents
-    passés comme vrais messages, pour que le modèle résolve les références."""
+class ModeleIndisponible(RuntimeError):
+    """Le modèle de langage n'a pas pu être appelé (clé absente, réseau, quota).
+
+    Message rédigé pour être montré tel quel à l'utilisateur final : il ne
+    contient ni clé, ni trace technique."""
+
+
+def _cle(nom: str, fournisseur: str) -> str:
+    cle = (os.environ.get(nom) or "").strip()
+    if not cle:
+        raise ModeleIndisponible(
+            f"L'assistant n'est pas configuré : la clé d'accès {fournisseur} "
+            f"est absente ({nom}).")
+    return cle
+
+
+def _messages(user: str, history: list[dict] | None) -> list[dict]:
+    """Historique + question, mis en forme pour les deux fournisseurs."""
     msgs = []
     for h in (history or []):
+        if not isinstance(h, dict):
+            continue
         content = (h.get("content") or "").strip()
         if not content:
             continue
@@ -374,20 +444,55 @@ def _llm(system: str, user: str, history: list[dict] | None = None,
     while msgs and msgs[0]["role"] == "assistant":
         msgs.pop(0)
     msgs.append({"role": "user", "content": user})
+    return msgs
+
+
+def _llm(system: str, user: str, history: list[dict] | None = None,
+         max_tokens: int = 1024) -> str:
+    """Appel LLM unifié (OpenAI ou Anthropic). `history` = tours précédents
+    passés comme vrais messages, pour que le modèle résolve les références.
+
+    Toute panne (clé manquante, réseau, quota, réponse vide) est convertie en
+    ModeleIndisponible avec un message présentable ; la cause technique reste
+    chaînée pour les journaux du serveur."""
+    msgs = _messages(user, history)
 
     if resolve_llm_provider() == "anthropic":
-        import anthropic
-        client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
-        resp = client.messages.create(
-            model=ANTHROPIC_MODEL, max_tokens=max_tokens, temperature=0,
-            system=system, messages=msgs)
-        return resp.content[0].text.strip()
-    from openai import OpenAI
-    client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
-    resp = client.chat.completions.create(
-        model=OPENAI_MODEL, temperature=0,
-        messages=[{"role": "system", "content": system}] + msgs)
-    return resp.choices[0].message.content.strip()
+        cle = _cle("ANTHROPIC_API_KEY", "Anthropic")
+        try:
+            import anthropic
+            client = anthropic.Anthropic(api_key=cle)
+            resp = client.messages.create(
+                model=ANTHROPIC_MODEL, max_tokens=max_tokens, temperature=0,
+                system=system, messages=msgs)
+            blocs = [b.text for b in (resp.content or []) if getattr(b, "text", None)]
+        except ModeleIndisponible:
+            raise
+        except Exception as e:
+            raise ModeleIndisponible(
+                "Le service de génération de réponse est momentanément "
+                "injoignable. Réessayez dans quelques instants.") from e
+        texte = "\n".join(blocs).strip()
+    else:
+        cle = _cle("OPENAI_API_KEY", "OpenAI")
+        try:
+            from openai import OpenAI
+            client = OpenAI(api_key=cle)
+            resp = client.chat.completions.create(
+                model=OPENAI_MODEL, temperature=0,
+                messages=[{"role": "system", "content": system}] + msgs)
+            texte = ((resp.choices[0].message.content or "") if resp.choices else "").strip()
+        except ModeleIndisponible:
+            raise
+        except Exception as e:
+            raise ModeleIndisponible(
+                "Le service de génération de réponse est momentanément "
+                "injoignable. Réessayez dans quelques instants.") from e
+
+    if not texte:
+        raise ModeleIndisponible(
+            "Le modèle n'a renvoyé aucune réponse. Reformulez votre question.")
+    return texte
 
 
 CONTEXTUALIZE_PROMPT = (
@@ -446,14 +551,26 @@ def _recent_history(history: list[dict], max_turns: int = 4, max_len: int = 700)
 def answer_question(question: str, history: list[dict] | None = None,
                     embedding_function=None, top_k: int = TOP_K,
                     chroma_dir: str = CHROMA_DIR) -> RAGResult:
+    question = (question or "").strip()
+    if not question:
+        return RAGResult("Posez-moi une question sur les documents.", [], [])
+
     # 1) Reformule une éventuelle question de suivi en question autonome (pour la
     #    récupération, qui a besoin de mots-clés explicites).
     search_query = contextualize(question, history) if history else question
 
-    # 2) Récupère sur la question autonome.
-    chunks = retrieve(search_query, embedding_function, top_k, chroma_dir)
+    # 2) Récupère sur la question autonome. Un index absent n'est pas une panne :
+    #    on le dit clairement au lieu de laisser remonter une exception.
+    try:
+        chunks = retrieve(search_query, embedding_function, top_k, chroma_dir)
+    except IndexIntrouvable:
+        return RAGResult(
+            "Aucun document n'est encore indexé. Ajoutez des documents depuis "
+            "l'espace d'administration, ou lancez l'ingestion.", [], [])
     if not chunks:
-        return RAGResult("Aucun document indexé. Lancez d'abord l'ingestion.", [], [])
+        return RAGResult(
+            "Aucun document n'est encore indexé. Ajoutez des documents depuis "
+            "l'espace d'administration, ou lancez l'ingestion.", [], [])
     context = _format_context(chunks)
 
     # 3) Génère la réponse. On passe l'historique récent comme vrais messages :

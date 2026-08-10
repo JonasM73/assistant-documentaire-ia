@@ -1,0 +1,8 @@
+# Outils de développement uniquement — NE PAS installer en production.
+# Le déploiement n'utilise que requirements.txt.
+#
+#   pip install -r requirements-dev.txt
+#   python -m pytest
+-r requirements.txt
+
+pytest==9.1.1

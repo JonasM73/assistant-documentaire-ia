@@ -50,35 +50,43 @@ def _variantes(ident: str) -> list[str]:
     return v
 
 
-def _par_identifiant(idents, embedding_function, chroma_dir, limite=5):
+def _cle_chunk(c: dict) -> tuple:
+    return (c.get("source"), c.get("chunk"))
+
+
+def _par_identifiant(col, idents, limite=5):
+    """Fiches contenant EXACTEMENT l'un des identifiants, sans doublon.
+    Un même extrait peut correspondre à deux identifiants de la question : on
+    ne le renvoie qu'une fois."""
     if not idents:
         return []
-    col = rag_core.get_collection(embedding_function, chroma_dir)
-    tout = col.get()
-    docs = tout.get("documents", []) or []
-    metas = tout.get("metadatas", []) or []
-    res = []
+    tout = col.get() or {}
+    docs = tout.get("documents") or []
+    metas = tout.get("metadatas") or []
+    res, vus = [], set()
     for ident in idents:
         variantes = _variantes(ident)
         n = 0
         for texte, meta in zip(docs, metas):
-            if any(v in texte for v in variantes):
-                res.append({"source": meta.get("source", "?"),
-                            "chunk": meta.get("chunk", -1), "text": texte})
-                n += 1
-                if n >= limite:
-                    break
+            if not texte or not any(v in texte for v in variantes):
+                continue
+            meta = meta or {}
+            c = {"source": meta.get("source", "?"),
+                 "chunk": meta.get("chunk", -1), "text": texte}
+            cle = _cle_chunk(c)
+            if cle in vus:
+                continue
+            vus.add(cle)
+            res.append(c)
+            n += 1
+            if n >= limite:
+                break
     return res
 
 
-def _vectoriel(question, embedding_function, top_k, chroma_dir):
-    col = rag_core.get_collection(embedding_function, chroma_dir)
-    res = col.query(query_texts=[question], n_results=top_k)
-    out = []
-    for text, meta in zip(res.get("documents", [[]])[0], res.get("metadatas", [[]])[0]):
-        out.append({"source": meta.get("source", "?"),
-                    "chunk": meta.get("chunk", -1), "text": text})
-    return out
+def _vectoriel(col, question, top_k):
+    return rag_core.formater_resultats(
+        col.query(query_texts=[question], n_results=max(1, int(top_k or 1))))
 
 
 def activer():
@@ -91,13 +99,15 @@ def activer():
                          top_k=None, chroma_dir=None):
         top_k = top_k or rag_core.TOP_K
         chroma_dir = chroma_dir or rag_core.CHROMA_DIR
+        # Une seule ouverture de collection pour les deux voies de récupération.
+        col = rag_core.get_collection(embedding_function, chroma_dir)
         idents = identifiants(question)
-        exacts = _par_identifiant(idents, embedding_function, chroma_dir)
-        vect = _vectoriel(question, embedding_function, top_k, chroma_dir)
-        vus = {(c["source"], c["chunk"]) for c in exacts}
+        exacts = _par_identifiant(col, idents)
+        vect = _vectoriel(col, question, top_k)
+        vus = {_cle_chunk(c) for c in exacts}
         fusion = list(exacts)
         for c in vect:
-            cle = (c["source"], c["chunk"])
+            cle = _cle_chunk(c)
             if cle not in vus:
                 fusion.append(c)
                 vus.add(cle)
