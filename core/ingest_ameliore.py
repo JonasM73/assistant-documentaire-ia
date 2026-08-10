@@ -125,11 +125,15 @@ def chunks_pdf(path: str) -> tuple[list[str], str]:
     except Exception as e:
         print(f"  ! pdfplumber a échoué sur {os.path.basename(path)} ({e}) — "
               f"repli sur l'extraction texte simple.")
-    texte = (rag_core._read_pdf(path) or "").strip()
+    try:
+        texte = (rag_core._read_pdf(path) or "").strip()
+    except Exception:
+        texte = ""
     if not texte:
         raise ValueError(
-            "PDF illisible : aucun texte n'a pu en être extrait. S'il s'agit "
-            "d'un document scanné, il faut d'abord le passer à l'OCR.")
+            "PDF illisible : aucun texte n'a pu en être extrait. Le fichier est "
+            "peut-être corrompu ; s'il s'agit d'un document scanné, il faut "
+            "d'abord le passer à l'OCR.")
     return rag_core.chunk_text(texte), "paragraphes (repli)"
 
 

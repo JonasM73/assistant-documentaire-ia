@@ -18,6 +18,7 @@ import hashlib
 import os
 import re
 import sys
+import tempfile
 
 import pytest
 
@@ -25,6 +26,23 @@ RACINE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 for _d in (RACINE, os.path.join(RACINE, "core")):
     if _d not in sys.path:
         sys.path.insert(0, _d)
+
+# --------------------------------------------------------------------------- #
+# Environnement de test, posé AVANT tout import de server/journal.
+#
+# server.py lit sa configuration à l'import : ces valeurs doivent exister avant.
+# load_dotenv() n'écrase pas une variable déjà définie, donc le .env local est
+# neutralisé — aucun test n'utilise les vrais mots de passe, n'écrit dans le
+# vrai journal, ni ne consomme de crédits d'API.
+# --------------------------------------------------------------------------- #
+os.environ["DEMO_PASSWORD"] = "secret123"
+os.environ["ADMIN_PASSWORD"] = "admin456"
+os.environ["ALLOWED_ORIGINS"] = "https://client-autorise.com"
+os.environ["RATE_LIMIT"] = "3/minute"
+os.environ["LOG_QUESTIONS"] = "0"
+os.environ["LOG_DIR"] = tempfile.mkdtemp(prefix="journal-test-")
+os.environ["DATA_DIR"] = tempfile.mkdtemp(prefix="data-test-")
+os.environ["CHROMA_DIR"] = tempfile.mkdtemp(prefix="chroma-test-")
 
 from chromadb.utils import embedding_functions  # noqa: E402
 
@@ -64,6 +82,27 @@ def dossier_chroma(tmp_path):
     d = tmp_path / "chroma"
     d.mkdir()
     return str(d)
+
+
+class ReponseRAGFactice:
+    """Ce que renvoie answer_question, sans appeler le moindre modèle."""
+    answer = "Trois semaines de vacances. Sources : Manuel-employe.pdf."
+    sources = ["Manuel-employe.pdf"]
+    chunks = [{"source": "Manuel-employe.pdf", "chunk": 0, "text": "extrait"}]
+
+
+@pytest.fixture
+def client(monkeypatch, tmp_path):
+    """Client HTTP de test : compteur de débit remis à zéro, RAG simulé,
+    dossier de documents isolé."""
+    from fastapi.testclient import TestClient
+    import rag_core
+    import server
+
+    monkeypatch.setattr(rag_core, "answer_question", lambda *a, **k: ReponseRAGFactice())
+    monkeypatch.setenv("DATA_DIR", str(tmp_path / "data"))
+    server.limiter.reset()
+    return TestClient(server.app)
 
 
 @pytest.fixture

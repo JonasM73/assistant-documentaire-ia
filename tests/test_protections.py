@@ -9,41 +9,10 @@ l'utilisateur sous forme de trace technique.
 Lancement :  python -m pytest tests/test_protections.py -q
 """
 
-import os
-
-# La configuration de server.py est lue à l'import : elle doit être posée avant.
-# (load_dotenv n'écrase pas une variable déjà définie — le .env local est donc
-#  neutralisé pour ces valeurs.)
-os.environ["DEMO_PASSWORD"] = "secret123"
-os.environ["ADMIN_PASSWORD"] = "admin456"
-os.environ["ALLOWED_ORIGINS"] = "https://client-autorise.com"
-os.environ["RATE_LIMIT"] = "3/minute"
-os.environ["LOG_QUESTIONS"] = "0"          # ne jamais écrire dans le vrai journal
-
-import pytest
-from fastapi.testclient import TestClient
-
-import rag_core
-import server
+import rag_core  # noqa: F401  (server et le client de test viennent de conftest)
 
 CHAT = {"X-API-Password": "secret123"}
 ADMIN = {"X-API-Password": "admin456"}
-
-
-class ReponseFactice:
-    answer = "Trois semaines de vacances. Sources : Manuel-employe.pdf."
-    sources = ["Manuel-employe.pdf"]
-    chunks = [{"source": "Manuel-employe.pdf", "chunk": 0, "text": "extrait"}]
-
-
-@pytest.fixture
-def client(monkeypatch, tmp_path):
-    """Client HTTP neuf, compteur de débit remis à zéro, RAG simulé."""
-    monkeypatch.setattr(rag_core, "answer_question",
-                        lambda *a, **k: ReponseFactice())
-    monkeypatch.setenv("DATA_DIR", str(tmp_path / "data"))
-    server.limiter.reset()
-    return TestClient(server.app)
 
 
 # --------------------------------------------------------------------------- #

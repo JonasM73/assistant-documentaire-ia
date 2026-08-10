@@ -84,7 +84,7 @@ def enregistrer(question: str, sources: list[str] | None, refus: bool,
         ligne = {
             "date": datetime.now(timezone.utc).astimezone().isoformat(timespec="seconds"),
             "question": (question or "").strip()[:LONGUEUR_MAX_QUESTION],
-            "sources": list(sources or []),
+            "sources": _sources({"sources": sources}),
             "refus": bool(refus),
         }
         if duree is not None:
@@ -121,6 +121,27 @@ def lire(limite: int = 5000) -> list[dict]:
     return entrees
 
 
+def _sources(entree: dict) -> list[str]:
+    """Sources d'une entrée, toujours sous forme de liste de chaînes.
+
+    Le journal étant un fichier en ajout seul, il peut contenir des lignes
+    écrites par une version antérieure : `sources` y est parfois une chaîne
+    unique, ou absent. Sans cette normalisation, `list("a.pdf")` produirait une
+    source par lettre."""
+    src = entree.get("sources")
+    if not src:
+        return []
+    if isinstance(src, str):
+        return [src]
+    if isinstance(src, (list, tuple, set)):
+        return [str(s) for s in src if s]
+    return [str(src)]
+
+
+def _question(entree: dict) -> str:
+    return str(entree.get("question", ""))
+
+
 def _normaliser(q: str) -> str:
     """Clé de regroupement lexical : minuscules, ponctuation et espaces
     superflus retirés."""
@@ -144,7 +165,7 @@ def rechercher(debut: str = "", fin: str = "", texte: str = "",
             continue
         if fin and jour > fin:
             continue
-        if texte and texte not in str(e.get("question", "")).lower():
+        if texte and texte not in _question(e).lower():
             continue
         correspondances.append(e)
     total = len(correspondances)
@@ -152,9 +173,9 @@ def rechercher(debut: str = "", fin: str = "", texte: str = "",
         limite = max(1, min(int(limite), 500))
     except (TypeError, ValueError):
         limite = 100
-    questions = [{"date": e.get("date", ""),
-                  "question": str(e.get("question", ""))[:300],
-                  "sources": list(e.get("sources") or [])[:4],
+    questions = [{"date": str(e.get("date", "")),
+                  "question": _question(e)[:300],
+                  "sources": _sources(e)[:4],
                   "refus": bool(e.get("refus"))}
                  for e in reversed(correspondances)][:limite]
     return {"total": total, "questions": questions}
@@ -276,7 +297,7 @@ def stats(embed_fn=None, jours_graphe: int = 60, top: int = 8,
     lim_prec = (aujourdhui - timedelta(days=13)).isoformat()
     comptes: dict[str, dict] = {}
     for e in entrees:
-        q = str(e.get("question", "")).strip()
+        q = _question(e).strip()
         cle = _normaliser(q)
         if not cle:
             continue
@@ -328,15 +349,14 @@ def stats(embed_fn=None, jours_graphe: int = 60, top: int = 8,
     # --- documents les plus cités ----------------------------------------- #
     cites: Counter = Counter()
     for e in entrees:
-        for src in (e.get("sources") or []):
-            if src:
-                cites[str(src)] += 1
+        for src in _sources(e):
+            cites[src] += 1
     sources = [{"source": s, "n": n} for s, n in cites.most_common(6)]
 
     # --- dernières questions (plus récentes d'abord) ----------------------- #
-    dernieres = [{"date": e.get("date", ""),
-                  "question": str(e.get("question", ""))[:200],
-                  "sources": list(e.get("sources") or [])[:3],
+    dernieres = [{"date": str(e.get("date", "")),
+                  "question": _question(e)[:200],
+                  "sources": _sources(e)[:3],
                   "refus": bool(e.get("refus"))}
                  for e in reversed(entrees[-dernieres_n:])]
 
