@@ -98,6 +98,10 @@
     font-size:1.08em;}
   .hero__cta{display:flex;gap:14px;flex-wrap:wrap;align-items:center;}
   .hero__pills{display:flex;flex-wrap:wrap;gap:10px;margin-top:38px;}
+  /* Ce sont des PHRASES, pas des étiquettes : capitales et monospace les
+     faisaient lire comme une fiche technique. */
+  .hero__pills .pill{font:450 13.5px/1.45 var(--ui);letter-spacing:-.005em;
+    text-transform:none;color:var(--on-ink-2);padding:10px 17px 10px 15px;}
   .hero__cue{position:absolute;left:var(--gut);bottom:22px;z-index:3;display:flex;
     align-items:center;gap:12px;font:var(--t-micro);letter-spacing:.2em;text-transform:uppercase;
     color:var(--on-ink-4);}
@@ -447,9 +451,9 @@
             <svg viewBox="0 0 24 24"><path d="M12 5v14"/><path d="m5 12 7 7 7-7"/></svg></a>
         </div>
         <div class="hero__pills" data-stagger="90" data-reveal="fade" data-delay="380">
-          <span class="pill">Réponses sourcées</span>
-          <span class="pill">N'invente jamais</span>
-          <span class="pill">Vos documents restent sur votre instance</span>
+          <span class="pill">Chaque réponse cite son document</span>
+          <span class="pill">Si l'info n'y est pas, il le dit</span>
+          <span class="pill">Vos documents restent sur votre instance, pas chez moi</span>
         </div>
       </div>
 
@@ -501,13 +505,15 @@
         </div>
       </div>
       <div>
-        <p class="eyebrow" data-reveal="fade">Le vrai coût</p>
-        <h2 class="h2" data-reveal="fade" data-split>L'information existe. Personne ne la retrouve.</h2>
+        <p class="eyebrow" data-reveal="fade">Ce que ça vous coûte aujourd'hui</p>
+        <h2 class="h2" data-reveal="fade" data-split>La réponse est déjà écrite. C'est la chercher qui coûte cher.</h2>
         <ul class="prob__list" data-stagger="90">
           <li>La bonne réponse dort dans un PDF que <b>trois personnes</b> savent ouvrir.</li>
-          <li>La même question revient <b>chaque semaine</b>, à la même personne.</li>
-          <li>Un client attend une réponse simple <b>pendant deux jours</b>.</li>
-          <li>Le document a changé, mais <b>la version qui circule</b>, non.</li>
+          <li>La même question revient chaque semaine et mobilise chaque fois
+            <b>quelqu'un qui a mieux à faire</b>.</li>
+          <li>Un client attend <b>deux jours</b> une réponse qui tient en une ligne.</li>
+          <li>Le document a changé, la version qui circule non — et c'est
+            <b>un devis à refaire</b>.</li>
         </ul>
       </div>
     </div>
@@ -519,20 +525,20 @@
   <div class="shell">
     <div class="kpis">
       <div class="kpi" data-reveal="up">
-        <div class="kpi__v"><span class="num" data-count="15">15</span><span class="kpi__u">min</span></div>
-        <span class="num-lbl">l'appel qui lance tout</span>
+        <div class="kpi__v"><span class="num" data-count="4">4</span><span class="kpi__u">secondes</span></div>
+        <span class="num-lbl">pour obtenir la réponse et son document</span>
       </div>
       <div class="kpi" data-reveal="up" data-delay="90">
-        <div class="kpi__v"><span class="num" data-count="2">2</span><span class="kpi__u">min</span></div>
-        <span class="num-lbl">de démonstration réelle</span>
+        <div class="kpi__v"><span class="num" data-count="0">0</span></div>
+        <span class="num-lbl">réponse inventée au test de contrôle</span>
       </div>
       <div class="kpi" data-reveal="up" data-delay="180">
-        <div class="kpi__v"><span class="num" data-count="0.005" data-dec="3">0,005</span><span class="kpi__u">$</span></div>
-        <span class="num-lbl">environ, par question posée</span>
+        <div class="kpi__v"><span class="num" data-count="5">5</span><span class="kpi__u">jours</span></div>
+        <span class="num-lbl">ouvrables entre vos fichiers et la mise en ligne</span>
       </div>
       <div class="kpi" data-reveal="up" data-delay="270">
-        <div class="kpi__v"><span class="num" data-count="25">25</span><span class="kpi__u">$ / mois</span></div>
-        <span class="num-lbl">au maximum, hébergement compris</span>
+        <div class="kpi__v"><span class="num" data-count="300">300</span><span class="kpi__u">pages</span></div>
+        <span class="num-lbl">lues et interrogeables dès le premier jour</span>
       </div>
     </div>
   </div>
