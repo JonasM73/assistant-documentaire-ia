@@ -1,348 +1,728 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-skin="boreale" data-theme="clair">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Boréale Équipement — Distributeur CVC & plomberie</title>
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#F7F5EF">
+<title>Boréale Équipement — Distributeur CVC &amp; plomberie</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;450;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/da.css">
 <style>
-  :root{
-    --navy:#132840; --blue:#0B5CAD; --blue-dark:#08497f; --amber:#F49B0B;
-    --ink:#1a2431; --soft:#5b6b7d; --bg:#F5F7FA; --card:#FFFFFF;
-    --line:#E3E8EE; --ok:#177245;
-    --disp:'Bricolage Grotesque',system-ui,sans-serif;
-    --ui:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
-  }
-  *{box-sizing:border-box;}
-  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--ui);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;}
-  a{color:inherit;text-decoration:none;}
-  .wrap{max-width:1160px;margin:0 auto;padding:0 22px;}
-  img,svg{display:block;}
-  .ic{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+  /* =========================================================================
+     Boréale Équipement — vitrine de démonstration, thème CLAIR.
+     Le papier porte la page ; la photographie et la couleur de signal (cobalt
+     & ambre) font tout le contraste. Aucune couleur en dur ici : uniquement
+     les rôles définis dans /da.css.
+     ========================================================================= */
+  html.gated,html.gated body{overflow:hidden;}
 
-  /* ---- utility bar ---- */
-  .util{background:var(--navy);color:#c6d2e0;font-size:12.5px;}
-  .util .wrap{display:flex;align-items:center;gap:20px;height:36px;}
-  .util .spacer{flex:1;}
-  .util a{color:#c6d2e0;}
-  .util a:hover{color:#fff;}
-  .util b{color:#fff;}
+  /* ------------------------------------------------------------ BANDEAU --- */
+  .util{background:var(--ink-950);font-size:12.5px;color:var(--on-ink-3);}
+  .util__in{display:flex;align-items:center;gap:22px;height:38px;
+    max-width:var(--maxw);margin:0 auto;padding:0 var(--gut);}
+  .util__in .sp{flex:1;}
+  .util a{transition:color .3s var(--e);}
+  .util a:hover{color:var(--sig-600);}
+  .util b{color:var(--on-ink);font-weight:600;}
+  .util .geo{display:inline-flex;align-items:center;gap:8px;}
+  .util .geo i{width:6px;height:6px;border-radius:50%;background:var(--sig-500);flex:none;
+    box-shadow:0 0 0 3px var(--sig-glow);}
 
-  /* ---- header ---- */
-  header.site{background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:50;}
-  header.site .wrap{display:flex;align-items:center;gap:22px;height:74px;}
-  .logo{font-family:var(--disp);font-weight:800;font-size:22px;color:var(--navy);letter-spacing:-.01em;white-space:nowrap;}
-  .logo em{color:var(--blue);font-style:normal;}
-  .search{flex:1;display:flex;align-items:center;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:0 12px;height:44px;max-width:520px;}
-  .search input{border:none;background:transparent;outline:none;flex:1;font-family:var(--ui);font-size:14.5px;color:var(--ink);}
-  .search .ic{color:var(--soft);}
-  .hactions{display:flex;align-items:center;gap:20px;margin-left:auto;color:var(--navy);}
-  .hactions a{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;color:var(--soft);font-weight:600;}
-  .hactions a .ic{color:var(--navy);}
-  .hactions .cart{position:relative;}
-  .hactions .cart .badge{position:absolute;top:-6px;right:-8px;background:var(--amber);color:#3a2600;font-size:10px;font-weight:700;border-radius:999px;padding:0 5px;}
-
-  /* ---- category nav ---- */
-  nav.cats{background:var(--blue);}
-  nav.cats .wrap{display:flex;align-items:center;gap:2px;height:46px;}
-  nav.cats a{color:#eaf2fb;font-weight:600;font-size:13.5px;padding:9px 14px;border-radius:8px;}
-  nav.cats a:hover{background:rgba(255,255,255,.12);color:#fff;}
-  nav.cats .promo{margin-left:auto;color:#fff;font-weight:700;font-size:13px;display:flex;align-items:center;gap:7px;}
-  nav.cats .promo .dot{width:7px;height:7px;border-radius:50%;background:var(--amber);}
-
-  /* ---- hero ---- */
-  .hero{background:linear-gradient(120deg,var(--navy) 0%,#1c3a5c 62%,#245285 100%);color:#fff;overflow:hidden;position:relative;}
-  .hero::after{content:"";position:absolute;right:-120px;top:-80px;width:520px;height:520px;
-    background:radial-gradient(circle at center, rgba(244,155,11,.22), transparent 60%);}
-  .hero .wrap{display:grid;grid-template-columns:1.15fr .85fr;gap:30px;align-items:center;padding:52px 22px;position:relative;z-index:1;}
-  .hero .tag{display:inline-block;background:rgba(244,155,11,.16);color:#ffd694;font-weight:700;font-size:12px;letter-spacing:.06em;text-transform:uppercase;padding:6px 12px;border-radius:999px;margin-bottom:16px;}
-  .hero h1{font-family:var(--disp);font-weight:800;font-size:clamp(30px,4.4vw,48px);line-height:1.04;letter-spacing:-.02em;margin:0 0 16px;}
-  .hero p{font-size:17px;color:#c9d6e6;max-width:44ch;margin:0 0 26px;}
-  .btn{display:inline-flex;align-items:center;gap:9px;font-family:var(--disp);font-weight:700;font-size:15px;border:none;cursor:pointer;border-radius:10px;padding:13px 22px;}
-  .btn-amber{background:var(--amber);color:#33230a;}
-  .btn-amber:hover{background:#ffab26;}
-  .btn-ghost{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.35);}
-  .btn-ghost:hover{border-color:#fff;}
-  .hero-cta{display:flex;gap:12px;flex-wrap:wrap;}
-  .promo-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:22px;backdrop-filter:blur(4px);}
-  .promo-card h3{font-family:var(--disp);font-size:15px;margin:0 0 14px;color:#fff;font-weight:700;}
-  .promo-row{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.1);}
-  .promo-row:last-child{border-bottom:none;}
-  .promo-row span{color:#c9d6e6;font-size:13.5px;}
-  .promo-row b{font-family:var(--disp);color:#ffd694;font-size:17px;}
-
-  /* ---- trust strip ---- */
-  .trust{background:var(--card);border-bottom:1px solid var(--line);}
-  .trust .wrap{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;padding:18px 22px;}
-  .trust .item{display:flex;align-items:center;gap:11px;}
-  .trust .item .ic{color:var(--blue);width:24px;height:24px;flex:none;}
-  .trust .item b{display:block;font-family:var(--disp);font-size:13.5px;color:var(--ink);}
-  .trust .item span{font-size:12px;color:var(--soft);}
-
-  /* ---- sections ---- */
-  section{padding:44px 0;}
-  .sec-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:22px;}
-  .sec-head h2{font-family:var(--disp);font-weight:800;font-size:26px;letter-spacing:-.02em;margin:0;color:var(--navy);}
-  .sec-head a{color:var(--blue);font-weight:600;font-size:14px;}
-
-  .cat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
-  .cat-tile{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;transition:.15s;cursor:pointer;}
-  .cat-tile:hover{border-color:var(--blue);transform:translateY(-2px);}
-  .cat-tile .badge{width:46px;height:46px;border-radius:12px;background:#eaf1fb;color:var(--blue);display:flex;align-items:center;justify-content:center;margin-bottom:14px;}
-  .cat-tile .badge .ic{width:24px;height:24px;}
-  .cat-tile h3{font-family:var(--disp);font-size:16px;margin:0 0 4px;color:var(--ink);}
-  .cat-tile p{margin:0;font-size:12.5px;color:var(--soft);}
-
-  .prod-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;}
-  .prod{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;transition:.15s;}
-  .prod:hover{box-shadow:0 14px 34px -22px rgba(19,40,64,.4);transform:translateY(-2px);}
-  .prod .thumb{height:150px;display:flex;align-items:center;justify-content:center;position:relative;}
-  .prod .thumb .ic{width:56px;height:56px;color:rgba(255,255,255,.9);stroke-width:1.4;}
-  .prod .thumb .sku{position:absolute;top:10px;left:10px;background:rgba(0,0,0,.28);color:#fff;font-size:10.5px;font-weight:600;padding:3px 8px;border-radius:6px;font-family:var(--ui);}
-  .prod .body{padding:14px 15px 16px;display:flex;flex-direction:column;flex:1;}
-  .prod h3{font-family:var(--disp);font-size:14.5px;margin:0 0 6px;color:var(--ink);line-height:1.25;min-height:36px;}
-  .prod .spec{font-size:12px;color:var(--soft);margin:0 0 12px;flex:1;}
-  .prod .foot{display:flex;align-items:center;justify-content:space-between;gap:8px;}
-  .prod .price{font-family:var(--disp);font-weight:800;font-size:19px;color:var(--navy);}
-  .prod .price small{font-size:11px;font-weight:500;color:var(--soft);}
-  .prod .add{background:var(--blue);color:#fff;border:none;border-radius:9px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none;}
-  .prod .add:hover{background:var(--blue-dark);}
-
-  /* ---- stats band ---- */
-  .band{background:var(--navy);color:#fff;}
-  .band .wrap{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;padding:40px 22px;}
-  .stat b{font-family:var(--disp);font-weight:800;font-size:34px;color:#ffd694;display:block;line-height:1;}
-  .stat span{font-size:13.5px;color:#c9d6e6;}
-
-  /* ---- testimonials ---- */
-  .tgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
-  .tcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;}
-  .tcard .stars{color:var(--amber);font-size:14px;letter-spacing:2px;margin-bottom:10px;}
-  .tcard p{font-size:14px;color:var(--ink);margin:0 0 16px;}
-  .tcard .who{display:flex;align-items:center;gap:11px;}
-  .tcard .av{width:38px;height:38px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--disp);font-weight:700;font-size:15px;}
-  .tcard .who b{font-family:var(--disp);font-size:13.5px;display:block;}
-  .tcard .who span{font-size:12px;color:var(--soft);}
-
-  /* ---- assistance (inline host) ---- */
-  .assist{background:var(--card);border-top:1px solid var(--line);}
-  .assist .box{background:linear-gradient(120deg,#eef4fb,#f7fafd);border:1px solid var(--line);border-radius:18px;padding:28px;}
-  .assist h2{font-family:var(--disp);font-weight:800;font-size:24px;margin:0 0 6px;color:var(--navy);}
-  .assist p.sub{margin:0 0 18px;color:var(--soft);}
-  #inline-host:empty::after{content:"Astuce démo : la pastille « Affichage » en bas à gauche permet d'afficher l'assistant ici, en bulle, ou en plein écran.";display:block;color:var(--soft);font-style:italic;font-size:13.5px;}
-
-  /* ---- footer ---- */
-  footer.site{background:var(--navy);color:#aebccd;font-size:13.5px;}
-  footer.site .cols{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:26px;padding:44px 0 26px;}
-  footer.site .logo{color:#fff;margin-bottom:10px;}
-  footer.site p{margin:0 0 6px;max-width:34ch;color:#9db0c4;}
-  footer.site h4{font-family:var(--disp);color:#fff;font-size:13px;letter-spacing:.04em;text-transform:uppercase;margin:0 0 12px;}
-  footer.site ul{list-style:none;margin:0;padding:0;}
-  footer.site li{margin-bottom:8px;}
-  footer.site a:hover{color:#fff;}
-  footer.site .legal{border-top:1px solid rgba(255,255,255,.1);padding:16px 0 34px;color:#7f92a8;font-size:12px;}
-
-  /* ---- demo control (discret) ---- */
-  #demo-ctrl{position:fixed;left:18px;bottom:18px;z-index:2147482000;display:flex;align-items:center;gap:8px;
-    background:rgba(19,40,64,.94);color:#fff;border-radius:999px;padding:6px 8px 6px 14px;
-    box-shadow:0 10px 26px -12px rgba(0,0,0,.5);font-family:var(--disp);font-size:12px;}
-  #demo-ctrl .lbl{color:#9db0c4;font-weight:600;}
-  #demo-ctrl .grp{display:flex;background:rgba(255,255,255,.08);border-radius:999px;padding:2px;}
-  #demo-ctrl button{border:none;background:transparent;color:#cdd9e7;font-family:var(--disp);font-weight:600;font-size:12px;padding:6px 11px;border-radius:999px;cursor:pointer;}
-  #demo-ctrl button.active{background:var(--amber);color:#33230a;}
-
-  /* ---- porte d'entrée de l'assistant ----
-     Elle appartient à l'ASSISTANT, pas à la boutique : elle reprend donc le
-     langage visuel du widget et de gestion.html (encre + émeraude, halos,
-     grain, surfaces posées par la lumière), et non la charte bleu/ambre de
-     Boréale. C'est aussi ce qu'un client voit en premier. */
-  #auth-gate{position:fixed;inset:0;z-index:2147483600;display:flex;align-items:center;
-    justify-content:center;padding:22px;
-    background:linear-gradient(150deg,#0B1512 0%,#14332A 52%,#0C6A54 165%);
-    font-family:'Inter',system-ui,sans-serif;}
-  #auth-gate::before{content:"";position:absolute;inset:0;pointer-events:none;
-    background:
-      radial-gradient(760px 420px at 78% -10%, rgba(19,153,122,.34), transparent 64%),
-      radial-gradient(560px 380px at 12% 108%, rgba(198,242,78,.16), transparent 64%);}
-  #auth-gate::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.05;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");}
-  #auth-gate .box{position:relative;background:rgba(255,255,255,.98);border-radius:24px;
-    padding:34px;width:min(400px,94vw);
-    box-shadow:0 8px 18px -10px rgba(11,21,18,.4), 0 40px 80px -30px rgba(0,0,0,.6),
-               inset 0 1px 0 rgba(255,255,255,1);}
-  #auth-gate .glyph{width:44px;height:44px;border-radius:14px;margin-bottom:18px;
-    background:linear-gradient(135deg,#0C6A54,#13997A);display:flex;align-items:center;
-    justify-content:center;
-    box-shadow:0 10px 22px -10px rgba(12,106,84,.95), inset 0 1px 0 rgba(255,255,255,.3);}
-  #auth-gate .glyph svg{width:21px;height:21px;stroke:#fff;fill:none;stroke-width:1.9;
+  /* ------------------------------------------------------------- ENTÊTE --- */
+  .top{position:sticky;top:0;z-index:200;background:rgba(255,255,255,.72);
+    -webkit-backdrop-filter:blur(20px) saturate(1.6);backdrop-filter:blur(20px) saturate(1.6);
+    transition:box-shadow .5s var(--e),background .5s var(--e);}
+  .top::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;
+    background:linear-gradient(90deg,transparent,var(--rule-ink) 12%,var(--rule-ink) 88%,transparent);}
+  .top.is-stuck{background:rgba(255,255,255,.9);box-shadow:var(--sh-1);}
+  .top__in{display:flex;align-items:center;gap:22px;height:clamp(64px,6.6vw,80px);
+    max-width:var(--maxw);margin:0 auto;padding:0 var(--gut);}
+  .logo{font-family:var(--disp);font-weight:800;font-size:20px;letter-spacing:-.04em;
+    white-space:nowrap;color:var(--on-ink);}
+  .logo em{font-style:normal;color:var(--sig-600);}
+  .search{flex:1;max-width:520px;display:flex;align-items:center;gap:11px;height:44px;
+    padding:0 16px;border-radius:999px;background:var(--tint);
+    box-shadow:inset 0 0 0 1px var(--rule-ink);
+    transition:box-shadow .35s var(--e),background .35s var(--e);}
+  .search:focus-within{background:var(--white);
+    box-shadow:inset 0 0 0 1.5px var(--sig-500),0 0 0 4px var(--sig-glow);}
+  .search input{flex:1;border:none;background:transparent;outline:none;
+    font-family:var(--ui);font-size:14px;color:var(--on-ink);}
+  .search input::placeholder{color:var(--on-ink-4);}
+  .search svg{width:17px;height:17px;stroke:var(--on-ink-3);fill:none;stroke-width:2;
+    stroke-linecap:round;flex:none;}
+  .hact{display:flex;align-items:center;gap:8px;margin-left:auto;}
+  .hact a{display:flex;flex-direction:column;align-items:center;gap:5px;padding:8px 12px;
+    border-radius:14px;font:var(--t-micro);letter-spacing:.13em;text-transform:uppercase;
+    color:var(--on-ink-3);position:relative;transition:color .3s var(--e),background .3s var(--e);}
+  .hact a:hover{color:var(--on-ink);background:var(--tint);}
+  .hact svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.7;
     stroke-linecap:round;stroke-linejoin:round;}
-  #auth-gate h2{font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:800;
-    margin:0 0 8px;font-size:22px;letter-spacing:-.028em;color:#0B1512;}
-  #auth-gate p{margin:0 0 20px;color:#4A5A53;font-size:13.5px;line-height:1.55;}
-  #auth-gate input{width:100%;padding:13px 15px;border:none;border-radius:13px;font-size:15px;
-    margin-bottom:11px;background:#F6F7F4;color:#101E19;outline:none;font-family:inherit;
-    box-shadow:inset 0 0 0 1px rgba(11,21,18,.055), inset 0 1px 2px rgba(11,21,18,.05);
-    transition:box-shadow .2s cubic-bezier(.22,.75,.24,1), background .2s cubic-bezier(.22,.75,.24,1);}
-  #auth-gate input:focus{background:#fff;
-    box-shadow:inset 0 0 0 1.5px #13997A, 0 0 0 4px rgba(19,153,122,.14);}
-  #auth-gate .err{color:#C2352C;font-size:12.5px;min-height:19px;margin-bottom:9px;font-weight:500;}
-  #auth-gate button{width:100%;padding:13px;border:none;border-radius:13px;
-    background:linear-gradient(135deg,#0C6A54,#13997A);color:#fff;
-    font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;font-size:15px;
-    cursor:pointer;letter-spacing:-.012em;
-    box-shadow:0 6px 16px -8px rgba(12,106,84,.55), inset 0 1px 0 rgba(255,255,255,.2);
-    transition:transform .18s cubic-bezier(.22,.75,.24,1), box-shadow .18s cubic-bezier(.22,.75,.24,1);}
-  #auth-gate button:hover:not(:disabled){transform:translateY(-1.5px);
-    box-shadow:0 10px 22px -8px rgba(12,106,84,.62), inset 0 1px 0 rgba(255,255,255,.24);}
-  #auth-gate button:disabled{opacity:.6;cursor:wait;transform:none;}
+  .hact .badge{position:absolute;top:2px;right:6px;min-width:17px;height:17px;padding:0 4px;
+    border-radius:999px;background:var(--lime);color:var(--on-lime);
+    font:700 10px/17px var(--mono);text-align:center;}
 
-  @media(max-width:900px){
-    .hero .wrap{grid-template-columns:1fr;} .trust .wrap{grid-template-columns:repeat(2,1fr);}
-    .cat-grid,.prod-grid{grid-template-columns:repeat(2,1fr);} .tgrid{grid-template-columns:1fr;}
-    .band .wrap{grid-template-columns:repeat(2,1fr);} footer.site .cols{grid-template-columns:1fr 1fr;}
-    .search{display:none;}
+  /* ------------------------------------------------------- NAV CATÉGORIES - */
+  .cats{background:var(--ink-950);position:relative;z-index:150;}
+  .cats__in{display:flex;align-items:center;gap:4px;height:50px;overflow-x:auto;
+    max-width:var(--maxw);margin:0 auto;padding:0 var(--gut);scrollbar-width:none;}
+  .cats__in::-webkit-scrollbar{display:none;}
+  .cats a{position:relative;padding:8px 15px;border-radius:999px;white-space:nowrap;
+    font-family:var(--disp);font-weight:600;font-size:13.5px;letter-spacing:-.018em;
+    color:var(--on-ink-2);transition:color .3s var(--e),background .3s var(--e);}
+  .cats a:hover{color:var(--sig-600);background:var(--white);}
+  .cats .promo{margin-left:auto;display:inline-flex;align-items:center;gap:9px;
+    white-space:nowrap;font:var(--t-micro);letter-spacing:.14em;text-transform:uppercase;
+    color:var(--on-ink-2);padding-left:18px;}
+  .cats .promo i{width:6px;height:6px;border-radius:50%;background:var(--sig-500);flex:none;
+    animation:bp 2.4s var(--e) infinite;}
+  @keyframes bp{0%,100%{opacity:1;}50%{opacity:.25;}}
+
+  /* --------------------------------------------------------------- HÉRO --- */
+  /* La photo reste entière à droite ; un lavis de papier la recouvre à gauche
+     pour que le titre reste en encre, lisible et net. */
+  .hero{position:relative;min-height:clamp(560px,82svh,880px);display:flex;align-items:flex-end;
+    overflow:hidden;padding:clamp(80px,10vw,130px) 0 clamp(36px,5vw,72px);
+    background:var(--ink-900);}
+  .hero__bg{position:absolute;inset:-12% 0;z-index:0;}
+  .hero__bg img{width:100%;height:100%;object-fit:cover;
+    filter:saturate(.82) contrast(1.02) brightness(1.06);}
+  .hero__veil{position:absolute;inset:0;z-index:1;pointer-events:none;
+    background:
+      linear-gradient(96deg,
+        var(--ink-900) 10%,
+        rgba(247,245,239,.94) 34%,
+        rgba(247,245,239,.55) 56%,
+        rgba(247,245,239,.06) 78%,
+        transparent 92%),
+      linear-gradient(0deg,var(--ink-900) 1%,rgba(247,245,239,.6) 16%,transparent 46%),
+      radial-gradient(60% 50% at 88% 4%,var(--sig-glow),transparent 64%);}
+  .hero__in{position:relative;z-index:2;width:100%;}
+  .hero__grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,.75fr);
+    gap:clamp(26px,4vw,60px);align-items:end;}
+  .hero h1{font-size:clamp(2.5rem,6.4vw,6.2rem);line-height:.9;letter-spacing:-.05em;
+    margin:0 0 24px;max-width:14ch;color:var(--on-ink);}
+  .hero__lead{color:var(--on-ink-2);font-size:clamp(1rem,1.18vw,1.2rem);line-height:1.6;
+    max-width:46ch;margin-bottom:32px;}
+  .hero__cta{display:flex;gap:14px;flex-wrap:wrap;align-items:center;}
+
+  /* Carte des aubaines : une ardoise de verre blanc posée sur la photo. */
+  .promo-card{position:relative;border-radius:var(--r-lg);padding:26px 26px 20px;
+    background:var(--glass);
+    -webkit-backdrop-filter:blur(22px) saturate(1.4);backdrop-filter:blur(22px) saturate(1.4);
+    box-shadow:inset 0 0 0 1px var(--glass-ring),var(--sh-3);}
+  .promo-card h3{font-size:14px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;
+    font-family:var(--mono);color:var(--sig-600);margin-bottom:20px;}
+  .promo-row{display:flex;align-items:baseline;justify-content:space-between;gap:18px;
+    padding:15px 0;border-bottom:1px solid var(--rule-ink-2);
+    transition:padding-left .35s var(--e);}
+  .promo-row:last-of-type{border-bottom:none;}
+  .promo-row:hover{padding-left:8px;}
+  .promo-row span{font-size:13.5px;color:var(--on-ink-2);}
+  .promo-row b{font-family:var(--disp);font-weight:800;font-size:19px;letter-spacing:-.035em;
+    color:var(--on-ink);white-space:nowrap;}
+  /* `promo-note` et pas `foot` : `.foot` est le pied de page du site, et sa
+     couleur de fond débordait dans la carte. */
+  .promo-card .promo-note{margin-top:16px;padding-top:14px;border-top:1px solid var(--rule-ink);
+    font:var(--t-micro);letter-spacing:.15em;text-transform:uppercase;color:var(--on-ink-4);}
+
+  /* -------------------------------------------------------------- TRUST --- */
+  .trust{background:var(--ink-950);}
+  .trust__in{display:grid;grid-template-columns:repeat(4,1fr);
+    max-width:var(--maxw);margin:0 auto;padding:0 var(--gut);}
+  .trust__it{position:relative;display:flex;gap:16px;align-items:flex-start;
+    padding:30px clamp(14px,2vw,28px) 30px 0;}
+  .trust__it + .trust__it{padding-left:clamp(14px,2vw,28px);}
+  .trust__it + .trust__it::before{content:"";position:absolute;left:0;top:26px;bottom:26px;
+    width:1px;background:linear-gradient(180deg,transparent,var(--rule-ink) 26%,var(--rule-ink) 74%,transparent);}
+  .trust__it svg{width:24px;height:24px;stroke:var(--sig-600);fill:none;stroke-width:1.5;
+    stroke-linecap:round;stroke-linejoin:round;flex:none;margin-top:2px;}
+  .trust__it b{display:block;font-family:var(--disp);font-weight:800;font-size:17px;
+    letter-spacing:-.03em;color:var(--on-ink);}
+  /* `b + span` et non `span` : le compteur vit DANS le <b>, et une règle trop
+     large le repassait en micro-label sur sa propre ligne. */
+  .trust__it b + span{display:block;font:var(--t-micro);letter-spacing:.15em;
+    text-transform:uppercase;color:var(--on-ink-4);margin-top:6px;}
+
+  /* ------------------------------------------------------------- TITRES --- */
+  .sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:26px;
+    flex-wrap:wrap;margin-bottom:clamp(26px,3.4vw,48px);}
+  .sec-head h2{font-size:clamp(1.8rem,3.6vw,3.2rem);color:var(--on-ink);}
+
+  /* --------------------------------------------------------- CATÉGORIES --- */
+  .cat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(14px,1.6vw,22px);}
+  .cat{position:relative;display:block;aspect-ratio:3/4;border-radius:var(--r-md);
+    overflow:hidden;background:var(--ink-700);box-shadow:var(--sh-1);
+    transition:box-shadow .5s var(--e),transform .5s var(--e-soft);}
+  .cat:hover{transform:translateY(-4px);box-shadow:var(--sh-2);}
+  .cat img{width:100%;height:100%;object-fit:cover;
+    transition:transform 1.1s var(--e),filter .7s var(--e);}
+  .cat:hover img{transform:scale(1.07);}
+  .cat__veil{position:absolute;inset:0;z-index:2;
+    background:linear-gradient(180deg,rgba(4,9,7,.06) 18%,rgba(4,9,7,.58) 58%,rgba(4,9,7,.9));}
+  .cat__txt{position:absolute;left:0;right:0;bottom:0;z-index:3;padding:22px;}
+  .cat__txt small{display:block;font:var(--t-micro);letter-spacing:.19em;text-transform:uppercase;
+    color:var(--sig-200);margin-bottom:9px;}
+  .cat__txt b{display:block;font-family:var(--disp);font-weight:800;font-size:clamp(1rem,1.4vw,1.28rem);
+    letter-spacing:-.03em;color:var(--on-media);}
+  .cat__txt p{font-size:12.5px;color:var(--on-media-2);margin-top:6px;line-height:1.45;}
+  .cat__go{position:absolute;top:18px;right:18px;z-index:3;width:36px;height:36px;
+    border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.18);
+    -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+    opacity:0;transform:translateY(-6px);transition:opacity .4s var(--e),transform .4s var(--e),background .4s var(--e);}
+  .cat:hover .cat__go{opacity:1;transform:none;background:var(--sig-500);}
+  .cat__go svg{width:15px;height:15px;stroke:#fff;fill:none;stroke-width:2.2;
+    stroke-linecap:round;stroke-linejoin:round;}
+
+  /* ------------------------------------------------------------ PRODUITS -- */
+  .prod-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(14px,1.6vw,22px);}
+  .prod{position:relative;display:flex;flex-direction:column;border-radius:var(--r-md);
+    overflow:hidden;background:var(--white);box-shadow:var(--sh-1);
+    transition:box-shadow .5s var(--e),transform .5s var(--e-soft);}
+  .prod:hover{transform:translateY(-5px);box-shadow:var(--sh-2);}
+  .prod__thumb{position:relative;aspect-ratio:4/3;display:grid;place-items:center;overflow:hidden;}
+  .prod__thumb::after{content:"";position:absolute;inset:0;background-image:var(--grain);
+    opacity:.09;mix-blend-mode:overlay;pointer-events:none;}
+  .prod__thumb svg{width:46%;height:46%;stroke:rgba(255,255,255,.94);fill:none;stroke-width:1.1;
+    stroke-linecap:round;stroke-linejoin:round;
+    transition:transform .8s var(--e);filter:drop-shadow(0 10px 22px rgba(0,0,0,.3));}
+  .prod:hover .prod__thumb svg{transform:scale(1.08) rotate(-2deg);}
+  .prod__sku{position:absolute;top:12px;left:12px;z-index:3;
+    font:var(--t-micro);letter-spacing:.14em;color:rgba(255,255,255,.95);
+    background:rgba(4,9,7,.3);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+    padding:5px 9px;border-radius:7px;}
+  .prod__body{display:flex;flex-direction:column;flex:1;padding:18px;}
+  .prod__body h3{font-size:15px;line-height:1.28;letter-spacing:-.025em;margin-bottom:8px;
+    color:var(--on-ink);min-height:2.6em;}
+  .prod__spec{font-family:var(--mono);font-size:11px;color:var(--on-ink-3);
+    letter-spacing:.02em;line-height:1.6;flex:1;margin-bottom:18px;}
+  .prod__foot{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;
+    padding-top:15px;border-top:1px solid var(--rule-ink-2);}
+  .prod__price{font-family:var(--disp);font-weight:800;font-size:22px;letter-spacing:-.04em;
+    color:var(--on-ink);line-height:1;}
+  .prod__price small{display:block;font:var(--t-micro);letter-spacing:.15em;text-transform:uppercase;
+    color:var(--on-ink-4);margin-top:7px;}
+  .prod__add{flex:none;width:42px;height:42px;border-radius:50%;border:none;cursor:pointer;
+    display:grid;place-items:center;background:var(--tint);color:var(--on-ink);
+    box-shadow:inset 0 0 0 1px var(--rule-ink);
+    transition:background .35s var(--e),color .35s var(--e),transform .35s var(--e-soft),box-shadow .35s var(--e);}
+  .prod__add svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2.2;
+    stroke-linecap:round;}
+  .prod__add:hover{background:var(--sig-500);color:var(--on-sig);transform:scale(1.1) rotate(90deg);
+    box-shadow:0 12px 26px -12px var(--sig-glow);}
+  .prod__add:focus-visible{outline:2px solid var(--sig-500);outline-offset:3px;}
+
+  /* ------------------------------------------------------------ COMPTOIR -- */
+  .comptoir{position:relative;overflow:hidden;}
+  .comptoir__grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+    gap:clamp(24px,3.4vw,56px);align-items:center;}
+  .comptoir__media{position:relative;aspect-ratio:1/1;border-radius:var(--r-lg);overflow:hidden;
+    background:var(--ink-700);box-shadow:var(--sh-2);}
+  .comptoir__media img{width:100%;height:100%;object-fit:cover;}
+  .comptoir__small{position:absolute;right:-8%;bottom:-8%;width:46%;aspect-ratio:1/1;
+    border-radius:var(--r-md);overflow:hidden;background:var(--ink-700);
+    box-shadow:var(--sh-3),0 0 0 8px var(--ink-900);}
+  .comptoir__small img{width:100%;height:100%;object-fit:cover;}
+  .comptoir h2{color:var(--on-ink);}
+  .comptoir ul{list-style:none;margin:30px 0 0;padding:0;}
+  .comptoir li{position:relative;padding:17px 0 17px 40px;border-top:1px solid var(--rule-ink-2);
+    font-size:15.5px;color:var(--on-ink-2);}
+  .comptoir li::before{content:"";position:absolute;left:2px;top:24px;width:14px;height:7px;
+    border-left:2px solid var(--sig-500);border-bottom:2px solid var(--sig-500);
+    transform:rotate(-45deg);}
+  .comptoir li b{color:var(--on-ink);font-weight:600;}
+
+  /* -------------------------------------------------------------- BANDE --- */
+  /* Bande chiffrée : la photo reste, mais lavée au papier — elle donne le
+     climat, elle ne mange pas les chiffres. */
+  .band-stats{position:relative;overflow:hidden;background:var(--ink-950);}
+  .band-stats__bg{position:absolute;inset:-14% 0;z-index:0;opacity:.24;}
+  .band-stats__bg img{width:100%;height:100%;object-fit:cover;filter:grayscale(.45) contrast(.95);}
+  .band-stats__veil{position:absolute;inset:0;z-index:1;
+    background:linear-gradient(180deg,var(--ink-950),rgba(236,232,223,.78) 42%,var(--ink-950)),
+      radial-gradient(60% 70% at 18% 40%,var(--sig-glow),transparent 64%);}
+  .band-stats__in{position:relative;z-index:2;}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(18px,2vw,32px);}
+  .stat{position:relative;padding-right:clamp(14px,2vw,26px);}
+  .stat + .stat{padding-left:clamp(14px,2vw,26px);}
+  .stat + .stat::before{content:"";position:absolute;left:0;top:4px;bottom:4px;width:1px;
+    background:linear-gradient(180deg,transparent,var(--rule-ink) 24%,var(--rule-ink) 76%,transparent);}
+  .stat .v{display:flex;align-items:baseline;gap:6px;}
+  .stat .v b{font-family:var(--disp);font-weight:800;font-size:clamp(2.4rem,5vw,4.4rem);
+    letter-spacing:-.055em;line-height:.88;color:var(--sig-600);font-variant-numeric:tabular-nums;}
+  .stat .v i{font-style:normal;font-family:var(--disp);font-weight:700;
+    font-size:clamp(1rem,1.6vw,1.5rem);color:var(--on-ink-2);letter-spacing:-.03em;}
+
+  /* --------------------------------------------------------- TÉMOIGNAGES -- */
+  .tgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(14px,1.8vw,26px);}
+  .tcard{position:relative;border-radius:var(--r-md);padding:clamp(22px,2.4vw,32px);
+    background:var(--white);box-shadow:var(--sh-1);
+    transition:box-shadow .5s var(--e),transform .5s var(--e-soft);}
+  .tcard:hover{transform:translateY(-4px);box-shadow:var(--sh-2);}
+  .tcard .stars{color:var(--lime);font-size:15px;letter-spacing:3px;margin-bottom:16px;
+    text-shadow:0 1px 0 rgba(0,0,0,.06);}
+  .tcard p{font-family:var(--serif);font-style:italic;font-size:clamp(1rem,1.24vw,1.18rem);
+    line-height:1.6;color:var(--on-ink);margin-bottom:24px;}
+  .tcard .who{display:flex;align-items:center;gap:13px;padding-top:18px;
+    border-top:1px solid var(--rule-ink-2);}
+  .tcard .av{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;flex:none;
+    background:linear-gradient(140deg,var(--sig-500),var(--sig-700));color:#fff;
+    font-family:var(--disp);font-weight:800;font-size:14px;letter-spacing:-.02em;
+    box-shadow:0 10px 22px -12px var(--sig-glow);}
+  .tcard .who b{display:block;font-family:var(--disp);font-weight:700;font-size:14px;
+    letter-spacing:-.02em;color:var(--on-ink);}
+  .tcard .who span{display:block;font:var(--t-micro);letter-spacing:.13em;text-transform:uppercase;
+    color:var(--on-ink-4);margin-top:4px;}
+
+  /* --------------------------------------------------------- ASSISTANCE --- */
+  .assist{position:relative;overflow:hidden;background:var(--ink-850);}
+  .assist__bg{position:absolute;inset:-12% 0;z-index:0;opacity:.14;
+    -webkit-mask-image:radial-gradient(90% 80% at 80% 50%, #000 8%, transparent 72%);
+    mask-image:radial-gradient(90% 80% at 80% 50%, #000 8%, transparent 72%);}
+  .assist__bg img{width:100%;height:100%;object-fit:cover;filter:grayscale(1) contrast(1.1);}
+  .assist::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+    background:radial-gradient(70% 70% at 10% 16%,var(--sig-glow),transparent 62%);opacity:.22;}
+  .assist__in{position:relative;z-index:2;}
+  .assist__head{max-width:62ch;margin-bottom:clamp(24px,3vw,40px);}
+  .assist h2{color:var(--on-ink);}
+  #inline-host{min-height:0;}
+  #inline-host:empty::after{content:"Astuce démo : la pastille « Affichage » en bas à gauche permet d'afficher l'assistant ici, en bulle, ou en plein écran.";
+    display:block;padding:34px 0;font-family:var(--serif);font-style:italic;
+    font-size:16px;color:var(--on-ink-3);max-width:56ch;}
+
+  /* ------------------------------------------------------------- FOOTER --- */
+  .foot{background:var(--ink-950);padding:clamp(46px,6vw,86px) 0 clamp(26px,3vw,38px);}
+  .foot__cols{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;
+    gap:clamp(24px,3vw,44px);padding-bottom:clamp(30px,4vw,50px);}
+  .foot__cols p{color:var(--on-ink-3);font-size:14px;line-height:1.6;max-width:34ch;margin-top:14px;}
+  .foot__cols h4{font:var(--t-micro);letter-spacing:.19em;text-transform:uppercase;
+    color:var(--on-ink-4);margin-bottom:18px;font-family:var(--mono);}
+  .foot__cols ul{list-style:none;margin:0;padding:0;}
+  .foot__cols li{margin-bottom:11px;}
+  .foot__cols li a{font-size:14px;color:var(--on-ink-2);transition:color .3s var(--e),padding-left .3s var(--e);
+    display:inline-block;}
+  .foot__cols li a:hover{color:var(--sig-600);padding-left:6px;}
+  .foot__legal{padding-top:24px;border-top:1px solid var(--rule-ink-2);
+    font-size:12.5px;color:var(--on-ink-4);line-height:1.6;}
+
+  /* --------------------------------------------------- CONTRÔLE DE DÉMO --- */
+  #demo-ctrl{position:fixed;left:20px;bottom:20px;z-index:2147482000;
+    display:flex;align-items:center;gap:10px;padding:7px 9px 7px 16px;border-radius:999px;
+    background:rgba(255,255,255,.86);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
+    box-shadow:inset 0 0 0 1px var(--rule-ink),var(--sh-2);
+    font-family:var(--disp);}
+  #demo-ctrl .lbl{font:var(--t-micro);letter-spacing:.17em;text-transform:uppercase;
+    color:var(--on-ink-4);}
+  #demo-ctrl .grp{display:flex;gap:2px;padding:3px;border-radius:999px;background:var(--tint);}
+  #demo-ctrl button{border:none;background:transparent;color:var(--on-ink-2);cursor:pointer;
+    font-family:var(--disp);font-weight:600;font-size:12px;letter-spacing:-.01em;
+    padding:7px 13px;border-radius:999px;transition:background .35s var(--e),color .35s var(--e);}
+  #demo-ctrl button:hover{color:var(--on-ink);}
+  #demo-ctrl button.active{background:var(--sig-500);color:var(--on-sig);}
+  #demo-ctrl button:focus-visible{outline:2px solid var(--sig-500);outline-offset:2px;}
+
+  /* ------------------------------------------------------ PORTE D'ENTRÉE -- */
+  /* Elle appartient à l'ASSISTANT, pas à la boutique : elle garde donc la
+     couleur de signal émeraude du produit, jamais le cobalt de Boréale.
+     Composition en deux volets : le formulaire sur le papier, la photo à côté. */
+  #auth-gate{position:fixed;inset:0;z-index:2147483600;display:grid;
+    grid-template-columns:minmax(0,1.02fr) minmax(0,.98fr);background:var(--ink-900);
+    --sig-500:#10B981;--sig-600:#0B7A58;--sig-700:#075E44;--sig-400:#0B7A58;
+    --sig-glow:rgba(16,185,129,.34);--on-sig:#04140E;--lime:#C6F24E;--on-lime:#16210A;}
+  #auth-gate.is-out{animation:gate-out .8s var(--e) forwards;}
+  @keyframes gate-out{to{opacity:0;transform:scale(1.02);visibility:hidden;}}
+  #auth-gate .panneau{position:relative;display:flex;align-items:center;
+    padding:clamp(28px,5vw,80px);overflow:hidden;}
+  #auth-gate .panneau::before{content:"";position:absolute;inset:0;pointer-events:none;
+    background:radial-gradient(70% 60% at 12% 8%,var(--sig-glow),transparent 62%);opacity:.6;}
+  #auth-gate .panneau::after{content:"";position:absolute;inset:0;pointer-events:none;
+    background-image:var(--grain);opacity:.04;mix-blend-mode:multiply;}
+  #auth-gate .box{position:relative;z-index:2;width:min(440px,100%);
+    animation:gate-in .9s var(--e) both;}
+  @keyframes gate-in{from{opacity:0;transform:translateY(26px);}to{opacity:1;transform:none;}}
+  #auth-gate .glyph{width:52px;height:52px;border-radius:17px;display:grid;place-items:center;
+    margin-bottom:26px;background:linear-gradient(140deg,var(--sig-600),var(--sig-500));
+    box-shadow:0 18px 36px -16px var(--sig-glow),inset 0 1px 0 rgba(255,255,255,.35);}
+  #auth-gate .glyph svg{width:23px;height:23px;stroke:#fff;fill:none;stroke-width:1.9;
+    stroke-linecap:round;stroke-linejoin:round;}
+  #auth-gate h2{font-size:clamp(2rem,4.4vw,3.1rem);line-height:.96;letter-spacing:-.05em;
+    margin-bottom:16px;color:var(--on-ink);}
+  #auth-gate p{color:var(--on-ink-2);font-size:15px;line-height:1.62;margin-bottom:34px;
+    max-width:42ch;}
+  #auth-gate input{width:100%;padding:14px 2px;border:none;background:transparent;
+    border-bottom:1.5px solid var(--rule-ink);color:var(--on-ink);
+    font-family:var(--ui);font-size:19px;letter-spacing:-.02em;outline:none;
+    transition:border-color .35s var(--e);}
+  #auth-gate input::placeholder{color:var(--on-ink-4);font-size:17px;}
+  #auth-gate input:focus{border-bottom-color:var(--sig-500);}
+  #auth-gate .err{color:var(--danger);font-size:13.5px;min-height:22px;margin:14px 0 22px;}
+  #auth-gate .note{margin-top:30px;padding-top:22px;border-top:1px solid var(--rule-ink-2);
+    font:var(--t-micro);letter-spacing:.15em;text-transform:uppercase;color:var(--on-ink-4);
+    line-height:1.7;max-width:44ch;}
+  #auth-gate .volet{position:relative;overflow:hidden;background:var(--ink-700);}
+  #auth-gate .volet img{width:100%;height:100%;object-fit:cover;
+    transform:scale(1.05);animation:gate-zoom 20s var(--e) infinite alternate;}
+  @keyframes gate-zoom{to{transform:scale(1.15);}}
+  #auth-gate .volet::after{content:"";position:absolute;inset:0;
+    background:linear-gradient(90deg,var(--ink-900) 0%,rgba(247,245,239,.35) 22%,transparent 55%),
+      radial-gradient(70% 60% at 80% 90%,rgba(12,106,84,.35),transparent 62%);}
+
+  /* ---------------------------------------------------------- RESPONSIVE -- */
+  @media (max-width:1080px){
+    .cat-grid,.prod-grid{grid-template-columns:repeat(2,1fr);}
+    .hero__grid{grid-template-columns:1fr;gap:38px;}
+    .hero__veil{background:
+      linear-gradient(180deg,rgba(247,245,239,.9) 6%,rgba(247,245,239,.72) 40%,var(--ink-900) 86%),
+      radial-gradient(60% 40% at 84% 4%,var(--sig-glow),transparent 64%);}
+    .comptoir__grid{grid-template-columns:1fr;}
+    .comptoir__small{right:0;bottom:-6%;width:38%;}
+    .tgrid{grid-template-columns:1fr;}
   }
-  @media(max-width:560px){#demo-ctrl .lbl{display:none;}}
+  @media (max-width:900px){
+    #auth-gate{grid-template-columns:1fr;}
+    #auth-gate .volet{display:none;}
+    #auth-gate .panneau{justify-content:center;}
+  }
+  @media (max-width:860px){
+    .search{display:none;}
+    .trust__in{grid-template-columns:repeat(2,1fr);}
+    .trust__it:nth-child(3){padding-left:0;}
+    .trust__it:nth-child(3)::before{display:none;}
+    .stats{grid-template-columns:repeat(2,1fr);row-gap:34px;}
+    .stat:nth-child(3){padding-left:0;}
+    .stat:nth-child(3)::before{display:none;}
+    .foot__cols{grid-template-columns:1fr 1fr;}
+  }
+  @media (max-width:640px){
+    /* La ligne d'infos ne doit jamais passer sur deux lignes : on sacrifie
+       l'adresse, on garde les deux liens utiles. */
+    .util .geo{display:none;}
+    .util__in{justify-content:flex-end;gap:18px;}
+    .hact a span:not(.badge){display:none;}
+    .hact a{padding:8px;}
+    /* Le sélecteur de démo se range AU-DESSUS du lanceur : côte à côte, ils se
+       chevauchent sur un téléphone. */
+    #demo-ctrl{left:12px;bottom:78px;padding:6px;}
+  }
+  @media (max-width:600px){
+    .prod-grid,.cat-grid{grid-template-columns:1fr;}
+    .stats{grid-template-columns:1fr;}
+    .stat{padding:0 0 22px;border-bottom:1px solid var(--rule-ink-2);}
+    .stat + .stat{padding-left:0;}
+    .stat + .stat::before{display:none;}
+    #demo-ctrl .lbl{display:none;}
+  }
 </style>
 </head>
 <body>
+
+<!-- =========================== PORTE D'ENTRÉE ========================== -->
 <div id="auth-gate">
-  <div class="box">
-    <div class="glyph"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
-    <h2>Accès protégé</h2>
-    <p>Entrez le mot de passe pour accéder à l'assistant documentaire de cette démonstration.</p>
-    <input id="auth-pw" type="password" placeholder="Mot de passe" autocomplete="current-password">
-    <div id="auth-err" class="err"></div>
-    <button id="auth-btn" type="button">Entrer</button>
+  <div class="panneau">
+    <div class="box">
+      <div class="glyph">
+        <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </div>
+      <p class="eyebrow">Démonstration protégée</p>
+      <h2>Accès<br>protégé</h2>
+      <p>Entrez le mot de passe pour accéder à l'assistant documentaire de cette démonstration.</p>
+      <input id="auth-pw" type="password" placeholder="Mot de passe" autocomplete="current-password">
+      <div id="auth-err" class="err"></div>
+      <button class="btn btn--sig" id="auth-btn" type="button"><span>Entrer</span>
+        <svg viewBox="0 0 24 24"><path d="M5 12h13"/><path d="m12 5 7 7-7 7"/></svg>
+      </button>
+      <p class="note">Derrière cette porte : une boutique fictive, un assistant réel,
+        des réponses tirées de vrais documents.</p>
+    </div>
+  </div>
+  <div class="volet"><img src="/img/hero-entrepot.jpg" alt=""></div>
+</div>
+
+<div class="grain" aria-hidden="true"></div>
+
+<!-- ============================== BANDEAU ============================== -->
+<div class="util">
+  <div class="util__in">
+    <span class="geo"><i></i><span>Laval, QC — succursale ouverte lun-ven 6 h 30 – 17 h</span></span>
+    <span class="sp"></span>
+    <a href="#">Suivi de commande</a>
+    <a href="#"><b>Ouvrir un compte commercial</b></a>
   </div>
 </div>
-<!-- utility bar -->
-<div class="util"><div class="wrap">
-  <span>📍 Laval, QC — succursale ouverte lun-ven 6h30-17h</span>
-  <span class="spacer"></span>
-  <a href="#">Suivi de commande</a>
-  <a href="#"><b>Ouvrir un compte commercial</b></a>
-</div></div>
 
-<!-- header -->
-<header class="site"><div class="wrap">
-  <div class="logo">Boréale <em>Équipement</em></div>
-  <div class="search">
-    <svg class="ic" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
-    <input placeholder="Rechercher un produit, un SKU (ex. BOR-TP24)…">
+<!-- =============================== ENTÊTE ============================== -->
+<header class="top" data-nav>
+  <div class="top__in">
+    <div class="logo">Boréale <em>Équipement</em></div>
+    <label class="search">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <input placeholder="Rechercher un produit, un SKU (ex. BOR-TP24)…" aria-label="Rechercher">
+    </label>
+    <nav class="hact">
+      <a href="#"><svg viewBox="0 0 24 24"><path d="M20 21a8 8 0 1 0-16 0"/><circle cx="12" cy="7" r="4"/></svg><span>Compte</span></a>
+      <a href="#"><svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></svg><span>Panier</span><span class="badge">3</span></a>
+    </nav>
   </div>
-  <div class="hactions">
-    <a href="#"><svg class="ic" viewBox="0 0 24 24"><path d="M20 21a8 8 0 1 0-16 0"/><circle cx="12" cy="7" r="4"/></svg>Compte</a>
-    <a href="#" class="cart"><svg class="ic" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></svg>Panier<span class="badge">3</span></a>
+</header>
+
+<nav class="cats">
+  <div class="cats__in">
+    <a href="#categories">Thermopompes</a><a href="#categories">Climatisation</a>
+    <a href="#categories">Chauffe-eau</a><a href="#categories">Plomberie</a>
+    <a href="#categories">Ventilation</a><a href="#produits">Pièces</a>
+    <span class="promo"><i></i>Livraison gratuite dès 5 000 $ net</span>
   </div>
-</div></header>
+</nav>
 
-<!-- category nav -->
-<nav class="cats"><div class="wrap">
-  <a href="#">Thermopompes</a><a href="#">Climatisation</a><a href="#">Chauffe-eau</a>
-  <a href="#">Plomberie</a><a href="#">Ventilation</a><a href="#">Pièces</a>
-  <span class="promo"><span class="dot"></span>Livraison gratuite dès 5 000 $ net</span>
-</div></nav>
+<!-- ================================ HÉRO =============================== -->
+<section class="hero">
+  <div class="hero__bg" data-parallax="0.12">
+    <img src="/img/hero-entrepot.jpg" alt="" fetchpriority="high">
+  </div>
+  <div class="hero__veil"></div>
+  <div class="hero__in shell">
+    <div class="hero__grid">
+      <div>
+        <p class="eyebrow" data-reveal="fade">Prix entrepreneur</p>
+        <h1 data-reveal="fade" data-split>L'équipement de vos chantiers, <span class="mark">en stock</span>.</h1>
+        <p class="hero__lead" data-reveal="up" data-delay="180">
+          Thermopompes, chauffe-eau, plomberie et ventilation — aux prix entrepreneur.
+          Ramassage au comptoir en 2 h, livraison locale le lendemain.
+        </p>
+        <div class="hero__cta" data-reveal="up" data-delay="270">
+          <a class="btn btn--sig" href="#produits" data-magnetic="0.24"><span>Voir le catalogue</span>
+            <svg viewBox="0 0 24 24"><path d="M5 12h13"/><path d="m12 5 7 7-7 7"/></svg></a>
+          <a class="btn btn--ghost" href="#" data-magnetic="0.18"><span>Ouvrir un compte</span></a>
+        </div>
+      </div>
 
-<!-- hero -->
-<section class="hero" style="padding:0;"><div class="wrap">
-  <div>
-    <span class="tag">Prix entrepreneur</span>
-    <h1>L'équipement de vos chantiers, en stock.</h1>
-    <p>Thermopompes, chauffe-eau, plomberie et ventilation — aux prix entrepreneur. Ramassage au comptoir en 2 h, livraison locale le lendemain.</p>
-    <div class="hero-cta">
-      <button class="btn btn-amber">Voir le catalogue
-        <svg class="ic" viewBox="0 0 24 24" style="stroke:#33230a;"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></button>
-      <button class="btn btn-ghost">Ouvrir un compte</button>
+      <div class="promo-card" data-reveal="up" data-delay="360" data-spot>
+        <h3>Aubaines de la semaine</h3>
+        <div class="promo-row"><span>Thermopompe murale 24 000 BTU</span><b>1 890 $</b></div>
+        <div class="promo-row"><span>Chauffe-eau instantané au gaz</span><b>1 340 $</b></div>
+        <div class="promo-row"><span>Pompe de puisard 1/2 HP</span><b>189 $</b></div>
+        <div class="promo-note">Prix nets, valables en succursale · stock limité</div>
+      </div>
     </div>
   </div>
-  <div class="promo-card">
-    <h3>Aubaines de la semaine</h3>
-    <div class="promo-row"><span>Thermopompe murale 24 000 BTU</span><b>1 890 $</b></div>
-    <div class="promo-row"><span>Chauffe-eau instantané au gaz</span><b>1 340 $</b></div>
-    <div class="promo-row"><span>Pompe de puisard 1/2 HP</span><b>189 $</b></div>
+</section>
+
+<!-- =============================== TRUST =============================== -->
+<div class="trust">
+  <div class="trust__in" data-stagger="80" data-reveal="fade">
+    <div class="trust__it">
+      <svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"/><path d="M16 8h4l3 3v5h-7z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+      <div><b><span data-count="24">24</span> h</b><span>livraison · rayon de 60 km</span></div>
+    </div>
+    <div class="trust__it">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+      <div><b><span data-count="2">2</span> h</b><span>ramassage au comptoir</span></div>
+    </div>
+    <div class="trust__it">
+      <svg viewBox="0 0 24 24"><path d="M12 2 4 6v6c0 5 3.4 8 8 10 4.6-2 8-5 8-10V6z"/><path d="m9 12 2 2 4-4"/></svg>
+      <div><b>Jusqu'à <span data-count="10">10</span> ans</b><span>garanties fabricant</span></div>
+    </div>
+    <div class="trust__it">
+      <svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+      <div><b><span data-count="3200" data-suffix="+">3 200+</span></b><span>produits en inventaire</span></div>
+    </div>
   </div>
-</div></section>
+</div>
 
-<!-- trust strip -->
-<div class="trust"><div class="wrap">
-  <div class="item"><svg class="ic" viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"/><path d="M16 8h4l3 3v5h-7z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg><div><b>Livraison 24 h</b><span>rayon de 60 km</span></div></div>
-  <div class="item"><svg class="ic" viewBox="0 0 24 24"><path d="M12 2v20M2 12h20"/><circle cx="12" cy="12" r="9"/></svg><div><b>Ramassage 2 h</b><span>au comptoir</span></div></div>
-  <div class="item"><svg class="ic" viewBox="0 0 24 24"><path d="M12 2 4 6v6c0 5 3.4 8 8 10 4.6-2 8-5 8-10V6z"/></svg><div><b>Garanties fabricant</b><span>jusqu'à 10 ans</span></div></div>
-  <div class="item"><svg class="ic" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg><div><b>3 200+ produits</b><span>en inventaire</span></div></div>
-</div></div>
+<!-- ============================ CATÉGORIES ============================= -->
+<section class="band" id="categories">
+  <div class="shell">
+    <div class="sec-head">
+      <div>
+        <p class="eyebrow" data-reveal="fade">Nos rayons</p>
+        <h2 class="h2" data-reveal="fade" data-split>Tout ce qui fait tourner un chantier.</h2>
+      </div>
+      <a class="link" href="#produits" data-reveal="up" data-delay="120">Tout voir
+        <svg viewBox="0 0 24 24"><path d="M5 12h13"/><path d="m12 5 7 7-7 7"/></svg></a>
+    </div>
 
-<!-- categories -->
-<section><div class="wrap">
-  <div class="sec-head"><h2>Nos catégories</h2><a href="#">Tout voir →</a></div>
-  <div class="cat-grid">
-    <div class="cat-tile"><div class="badge"><svg class="ic" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="12" rx="2"/><path d="M6 20h.01M10 20h.01M14 20h.01M18 20h.01"/></svg></div><h3>Thermopompes</h3><p>Murales et centrales, jusqu'à -25 °C</p></div>
-    <div class="cat-tile"><div class="badge"><svg class="ic" viewBox="0 0 24 24"><path d="M12 2v6M12 22a6 6 0 0 0 6-6c0-4-6-10-6-10S6 12 6 16a6 6 0 0 0 6 6z"/></svg></div><h3>Chauffe-eau</h3><p>Électriques, au gaz, instantanés</p></div>
-    <div class="cat-tile"><div class="badge"><svg class="ic" viewBox="0 0 24 24"><path d="M4 4h4v8a4 4 0 0 0 8 0V4h4"/><path d="M12 12v8"/></svg></div><h3>Plomberie</h3><p>PEX, valves, pompes, raccords</p></div>
-    <div class="cat-tile"><div class="badge"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M6 6l2 2M16 16l2 2M18 6l-2 2M8 16l-2 2"/></svg></div><h3>Ventilation</h3><p>VRC, hottes, échangeurs d'air</p></div>
+    <div class="cat-grid">
+      <a class="cat" href="#produits" data-reveal="up">
+        <img src="/img/technicien.jpg" alt="Technicien intervenant sur un appareil" loading="lazy">
+        <span class="cat__veil"></span>
+        <span class="cat__go"><svg viewBox="0 0 24 24"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg></span>
+        <span class="cat__txt"><small>01</small><b>Thermopompes</b><p>Murales et centrales, jusqu'à -25 °C</p></span>
+      </a>
+      <a class="cat" href="#produits" data-reveal="up" data-delay="90">
+        <img src="/img/atelier.jpg" alt="Mains travaillant sur un appareil ouvert" loading="lazy">
+        <span class="cat__veil"></span>
+        <span class="cat__go"><svg viewBox="0 0 24 24"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg></span>
+        <span class="cat__txt"><small>02</small><b>Chauffe-eau</b><p>Électriques, au gaz, instantanés</p></span>
+      </a>
+      <a class="cat" href="#produits" data-reveal="up" data-delay="180">
+        <img src="/img/soudure.jpg" alt="Soudure en atelier" loading="lazy">
+        <span class="cat__veil"></span>
+        <span class="cat__go"><svg viewBox="0 0 24 24"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg></span>
+        <span class="cat__txt"><small>03</small><b>Plomberie</b><p>PEX, valves, pompes, raccords</p></span>
+      </a>
+      <a class="cat" href="#produits" data-reveal="up" data-delay="270">
+        <img src="/img/moteur.jpg" alt="Entretien d'un équipement mécanique" loading="lazy">
+        <span class="cat__veil"></span>
+        <span class="cat__go"><svg viewBox="0 0 24 24"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg></span>
+        <span class="cat__txt"><small>04</small><b>Ventilation</b><p>VRC, hottes, échangeurs d'air</p></span>
+      </a>
+    </div>
   </div>
-</div></section>
+</section>
 
-<!-- products -->
-<section style="padding-top:0;"><div class="wrap">
-  <div class="sec-head"><h2>Produits populaires</h2><a href="#">Voir le catalogue complet →</a></div>
-  <div class="prod-grid" id="products"></div>
-</div></section>
-
-<!-- stats band -->
-<div class="band"><div class="wrap">
-  <div class="stat"><b>18 ans</b><span>au service des entrepreneurs</span></div>
-  <div class="stat"><b>4 200</b><span>comptes commerciaux actifs</span></div>
-  <div class="stat"><b>2 h</b><span>ramassage au comptoir</span></div>
-  <div class="stat"><b>60 km</b><span>livraison locale gratuite*</span></div>
-</div></div>
-
-<!-- testimonials -->
-<section><div class="wrap">
-  <div class="sec-head"><h2>Ce que disent les entrepreneurs</h2></div>
-  <div class="tgrid">
-    <div class="tcard"><div class="stars">★★★★★</div><p>« Le comptoir est prêt en deux heures, comme promis. Ça change tout quand on est sur un chantier. »</p><div class="who"><div class="av">MT</div><div><b>Martin T.</b><span>Plomberie Rive-Nord</span></div></div></div>
-    <div class="tcard"><div class="stars">★★★★★</div><p>« Prix entrepreneur clairs, jamais de surprise. L'ouverture de compte a pris deux jours. »</p><div class="who"><div class="av">SG</div><div><b>Sophie G.</b><span>Confort CVC inc.</span></div></div></div>
-    <div class="tcard"><div class="stars">★★★★★</div><p>« Bon inventaire, et quand un produit manque ils proposent un équivalent tout de suite. »</p><div class="who"><div class="av">KL</div><div><b>Karl L.</b><span>Entretien KL</span></div></div></div>
+<!-- ============================= PRODUITS ============================== -->
+<section class="band" id="produits" style="padding-top:0;">
+  <div class="shell">
+    <div class="sec-head">
+      <div>
+        <p class="eyebrow" data-reveal="fade">Le plus demandé</p>
+        <h2 class="h2" data-reveal="fade" data-split>Produits populaires</h2>
+      </div>
+      <a class="link" href="#" data-reveal="up" data-delay="120">Voir le catalogue complet
+        <svg viewBox="0 0 24 24"><path d="M5 12h13"/><path d="m12 5 7 7-7 7"/></svg></a>
+    </div>
+    <div class="prod-grid" id="products"></div>
   </div>
-</div></section>
+</section>
 
-<!-- assistance (inline host) -->
-<section class="assist"><div class="wrap">
-  <div class="box">
-    <h2>Une question sur un produit, une garantie, un retour ?</h2>
-    <p class="sub">Notre assistant répond à partir de nos documents, source à l'appui.</p>
+<!-- ============================= COMPTOIR ============================== -->
+<section class="band comptoir" style="background:var(--ink-850);">
+  <div class="shell">
+    <div class="comptoir__grid">
+      <div style="position:relative">
+        <div class="comptoir__media" data-reveal="mask">
+          <img src="/img/palettes.jpg" alt="Entrepôt de distribution rempli de palettes" loading="lazy">
+        </div>
+        <div class="comptoir__small" data-reveal="mask" data-delay="220">
+          <img src="/img/comptoir.jpg" alt="Allées de stockage d'un entrepôt" loading="lazy">
+        </div>
+      </div>
+      <div>
+        <p class="eyebrow" data-reveal="fade">Notre promesse</p>
+        <h2 class="h2" data-reveal="fade" data-split>Sorti de l'entrepôt avant votre deuxième café.</h2>
+        <ul data-stagger="90">
+          <li>Commande passée avant 15 h : <b>ramassage au comptoir en 2 h</b>.</li>
+          <li>Livraison locale <b>le lendemain</b>, dans un rayon de 60 km.</li>
+          <li>Rupture de stock ? <b>Un équivalent vous est proposé tout de suite.</b></li>
+          <li>Prix entrepreneur affichés nets — <b>jamais de surprise en caisse</b>.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== CHIFFRES ============================= -->
+<div class="band band--tight band-stats">
+  <div class="band-stats__bg" data-parallax="0.08">
+    <img src="/img/chantier.jpg" alt="" loading="lazy">
+  </div>
+  <div class="band-stats__veil"></div>
+  <div class="band-stats__in shell">
+    <div class="stats">
+      <div class="stat" data-reveal="up">
+        <div class="v"><b data-count="18">18</b><i>ans</i></div>
+        <span class="num-lbl">au service des entrepreneurs</span>
+      </div>
+      <div class="stat" data-reveal="up" data-delay="90">
+        <div class="v"><b data-count="4200">4 200</b></div>
+        <span class="num-lbl">comptes commerciaux actifs</span>
+      </div>
+      <div class="stat" data-reveal="up" data-delay="180">
+        <div class="v"><b data-count="2">2</b><i>h</i></div>
+        <span class="num-lbl">ramassage au comptoir</span>
+      </div>
+      <div class="stat" data-reveal="up" data-delay="270">
+        <div class="v"><b data-count="60">60</b><i>km</i></div>
+        <span class="num-lbl">livraison locale gratuite*</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- =========================== TÉMOIGNAGES ============================= -->
+<section class="band">
+  <div class="shell">
+    <div class="sec-head">
+      <div>
+        <p class="eyebrow" data-reveal="fade">Sur le terrain</p>
+        <h2 class="h2" data-reveal="fade" data-split>Ce que disent les entrepreneurs</h2>
+      </div>
+    </div>
+    <div class="tgrid" data-stagger="110" data-reveal="fade">
+      <div class="tcard" data-spot>
+        <div class="stars">★★★★★</div>
+        <p>« Le comptoir est prêt en deux heures, comme promis. Ça change tout quand on est sur un chantier. »</p>
+        <div class="who"><div class="av">MT</div><div><b>Martin T.</b><span>Plomberie Rive-Nord</span></div></div>
+      </div>
+      <div class="tcard" data-spot>
+        <div class="stars">★★★★★</div>
+        <p>« Prix entrepreneur clairs, jamais de surprise. L'ouverture de compte a pris deux jours. »</p>
+        <div class="who"><div class="av">SG</div><div><b>Sophie G.</b><span>Confort CVC inc.</span></div></div>
+      </div>
+      <div class="tcard" data-spot>
+        <div class="stars">★★★★★</div>
+        <p>« Bon inventaire, et quand un produit manque ils proposent un équivalent tout de suite. »</p>
+        <div class="who"><div class="av">KL</div><div><b>Karl L.</b><span>Entretien KL</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ ASSISTANCE ============================= -->
+<section class="band assist" id="assistance">
+  <div class="assist__bg" data-parallax="0.06"><img src="/img/texture.jpg" alt="" loading="lazy"></div>
+  <div class="assist__in shell">
+    <div class="assist__head">
+      <p class="eyebrow" data-reveal="fade">Assistance</p>
+      <h2 class="h2" data-reveal="fade" data-split>Une question sur un produit, une garantie, un retour ?</h2>
+      <p class="lead" style="margin-top:20px" data-reveal="up" data-delay="140">
+        Notre assistant répond à partir de nos documents, source à l'appui.
+      </p>
+    </div>
     <div id="inline-host"></div>
   </div>
-</div></section>
+</section>
 
-<!-- footer -->
-<footer class="site">
-  <div class="wrap cols">
-    <div>
-      <div class="logo">Boréale <em style="color:#ffd694;">Équipement</em></div>
-      <p>Distributeur d'équipement CVC et plomberie pour entrepreneurs. Laval, Québec.</p>
-      <p>450 555-0170 · service@boreale-equipement.ca</p>
+<!-- =============================== FOOTER ============================== -->
+<footer class="foot">
+  <div class="shell">
+    <div class="foot__cols">
+      <div>
+        <div class="logo">Boréale <em>Équipement</em></div>
+        <p>Distributeur d'équipement CVC et plomberie pour entrepreneurs. Laval, Québec.</p>
+        <p>450 555-0170 · service@boreale-equipement.ca</p>
+      </div>
+      <div><h4>Produits</h4><ul>
+        <li><a href="#categories">Thermopompes</a></li><li><a href="#categories">Chauffe-eau</a></li>
+        <li><a href="#categories">Plomberie</a></li><li><a href="#categories">Ventilation</a></li></ul></div>
+      <div><h4>Compte</h4><ul>
+        <li><a href="#">Ouvrir un compte</a></li><li><a href="#">Mes commandes</a></li>
+        <li><a href="#">Prix entrepreneur</a></li><li><a href="#">Facturation</a></li>
+        <li><a href="/gestion.html">Gérer les documents</a></li></ul></div>
+      <div><h4>Aide</h4><ul>
+        <li><a href="#">Livraison</a></li><li><a href="#">Garanties &amp; retours</a></li>
+        <li><a href="#">FAQ</a></li><li><a href="#assistance">Nous joindre</a></li></ul></div>
     </div>
-    <div><h4>Produits</h4><ul><li><a href="#">Thermopompes</a></li><li><a href="#">Chauffe-eau</a></li><li><a href="#">Plomberie</a></li><li><a href="#">Ventilation</a></li></ul></div>
-    <div><h4>Compte</h4><ul><li><a href="#">Ouvrir un compte</a></li><li><a href="#">Mes commandes</a></li><li><a href="#">Prix entrepreneur</a></li><li><a href="#">Facturation</a></li><li><a href="/gestion.html">Gérer les documents</a></li></ul></div>
-    <div><h4>Aide</h4><ul><li><a href="#">Livraison</a></li><li><a href="#">Garanties &amp; retours</a></li><li><a href="#">FAQ</a></li><li><a href="#">Nous joindre</a></li></ul></div>
+    <div class="foot__legal">Maquette de démonstration — le site et l'entreprise sont fictifs.
+      L'assistant, lui, est réel et répond sur de vrais documents.</div>
   </div>
-  <div class="wrap legal">Maquette de démonstration — le site et l'entreprise sont fictifs. L'assistant, lui, est réel et répond sur de vrais documents.</div>
 </footer>
 
-<!-- contrôle de démo (discret) -->
+<!-- ========================= CONTRÔLE DE DÉMO ========================== -->
 <div id="demo-ctrl">
   <span class="lbl">Affichage</span>
   <div class="grp" id="switch">
-    <button data-mode="floating" class="active">Bulle</button>
-    <button data-mode="inline">Intégré</button>
-    <button data-mode="fullscreen">Plein écran</button>
+    <button data-mode="floating" class="active" type="button">Bulle</button>
+    <button data-mode="inline" type="button">Intégré</button>
+    <button data-mode="fullscreen" type="button">Plein écran</button>
   </div>
 </div>
 
+<script src="/lenis.min.js"></script>
+<script src="/motion.js"></script>
 <script src="/widget.js"></script>
 <script>
   // Produits (issus du catalogue) — vignettes colorées par catégorie
@@ -356,28 +736,41 @@
     { n:"Tuyau PEX-a 3/4 po (100 m)", sku:"BOR-PEX34", s:"Certifié NSF · max 93 °C", p:"210", c:"#4a5568", ic:'<path d="M4 8c8 0 8 8 16 8M4 16c8 0 8-8 16-8"/>' },
     { n:"Hotte de cuisine 30 po", sku:"BOR-HOTTE30", s:"600 PCM · évacuation ext.", p:"340", c:"#2a7d6b", ic:'<path d="M3 7h18l-2 5H5z"/><path d="M7 12v5M17 12v5"/>' },
   ];
-  const cartSvg = '<svg class="ic" viewBox="0 0 24 24" style="stroke:#fff;width:18px;height:18px;"><path d="M12 5v14M5 12h14"/></svg>';
-  document.getElementById("products").innerHTML = PRODUCTS.map(p => `
-    <div class="prod">
-      <div class="thumb" style="background:linear-gradient(135deg, ${p.c}, ${p.c}cc);">
-        <span class="sku">${p.sku}</span>
-        <svg class="ic" viewBox="0 0 24 24">${p.ic}</svg>
+  const plusSvg = '<svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>';
+  document.getElementById("products").innerHTML = PRODUCTS.map((p, i) => `
+    <article class="prod" data-reveal="up" data-delay="${(i % 4) * 80}" data-spot>
+      <div class="prod__thumb" style="background:
+          radial-gradient(120% 100% at 22% 6%, ${p.c}, transparent 64%),
+          radial-gradient(90% 90% at 92% 96%, ${p.c}88, transparent 62%),
+          linear-gradient(150deg, ${p.c}dd, ${p.c}66 118%);">
+        <span class="prod__sku">${p.sku}</span>
+        <svg viewBox="0 0 24 24">${p.ic}</svg>
       </div>
-      <div class="body">
+      <div class="prod__body">
         <h3>${p.n}</h3>
-        <p class="spec">${p.s}</p>
-        <div class="foot"><div class="price">${p.p} $ <small>net</small></div>
-          <button class="add" title="Ajouter">${cartSvg}</button></div>
+        <p class="prod__spec">${p.s}</p>
+        <div class="prod__foot">
+          <div class="prod__price">${p.p} $<small>prix net</small></div>
+          <button class="prod__add" type="button" title="Ajouter au panier"
+            aria-label="Ajouter ${p.n} au panier">${plusSvg}</button>
+        </div>
       </div>
-    </div>`).join("");
+    </article>`).join("");
 
   // Widget + sélecteur de modes
   const buttons = document.querySelectorAll("#switch button");
   const host = document.getElementById("inline-host");
+  /* Le défilement inertiel a la main sur la page : passer par lui, sinon
+     `scrollIntoView` est immédiatement rattrapé et le mode « Intégré » ne
+     descend jamais jusqu'à l'assistant. */
+  function amener(cible){
+    if (window.Motion && window.Motion.versElement) window.Motion.versElement(cible, 90);
+    else cible.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
   function setMode(mode){
     DocAssistant.unmountAll();
     host.innerHTML = "";
-    if(mode === "inline"){ DocAssistant.mount({ mode:"inline", target: host }); host.scrollIntoView({behavior:"smooth",block:"center"}); }
+    if(mode === "inline"){ DocAssistant.mount({ mode:"inline", target: host }); amener(host); }
     else if(mode === "fullscreen"){ DocAssistant.mount({ mode:"fullscreen" }); }
     else { DocAssistant.mount({ mode:"floating" }); }
     buttons.forEach(b => b.classList.toggle("active", b.dataset.mode === mode));
@@ -394,20 +787,31 @@
   function lire(cle){ try { return localStorage.getItem(cle) || ''; } catch(e){ return ''; } }
   function ecrire(cle, v){ try { localStorage.setItem(cle, v); } catch(e){} }
 
+  /* La porte se retire en fondu plutôt que d'un coup ; le défilement reste
+     bloqué tant qu'elle est là. */
+  function ouvrirLaPorte(gate){
+    document.documentElement.classList.remove('gated');
+    if (window.Motion) window.Motion.start();
+    gate.classList.add('is-out');
+    setTimeout(() => gate.remove(), 800);
+  }
+
   async function ensureAuth(){
     const gate = document.getElementById('auth-gate');
     const input = document.getElementById('auth-pw');
     const err = document.getElementById('auth-err');
     const btn = document.getElementById('auth-btn');
+    document.documentElement.classList.add('gated');
+    if (window.Motion) window.Motion.stop();
     const stored = lire('da_api_password');
-    if (stored && await verifyPassword(stored) === 'ok') { gate.remove(); return; }
+    if (stored && await verifyPassword(stored) === 'ok') { ouvrirLaPorte(gate); return; }
     await new Promise(resolve => {
       async function attempt(){
         const pw = (input.value||'').trim();
         if(!pw){ err.textContent = 'Entrez un mot de passe.'; return; }
         btn.disabled = true; err.textContent = 'Vérification…';
         const issue = await verifyPassword(pw);
-        if (issue === 'ok') { ecrire('da_api_password', pw); gate.remove(); resolve(); return; }
+        if (issue === 'ok') { ecrire('da_api_password', pw); ouvrirLaPorte(gate); resolve(); return; }
         btn.disabled = false;
         err.textContent = issue === 'reseau'
           ? "Serveur injoignable. Vérifiez qu'il est démarré, puis réessayez."

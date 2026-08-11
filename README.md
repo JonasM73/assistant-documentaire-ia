@@ -88,7 +88,33 @@ Les tests travaillent **exclusivement dans des dossiers temporaires** : ni `chro
 
 ## Interfaces
 
-Le widget (`web/widget.js`) et l'espace d'administration (`web/gestion.html`) partagent **un seul système de design** : mêmes jetons de couleur, mêmes ombres, même typographie. Les jetons du widget sont préfixés `--da-` pour ne jamais entrer en collision avec la feuille de style du site hôte. Toute modification d'un jeton doit être répercutée dans les deux fichiers.
+Toutes les pages partagent **un seul système de design**, « Encre & Signal » :
+
+| Fichier | Rôle |
+|---|---|
+| `web/da.css` | Jetons (encre, papier, signal, typographie, courbes), primitives d'animation, composants communs (boutons, filets, pastilles, médias). |
+| `web/motion.js` | Moteur d'animation maison, sans dépendance obligatoire : apparitions à l'entrée dans l'écran, titres découpés mot à mot, parallaxe, compteurs, micro-interactions, en-tête réactif. |
+| `web/lenis.min.js` | Défilement inertiel (Lenis, MIT), servi en local — le site fonctionne à l'identique s'il est absent. |
+| `web/img/`, `marketing/img/` | Photographies servies en local : la démonstration fonctionne sans connexion. |
+
+`marketing/` est déployé séparément (hébergement statique) : `da.css`, `motion.js` et `lenis.min.js` y sont **copiés à l'identique**. Toute modification doit être répercutée dans les deux dossiers.
+
+Deux exceptions assumées à la règle « aucun conteneur » : l'onglet **Statistiques** de l'administration pose ses blocs sur des cartes translucides (sans quoi on ne distingue plus un groupe de chiffres du suivant), et les **réponses du chatbot** sont dans des bulles blanches (sans quoi on ne voit plus où commence un tour de parole). Partout ailleurs, le contenu reste posé à nu sur le fond.
+
+L'explorateur de questions affiche **15 questions par page** ; le serveur en renvoie au plus 500 (borne de `journal.rechercher`), la pagination est faite côté client.
+
+Le widget (`web/widget.js`) embarque sa propre feuille de style, alignée sur les mêmes valeurs mais avec des jetons préfixés `--da-` : il ne peut ni entrer en collision avec le CSS du site hôte, ni en hériter.
+
+Deux axes de variation, et deux seulement :
+
+| Axe | Attribut sur `<html>` | Qui l'utilise |
+|---|---|---|
+| **Thème** | `data-theme="clair"` (papier) · absent = sombre (encre) | Clair : vitrine Boréale, administration, widget. Sombre : site de l'offre. |
+| **Signal** | `data-skin="boreale"` (cobalt & ambre) · absent = émeraude | Cobalt : vitrine Boréale. Émeraude : le produit (assistant, administration, offre). |
+
+Le thème clair ne redéfinit que des **valeurs de jetons**, jamais des règles : toute la mise en page écrite pour le sombre fonctionne telle quelle. Les couleurs en dur sont proscrites dans les pages — on ne manipule que des rôles (`--ink-*` pour les surfaces, `--on-ink-*` pour le texte, `--tint*` pour les surfaces surélevées, `--sh-*` pour les ombres, `--on-media` pour le texte posé sur une photo).
+
+Le contenu reste lisible sans JavaScript : les états masqués sont conditionnés à une classe posée par `motion.js`, et un filet de sécurité révèle tout au bout de 3 secondes. `prefers-reduced-motion` neutralise l'ensemble des animations.
 
 ## Limites (à dire au client, c'est une démo)
 

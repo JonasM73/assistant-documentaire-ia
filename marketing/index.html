@@ -7,247 +7,646 @@
 <meta property="og:title" content="Assistant IA sur vos documents — pour PME">
 <meta property="og:description" content="Vos équipes arrêtent de chercher l'info dans 40 fichiers. Réponse en secondes, source citée. Démo en 2 minutes.">
 <meta property="og:type" content="website">
+<meta name="theme-color" content="#070D0B">
 <title>Assistant IA sur vos documents — pour PME</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;450;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="da.css">
 <style>
-  :root{
-    --paper:#F3F4F1; --card:#FFFFFF;
-    --ink:#15211D; --ink-soft:#586460;
-    --emerald:#0E6E57; --emerald-dark:#0A5443; --marker:#C6F24E;
-    --line:#DBDED7;
-    --mono:'IBM Plex Mono',ui-monospace,monospace;
-    --display:'Bricolage Grotesque',system-ui,sans-serif;
-    --body:'Newsreader',Georgia,serif;
-  }
-  *{box-sizing:border-box;}
+  /* =========================================================================
+     Page de l'offre — composition propre à cette page.
+     Le vocabulaire commun (jetons, boutons, révélations) vit dans da.css.
+     ========================================================================= */
   html{scroll-behavior:smooth;}
-  body{margin:0;background:var(--paper);color:var(--ink);
-    font-family:var(--body);font-size:18.5px;line-height:1.55;-webkit-font-smoothing:antialiased;}
-  .wrap{max-width:1040px;margin:0 auto;padding:0 24px;}
-  h1,h2,h3,.eyebrow,.btn,.chip,.pricebig{font-family:var(--display);}
-  a{color:var(--emerald);}
-  .eyebrow{font-size:13px;letter-spacing:.14em;text-transform:uppercase;
-    font-weight:700;color:var(--emerald);margin:0 0 14px;}
+  body{background:var(--ink-900);}
 
-  /* ---------- top bar ---------- */
-  .topbar{border-bottom:1px solid var(--line);}
-  .topbar .wrap{display:flex;align-items:center;justify-content:space-between;padding-top:18px;padding-bottom:18px;}
-  .brand{font-family:var(--display);font-weight:800;font-size:18px;letter-spacing:-.01em;}
-  .brand span{color:var(--emerald);}
-  .toplink{font-family:var(--display);font-weight:600;font-size:15px;text-decoration:none;color:var(--ink);
-    border-bottom:2px solid var(--marker);padding-bottom:2px;}
+  /* ---------------------------------------------------------------- NAV --- */
+  .nav{position:fixed;top:0;left:0;right:0;z-index:300;
+    transition:transform .6s var(--e),background .6s var(--e),backdrop-filter .6s var(--e);}
+  .nav.is-stuck{background:rgba(12,22,19,.78);
+    -webkit-backdrop-filter:blur(18px) saturate(1.5);backdrop-filter:blur(18px) saturate(1.5);
+    box-shadow:0 1px 0 var(--rule-ink-2);}
+  .nav.is-hidden{transform:translateY(-102%);}
+  .nav__in{display:flex;align-items:center;gap:26px;
+    height:clamp(64px,7vw,84px);max-width:var(--maxw);margin:0 auto;
+    padding-left:var(--gut);padding-right:var(--gut);}
+  .brand{display:flex;align-items:baseline;gap:2px;font-family:var(--disp);font-weight:800;
+    font-size:17px;letter-spacing:-.035em;color:var(--on-ink);}
+  .brand i{font-style:normal;color:var(--sig-400);}
+  .brand__dot{width:7px;height:7px;border-radius:50%;background:var(--lime);
+    margin-left:8px;align-self:center;animation:pulse 2.6s var(--e) infinite;}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.35;transform:scale(.72);}}
+  .nav__links{display:flex;gap:30px;margin-left:auto;}
+  .nav__links a{position:relative;font-size:14px;font-weight:500;color:var(--on-ink-2);
+    padding:6px 0;transition:color .3s var(--e);}
+  .nav__links a::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;
+    background:var(--sig-400);transform:scaleX(0);transform-origin:right;
+    transition:transform .45s var(--e);}
+  .nav__links a:hover{color:var(--on-ink);}
+  .nav__links a:hover::after{transform:scaleX(1);transform-origin:left;}
+  .nav__cta{margin-left:6px;padding:12px 22px;font-size:14px;}
+  .burger{display:none;margin-left:auto;width:44px;height:44px;border:none;background:none;
+    cursor:pointer;position:relative;}
+  .burger i{position:absolute;left:11px;right:11px;height:1.5px;background:var(--on-ink);
+    transition:transform .5s var(--e),opacity .3s var(--e);}
+  .burger i:nth-child(1){top:18px;} .burger i:nth-child(2){top:25px;}
+  .nav.is-open .burger i:nth-child(1){transform:translateY(3.5px) rotate(45deg);}
+  .nav.is-open .burger i:nth-child(2){transform:translateY(-3.5px) rotate(-45deg);}
 
-  /* ---------- hero ---------- */
-  .hero .wrap{padding-top:58px;padding-bottom:54px;text-align:center;}
-  h1{font-weight:800;font-size:clamp(36px,5.6vw,58px);line-height:1.04;
-    letter-spacing:-.025em;margin:0 auto 20px;max-width:20ch;}
-  .mark{background:linear-gradient(transparent 55%, var(--marker) 55%);padding:0 3px;}
-  .lead{font-size:21px;color:var(--ink-soft);max-width:52ch;margin:0 auto 14px;}
-  .who{font-family:var(--display);font-weight:600;font-size:14.5px;color:var(--ink-soft);margin:0 auto 30px;}
-  .who b{color:var(--emerald);}
-  .cta-row{display:flex;gap:16px;align-items:center;justify-content:center;flex-wrap:wrap;}
-  .btn{display:inline-block;background:var(--emerald);color:#fff;text-decoration:none;
-    font-weight:700;font-size:17px;padding:15px 28px;border-radius:10px;
-    transition:background .15s ease,transform .15s ease;}
-  .btn:hover{background:var(--emerald-dark);transform:translateY(-1px);}
-  .btn-ghost{font-family:var(--display);font-weight:600;font-size:16px;text-decoration:none;
-    color:var(--ink);border-bottom:2px solid var(--marker);padding-bottom:2px;}
-  .badges{display:flex;flex-wrap:wrap;gap:10px;margin-top:30px;justify-content:center;}
-  .badge-pill{display:inline-flex;align-items:center;gap:8px;font-family:var(--display);font-weight:600;
-    font-size:13.5px;color:var(--ink);background:var(--card);border:1px solid var(--line);
-    border-radius:999px;padding:8px 14px;}
-  .badge-pill::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--emerald);flex:none;}
+  .menu{position:fixed;inset:0;z-index:290;background:var(--ink-950);
+    display:flex;flex-direction:column;justify-content:center;gap:6px;
+    padding:0 var(--gut);clip-path:inset(0 0 100% 0);visibility:hidden;
+    transition:clip-path .8s var(--e),visibility 0s linear .8s;}
+  .menu.is-open{clip-path:inset(0 0 0 0);visibility:visible;transition:clip-path .8s var(--e);}
+  .menu a{font-family:var(--disp);font-weight:800;font-size:clamp(2rem,9vw,3.4rem);
+    letter-spacing:-.05em;color:var(--on-ink);padding:8px 0;
+    opacity:0;transform:translateY(28px);transition:opacity .6s var(--e),transform .7s var(--e);}
+  .menu.is-open a{opacity:1;transform:none;}
+  .menu.is-open a:nth-child(1){transition-delay:.14s;}
+  .menu.is-open a:nth-child(2){transition-delay:.2s;}
+  .menu.is-open a:nth-child(3){transition-delay:.26s;}
+  .menu.is-open a:nth-child(4){transition-delay:.32s;}
+  .menu.is-open a:nth-child(5){transition-delay:.38s;}
+  .menu a:hover{color:var(--sig-400);}
+  .menu__foot{margin-top:44px;font:var(--t-micro);letter-spacing:.16em;text-transform:uppercase;
+    color:var(--on-ink-4);}
 
-  /* ---------- sections ---------- */
-  section{border-top:1px solid var(--line);}
-  section .wrap{padding-top:60px;padding-bottom:60px;}
-  h2{font-weight:700;font-size:clamp(25px,3.2vw,32px);letter-spacing:-.02em;margin:0 0 8px;}
-  .sec-sub{color:var(--ink-soft);margin:0 0 30px;font-size:18px;}
+  /* --------------------------------------------------------------- HERO --- */
+  .hero{position:relative;min-height:100svh;display:flex;align-items:flex-end;
+    overflow:hidden;padding-bottom:clamp(40px,7vw,90px);padding-top:clamp(110px,14vw,180px);}
+  .hero__bg{position:absolute;inset:-14% 0 -14% 0;z-index:0;}
+  .hero__bg img{width:100%;height:100%;object-fit:cover;
+    filter:saturate(.78) contrast(1.04) brightness(1.12);}
+  /* Le voile éclaire la photo au lieu de l'éteindre : on doit distinguer
+     l'espace derrière le titre, pas deviner un aplat noir. */
+  .hero__veil{position:absolute;inset:0;z-index:1;pointer-events:none;
+    background:
+      linear-gradient(180deg,rgba(8,15,13,.82) 0%,rgba(8,15,13,.34) 34%,rgba(8,15,13,.66) 74%,var(--ink-900) 100%),
+      linear-gradient(100deg,rgba(8,15,13,.72) 4%,rgba(8,15,13,.2) 44%,transparent 72%),
+      radial-gradient(90% 70% at 82% 12%,rgba(16,185,129,.3),transparent 62%),
+      radial-gradient(70% 60% at 8% 96%,rgba(198,242,78,.14),transparent 60%);}
+  .hero__in{position:relative;z-index:2;width:100%;}
+  .hero__grid{display:grid;grid-template-columns:minmax(0,1.28fr) minmax(0,.72fr);
+    gap:clamp(28px,4vw,64px);align-items:end;}
+  .hero h1{font-size:clamp(2.4rem,5.9vw,5.9rem);line-height:.92;letter-spacing:-.05em;
+    margin:0 0 26px;max-width:16ch;}
+  .hero h1 .thin{font-weight:500;color:var(--on-ink-2);}
+  .hero__lead{max-width:46ch;color:var(--on-ink-2);font-size:clamp(1rem,1.2vw,1.22rem);
+    line-height:1.6;margin-bottom:34px;}
+  .hero__lead em{font-family:var(--serif);font-style:italic;color:var(--on-ink);
+    font-size:1.08em;}
+  .hero__cta{display:flex;gap:14px;flex-wrap:wrap;align-items:center;}
+  .hero__pills{display:flex;flex-wrap:wrap;gap:10px;margin-top:38px;}
+  .hero__cue{position:absolute;left:var(--gut);bottom:22px;z-index:3;display:flex;
+    align-items:center;gap:12px;font:var(--t-micro);letter-spacing:.2em;text-transform:uppercase;
+    color:var(--on-ink-4);}
+  .hero__cue i{display:block;width:1px;height:34px;background:linear-gradient(var(--sig-400),transparent);
+    animation:cue 2.2s var(--e) infinite;transform-origin:top;}
+  @keyframes cue{0%{transform:scaleY(0);}45%{transform:scaleY(1);}100%{transform:scaleY(0);transform-origin:bottom;}}
 
-  /* ---------- démo + FAQ côte à côte ---------- */
-  .demo-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:34px;align-items:start;}
-  .video-col{position:sticky;top:24px;}
-  .video-frame{position:relative;padding-top:56.25%;border-radius:16px;overflow:hidden;
-    background:var(--ink);box-shadow:0 24px 60px -30px rgba(21,33,29,.55);border:1px solid var(--line);}
-  .video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
-  .video-cap{font-family:var(--display);font-weight:600;font-size:14px;color:var(--ink-soft);
-    margin:14px 2px 0;display:flex;align-items:center;gap:8px;}
-  .video-cap::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--emerald);}
-  .try-live{margin-top:16px;background:var(--card);border:1px dashed var(--line);border-radius:12px;
-    padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
-  .try-live p{margin:0;font-size:15.5px;color:var(--ink-soft);}
-  .try-btn{font-family:var(--display);font-weight:700;font-size:14.5px;color:var(--emerald);
-    background:transparent;border:2px solid var(--emerald);border-radius:9px;padding:9px 16px;cursor:pointer;
-    transition:background .15s ease,color .15s ease;}
-  .try-btn:hover{background:var(--emerald);color:#fff;}
-  #pw-modal{position:fixed;inset:0;z-index:9999;background:rgba(21,33,29,.55);display:none;
-    align-items:center;justify-content:center;padding:20px;}
-  #pw-modal.open{display:flex;}
-  #pw-modal .box{background:var(--card);border-radius:16px;padding:28px;width:min(360px,92vw);
-    box-shadow:0 30px 80px -30px rgba(0,0,0,.6);}
-  #pw-modal h3{font-family:var(--display);font-weight:700;font-size:19px;margin:0 0 6px;}
-  #pw-modal p{font-family:var(--body);font-size:15px;color:var(--ink-soft);margin:0 0 16px;}
-  #pw-modal input{width:100%;padding:11px 13px;border:1.5px solid var(--line);border-radius:10px;
-    font-size:15px;margin-bottom:8px;outline:none;font-family:system-ui,sans-serif;}
-  #pw-modal input:focus{border-color:var(--emerald);}
-  #pw-modal .err{color:#c0392b;font-size:13px;min-height:18px;margin-bottom:8px;font-family:system-ui,sans-serif;}
-  #pw-modal .row{display:flex;gap:10px;}
-  #pw-modal button{font-family:var(--display);font-weight:700;font-size:15px;border-radius:9px;
-    padding:11px 18px;cursor:pointer;border:none;}
-  #pw-modal .go{flex:1;background:var(--emerald);color:#fff;}
-  #pw-modal .cancel{background:transparent;color:var(--ink-soft);border:1.5px solid var(--line);}
-  .faq details{border:1px solid var(--line);border-radius:12px;background:var(--card);
-    margin-bottom:10px;padding:0 20px;}
-  .faq summary{font-family:var(--display);font-weight:700;font-size:16.5px;cursor:pointer;
-    padding:15px 0;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:16px;}
+  /* Aperçu de réponse : la promesse du produit, montrée plutôt qu'écrite. */
+  .peek{position:relative;border-radius:var(--r-lg);padding:24px 24px 20px;
+    background:linear-gradient(160deg,rgba(30,48,42,.82),rgba(12,22,19,.76));
+    -webkit-backdrop-filter:blur(20px) saturate(1.3);backdrop-filter:blur(20px) saturate(1.3);
+    box-shadow:inset 0 0 0 1px rgba(244,247,245,.17),0 40px 90px -50px #000;
+    animation:float 7s ease-in-out infinite;}
+  @keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+  .peek__q{display:flex;gap:11px;align-items:flex-start;margin-bottom:18px;}
+  .peek__q span{font-size:13.5px;line-height:1.5;color:var(--on-ink);
+    background:var(--sig-600);padding:10px 14px;border-radius:14px 14px 4px 14px;}
+  .peek__a{font-size:13.5px;line-height:1.62;color:var(--on-ink-2);}
+  .peek__a b{color:var(--on-ink);font-weight:600;}
+  .peek__src{margin-top:15px;padding-top:12px;display:flex;flex-wrap:wrap;gap:8px;
+    border-top:1px solid var(--rule-ink);}
+  .peek__chip{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);
+    font-size:10.5px;color:var(--sig-300);letter-spacing:.02em;}
+  .peek__chip svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2;opacity:.7;}
+  .peek__cap{margin-top:14px;font:var(--t-micro);letter-spacing:.13em;text-transform:uppercase;
+    color:var(--on-ink-4);line-height:1.6;}
+  .peek__dots{display:inline-flex;gap:4px;align-items:center;margin-left:2px;}
+  .peek__dots i{width:5px;height:5px;border-radius:50%;background:var(--sig-400);opacity:.35;
+    animation:blink 1.3s infinite;}
+  .peek__dots i:nth-child(2){animation-delay:.16s;} .peek__dots i:nth-child(3){animation-delay:.32s;}
+  @keyframes blink{0%,100%{opacity:.25;}50%{opacity:1;}}
+
+  /* ------------------------------------------------------------ MARQUEE --- */
+  .band-mq{padding:clamp(22px,2.6vw,34px) 0;border-top:1px solid var(--rule-ink-2);
+    border-bottom:1px solid var(--rule-ink-2);background:var(--ink-950);}
+  .mq-item{display:inline-flex;align-items:center;gap:clamp(28px,3vw,52px);
+    padding-right:clamp(28px,3vw,52px);font-family:var(--disp);font-weight:700;
+    font-size:clamp(15px,1.5vw,20px);letter-spacing:-.025em;color:var(--on-ink-3);
+    white-space:nowrap;}
+  .mq-item i{width:5px;height:5px;border-radius:50%;background:var(--sig-500);flex:none;}
+
+  /* ------------------------------------------------------------ PROBLÈME -- */
+  .prob{position:relative;overflow:hidden;}
+  .prob__grid{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);
+    gap:clamp(30px,5vw,88px);align-items:center;}
+  .prob__figure{position:relative;}
+  .prob__media{position:relative;aspect-ratio:4/5;border-radius:var(--r-lg);overflow:hidden;
+    background:var(--ink-800);}
+  .prob__media img{width:100%;height:100%;object-fit:cover;filter:grayscale(.18) contrast(1.02) brightness(1.04);}
+  .prob__stamp{position:absolute;right:-10%;bottom:-5%;z-index:3;text-align:right;
+    pointer-events:none;}
+  .prob__stamp b{display:block;font-family:var(--disp);font-weight:800;
+    font-size:clamp(4.4rem,11vw,9.5rem);letter-spacing:-.07em;line-height:.8;
+    color:var(--lime);text-shadow:0 26px 60px rgba(4,9,7,.85);font-variant-numeric:tabular-nums;}
+  .prob__stamp small{display:block;font-family:var(--mono);font-size:10.5px;font-weight:700;
+    letter-spacing:.19em;text-transform:uppercase;color:var(--on-ink-3);margin:14px 0 0 auto;
+    max-width:18ch;line-height:1.6;}
+  .prob__list{margin:34px 0 0;padding:0;list-style:none;}
+  .prob__list li{position:relative;padding:18px 0 18px 34px;font-size:16px;
+    color:var(--on-ink-2);border-bottom:1px solid var(--rule-ink-2);}
+  .prob__list li::before{content:"";position:absolute;left:0;top:26px;width:14px;height:1.5px;
+    background:var(--sig-400);}
+  .prob__list li b{color:var(--on-ink);font-weight:600;}
+
+  /* --------------------------------------------------------------- KPIS --- */
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(18px,2vw,30px);}
+  .kpi{position:relative;padding:0 clamp(14px,2vw,26px) 0 0;}
+  .kpi + .kpi{padding-left:clamp(14px,2vw,26px);}
+  .kpi + .kpi::before{content:"";position:absolute;left:0;top:6px;bottom:6px;width:1px;
+    background:linear-gradient(180deg,transparent,var(--rule-ink) 24%,var(--rule-ink) 76%,transparent);}
+  .kpi__v{display:flex;align-items:baseline;gap:6px;}
+  .kpi__v .num{color:var(--on-ink);}
+  .kpi__u{font-family:var(--disp);font-weight:700;font-size:clamp(1rem,1.6vw,1.5rem);
+    color:var(--sig-400);letter-spacing:-.03em;}
+
+  /* --------------------------------------------------------------- DÉMO --- */
+  .demo__grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);
+    gap:clamp(30px,4.4vw,72px);align-items:start;}
+  .demo__col{position:sticky;top:clamp(88px,11vw,116px);}
+  .frame{position:relative;padding-top:56.25%;border-radius:var(--r-md);overflow:hidden;
+    background:var(--ink-950);box-shadow:0 50px 100px -50px #000,inset 0 0 0 1px var(--rule-ink);}
+  .frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
+  .frame__glow{position:absolute;inset:-30% -10%;z-index:-1;
+    background:radial-gradient(50% 50% at 50% 50%,var(--sig-glow),transparent 70%);
+    opacity:.5;filter:blur(30px);}
+  .cap{display:flex;align-items:flex-start;gap:11px;margin-top:20px;font-size:14px;
+    color:var(--on-ink-3);line-height:1.55;}
+  .cap::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--sig-400);
+    flex:none;margin-top:7px;box-shadow:0 0 0 4px rgba(16,185,129,.16);}
+  .try{margin-top:24px;padding:18px 20px;border-radius:var(--r-md);
+    background:var(--tint);
+    box-shadow:inset 0 0 0 1px var(--rule-ink);
+    display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+  .try p{font-size:14.5px;color:var(--on-ink-2);max-width:34ch;}
+  .try button{padding:12px 20px;font-size:14px;}
+  .try button:disabled{opacity:.6;cursor:default;--s:1;}
+
+  .faq details{position:relative;border-top:1px solid var(--rule-ink);}
+  .faq details:last-of-type{border-bottom:1px solid var(--rule-ink);}
+  .faq summary{list-style:none;cursor:pointer;display:flex;align-items:flex-start;gap:20px;
+    padding:24px 0;font-family:var(--disp);font-weight:700;font-size:clamp(1rem,1.35vw,1.2rem);
+    letter-spacing:-.028em;color:var(--on-ink-2);transition:color .3s var(--e);}
   .faq summary::-webkit-details-marker{display:none;}
-  .faq summary::after{content:"+";color:var(--emerald);font-size:22px;line-height:1;flex:none;}
-  .faq details[open] summary::after{content:"\2013";}
-  .faq details p{margin:0 0 18px;color:var(--ink-soft);font-size:16px;line-height:1.55;}
+  .faq summary:hover{color:var(--on-ink);}
+  .faq details[open] summary{color:var(--on-ink);}
+  .faq summary span{flex:1;}
+  .faq__sign{position:relative;flex:none;width:20px;height:20px;margin-top:3px;}
+  .faq__sign::before,.faq__sign::after{content:"";position:absolute;left:50%;top:50%;
+    background:var(--sig-400);transition:transform .45s var(--e),background .3s var(--e);}
+  .faq__sign::before{width:14px;height:1.5px;transform:translate(-50%,-50%);}
+  .faq__sign::after{width:1.5px;height:14px;transform:translate(-50%,-50%);}
+  .faq details[open] .faq__sign::after{transform:translate(-50%,-50%) scaleY(0);}
+  .faq details[open] .faq__sign::before{background:var(--lime);}
+  .faq__body{padding:0 0 26px 40px;color:var(--on-ink-3);font-size:15.5px;line-height:1.68;
+    max-width:62ch;animation:faqin .55s var(--e) both;}
+  @keyframes faqin{from{opacity:0;transform:translateY(-8px);}to{opacity:1;transform:none;}}
 
-  /* ---------- offre : inclus / options ---------- */
-  .cols{display:grid;grid-template-columns:1fr 1fr;gap:26px;}
-  .panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px;}
-  .panel.out{background:transparent;border-style:dashed;}
-  .panel h3{font-size:14px;font-family:var(--display);font-weight:700;letter-spacing:.02em;
-    text-transform:uppercase;margin:0 0 16px;}
-  .panel.in h3{color:var(--emerald);}
-  .panel.out h3{color:var(--ink-soft);}
-  ul.clean{list-style:none;margin:0;padding:0;}
-  ul.clean li{position:relative;padding-left:26px;margin-bottom:12px;font-size:16.5px;line-height:1.45;}
-  ul.clean.in li::before{content:"";position:absolute;left:1px;top:8px;width:12px;height:7px;
-    border-left:2.5px solid var(--emerald);border-bottom:2.5px solid var(--emerald);transform:rotate(-45deg);}
-  ul.clean.out li::before{content:"";position:absolute;left:4px;top:11px;width:12px;height:2px;background:var(--ink-soft);}
+  /* ------------------------------------------------------------ SECTEURS -- */
+  .sect__head{display:flex;align-items:flex-end;justify-content:space-between;gap:30px;
+    flex-wrap:wrap;margin-bottom:clamp(30px,4vw,54px);}
+  .sect-card{position:relative;flex:none;width:clamp(210px,22vw,290px);aspect-ratio:3/4;
+    border-radius:var(--r-md);overflow:hidden;margin-right:clamp(14px,1.6vw,22px);}
+  .sect-card img{width:100%;height:100%;object-fit:cover;filter:grayscale(.35) contrast(1.02) brightness(1.06);
+    transition:filter .6s var(--e),transform 1s var(--e);}
+  .sect-card:hover img{filter:grayscale(0) contrast(1.02);transform:scale(1.05);}
+  .sect-card figcaption{position:absolute;left:0;right:0;bottom:0;z-index:3;padding:20px;
+    font-family:var(--disp);font-weight:700;font-size:15.5px;letter-spacing:-.025em;
+    color:var(--on-ink);}
+  .sect-card figcaption small{display:block;font:var(--t-micro);letter-spacing:.17em;
+    text-transform:uppercase;color:var(--sig-300);margin-bottom:7px;}
 
-  /* ---------- étapes ---------- */
-  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;}
-  .step .num{font-family:var(--display);font-weight:800;font-size:30px;color:var(--emerald);line-height:1;margin-bottom:10px;}
-  .step h3{font-family:var(--display);font-weight:700;font-size:18px;margin:0 0 6px;}
-  .step p{margin:0;color:var(--ink-soft);font-size:16px;line-height:1.5;}
+  /* --------------------------------------------------------------- OFFRE -- */
+  .offre__grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:clamp(22px,3vw,44px);}
+  .panel{position:relative;border-radius:var(--r-lg);padding:clamp(26px,3vw,40px);}
+  .panel--in{background:var(--white);
+    box-shadow:0 2px 4px rgba(11,21,18,.04),0 40px 70px -46px rgba(11,21,18,.5);}
+  .panel--out{background:transparent;box-shadow:inset 0 0 0 1.5px var(--rule-paper);}
+  .panel h3{font-size:clamp(1.15rem,1.6vw,1.5rem);margin-bottom:6px;}
+  .panel__tag{font:var(--t-micro);letter-spacing:.19em;text-transform:uppercase;
+    margin-bottom:22px;display:block;}
+  .panel--in .panel__tag{color:var(--sig-600);}
+  .panel--out .panel__tag{color:var(--on-paper-3);}
+  .panel ul{list-style:none;margin:26px 0 0;padding:0;}
+  .panel li{position:relative;padding:15px 0 15px 38px;font-size:15.5px;line-height:1.5;
+    color:var(--on-paper-2);border-top:1px solid var(--rule-paper-2);}
+  .panel li:first-child{border-top:none;}
+  .panel--in li::before{content:"";position:absolute;left:4px;top:20px;width:13px;height:7px;
+    border-left:2px solid var(--sig-600);border-bottom:2px solid var(--sig-600);
+    transform:rotate(-45deg);}
+  .panel--out li::before{content:"";position:absolute;left:4px;top:24px;width:14px;height:1.5px;
+    background:var(--on-paper-4);}
+  .offre__media{grid-column:1 / -1;position:relative;border-radius:var(--r-lg);overflow:hidden;
+    aspect-ratio:21/7;margin-top:clamp(10px,1.6vw,20px);}
+  .offre__media img{width:100%;height:100%;object-fit:cover;}
+  .offre__media figcaption{position:absolute;left:clamp(20px,3vw,38px);bottom:clamp(20px,3vw,32px);
+    z-index:3;font-family:var(--disp);font-weight:700;font-size:clamp(1rem,1.8vw,1.5rem);
+    letter-spacing:-.03em;color:var(--on-ink);max-width:24ch;}
 
-  /* ---------- prix ---------- */
-  .price{background:var(--ink);color:var(--paper);border-radius:18px;padding:42px;text-align:center;}
-  .price .eyebrow{color:var(--marker);}
-  .pricebig{font-weight:800;font-size:clamp(42px,6.5vw,60px);line-height:1;margin:6px 0 4px;letter-spacing:-.02em;}
-  .pricebig small{font-size:22px;font-weight:500;color:#9fb0aa;}
-  .price .maint{font-family:var(--display);font-weight:600;font-size:16.5px;color:var(--marker);margin:10px 0 0;}
-  .price .note{color:#9fb0aa;font-size:15.5px;max-width:52ch;margin:14px auto 28px;}
-  .price .btn{background:var(--marker);color:var(--ink);}
-  .price .btn:hover{background:#b6e23c;}
+  /* ------------------------------------------------------------- ÉTAPES --- */
+  .steps{position:relative;}
+  .steps__aside{position:sticky;top:clamp(96px,13vw,150px);align-self:start;}
+  .steps__grid{display:grid;grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);
+    gap:clamp(28px,5vw,86px);align-items:start;}
+  .step{position:relative;display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);
+    gap:clamp(20px,3vw,40px);align-items:center;padding:clamp(26px,3.4vw,44px) 0;
+    border-top:1px solid var(--rule-ink);}
+  .step:last-child{border-bottom:1px solid var(--rule-ink);}
+  .step__n{font-family:var(--disp);font-weight:800;font-size:clamp(2.4rem,4.6vw,4.4rem);
+    letter-spacing:-.06em;line-height:.85;color:transparent;
+    -webkit-text-stroke:1.4px var(--on-ink-4);margin-bottom:16px;
+    transition:color .6s var(--e),-webkit-text-stroke-color .6s var(--e);}
+  .step:hover .step__n{color:var(--sig-400);-webkit-text-stroke-color:transparent;}
+  .step h3{font-size:clamp(1.2rem,1.9vw,1.7rem);margin-bottom:12px;}
+  .step p{color:var(--on-ink-3);font-size:15.5px;line-height:1.62;max-width:42ch;}
+  .step__media{position:relative;aspect-ratio:16/11;border-radius:var(--r-md);overflow:hidden;}
+  .step__media img{width:100%;height:100%;object-fit:cover;filter:grayscale(.22) contrast(1.02) brightness(1.05);
+    transition:filter .7s var(--e),transform 1.1s var(--e);}
+  .step:hover .step__media img{filter:grayscale(0);transform:scale(1.05);}
 
-  /* ---------- final ---------- */
-  .final{text-align:center;}
-  .final h2{margin:0 auto 8px;max-width:24ch;}
-  .final .sec-sub{max-width:48ch;margin-left:auto;margin-right:auto;}
+  /* ---------------------------------------------------------------- PRIX -- */
+  .prix{position:relative;overflow:hidden;border-radius:var(--r-xl);
+    padding:clamp(40px,6vw,86px) clamp(24px,4vw,64px);text-align:center;
+    background:linear-gradient(155deg,var(--ink-700),var(--ink-900) 66%);
+    box-shadow:inset 0 0 0 1px var(--rule-ink);}
+  .prix::before{content:"";position:absolute;inset:-40% -10% auto -10%;height:120%;
+    background:radial-gradient(50% 50% at 50% 30%,var(--sig-glow),transparent 66%);
+    opacity:.45;pointer-events:none;}
+  .prix::after{content:"";position:absolute;inset:0;pointer-events:none;
+    background-image:var(--grain);opacity:.05;mix-blend-mode:overlay;}
+  .prix > *{position:relative;z-index:2;}
+  .prix__big{font-family:var(--disp);font-weight:800;letter-spacing:-.055em;line-height:.9;
+    font-size:clamp(3.4rem,9.5vw,8rem);margin:14px 0 10px;color:var(--on-ink);}
+  .prix__big small{display:block;font-size:clamp(.95rem,1.5vw,1.28rem);font-weight:500;
+    letter-spacing:-.01em;color:var(--on-ink-3);margin-top:20px;font-family:var(--ui);}
+  .prix__maint{font-family:var(--disp);font-weight:700;font-size:clamp(1rem,1.5vw,1.18rem);
+    color:var(--lime);letter-spacing:-.02em;margin:18px 0 0;}
+  .prix__note{color:var(--on-ink-3);font-size:15.5px;line-height:1.62;max-width:54ch;
+    margin:20px auto 34px;}
 
-  footer{border-top:1px solid var(--line);}
-  footer .wrap{padding-top:30px;padding-bottom:40px;color:var(--ink-soft);font-size:15.5px;
-    display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;}
+  /* -------------------------------------------------------------- FINALE -- */
+  .fin{position:relative;overflow:hidden;min-height:82svh;display:flex;align-items:center;
+    text-align:center;}
+  .fin__bg{position:absolute;inset:-12% 0;z-index:0;}
+  .fin__bg img{width:100%;height:100%;object-fit:cover;
+    filter:saturate(.72) contrast(1.03) brightness(1.1);}
+  .fin__veil{position:absolute;inset:0;z-index:1;
+    background:linear-gradient(180deg,var(--ink-900),rgba(8,15,13,.72) 40%,rgba(8,15,13,.9)),
+      radial-gradient(60% 60% at 50% 44%,var(--sig-glow),transparent 68%);}
+  .fin__in{position:relative;z-index:2;width:100%;}
+  .fin h2{margin:0 auto 18px;max-width:19ch;}
+  .fin .lead{margin:0 auto 38px;}
+  .fin__cta{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;}
 
-  @media (max-width:860px){
-    .demo-grid{grid-template-columns:1fr;}
-    .video-col{position:static;}
-    .cols,.steps{grid-template-columns:1fr;}
-    body{font-size:17.5px;}
-    .price{padding:30px 22px;}
-    .toplink{display:none;}
+  /* -------------------------------------------------------------- FOOTER -- */
+  .foot{background:var(--ink-950);padding:clamp(46px,6vw,80px) 0 clamp(28px,3vw,40px);}
+  .foot__top{display:flex;align-items:flex-end;justify-content:space-between;gap:30px;
+    flex-wrap:wrap;padding-bottom:clamp(32px,4vw,54px);}
+  .foot__mail{font-family:var(--disp);font-weight:800;letter-spacing:-.045em;
+    font-size:clamp(1.5rem,4.4vw,3.2rem);color:var(--on-ink);display:inline-flex;
+    align-items:center;gap:16px;}
+  .foot__mail svg{width:.7em;height:.7em;stroke:var(--sig-400);fill:none;stroke-width:1.8;
+    stroke-linecap:round;stroke-linejoin:round;transition:transform .5s var(--e);}
+  .foot__mail:hover svg{transform:translate(5px,-5px);}
+  .foot__bot{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;
+    padding-top:26px;border-top:1px solid var(--rule-ink-2);
+    font-size:13.5px;color:var(--on-ink-4);}
+  .foot__bot a{color:var(--on-ink-3);transition:color .3s var(--e);}
+  .foot__bot a:hover{color:var(--sig-400);}
+  .foot__links{display:flex;gap:20px;flex-wrap:wrap;}
+
+  /* --------------------------------------------------------------- MODAL -- */
+  .modal{position:fixed;inset:0;z-index:500;display:none;align-items:center;justify-content:center;
+    padding:22px;}
+  .modal.is-open{display:flex;}
+  .modal__veil{position:absolute;inset:0;background:rgba(8,15,13,.78);
+    -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+    animation:fadein .4s var(--e);}
+  @keyframes fadein{from{opacity:0;}to{opacity:1;}}
+  .modal__box{position:relative;width:min(430px,94vw);border-radius:var(--r-lg);
+    padding:clamp(26px,3.4vw,38px);background:linear-gradient(160deg,var(--ink-700),var(--ink-850));
+    box-shadow:inset 0 0 0 1px var(--rule-ink),0 60px 120px -50px #000;
+    animation:popin .55s var(--e);}
+  @keyframes popin{from{opacity:0;transform:translateY(22px) scale(.97);}to{opacity:1;transform:none;}}
+  .modal__box h3{font-size:1.5rem;margin-bottom:10px;}
+  .modal__box p{color:var(--on-ink-3);font-size:14.5px;line-height:1.6;margin-bottom:24px;}
+  .modal__box input{width:100%;padding:14px 2px;border:none;border-bottom:1.5px solid var(--rule-ink);
+    background:transparent;color:var(--on-ink);font-family:var(--ui);font-size:17px;
+    letter-spacing:-.01em;outline:none;transition:border-color .35s var(--e);}
+  .modal__box input::placeholder{color:var(--on-ink-4);}
+  .modal__box input:focus{border-bottom-color:var(--sig-400);}
+  .modal__err{color:var(--coral);font-size:13px;min-height:20px;margin:12px 0 18px;}
+  .modal__row{display:flex;gap:12px;}
+  .modal__row .btn{flex:1;padding:14px 20px;font-size:14.5px;}
+  .modal__row .btn:disabled{opacity:.55;cursor:wait;--s:1;}
+
+  /* ---------------------------------------------------------- RESPONSIVE -- */
+  @media (max-width:1080px){
+    .hero__grid{grid-template-columns:1fr;gap:44px;}
+    .peek{max-width:520px;}
+    .demo__grid,.prob__grid,.steps__grid{grid-template-columns:1fr;}
+    .demo__col{position:static;}
+    .steps__aside{position:static;}
+    .prob__media{aspect-ratio:16/10;}
+    .prob__stamp{right:0;bottom:-4%;}
   }
-  @media (prefers-reduced-motion:reduce){
-    .btn:hover{transform:none;} html{scroll-behavior:auto;}
+  @media (max-width:860px){
+    .nav__links{display:none;}
+    .nav__cta{display:none;}
+    .burger{display:block;}
+    .kpis{grid-template-columns:repeat(2,1fr);row-gap:34px;}
+    .kpi:nth-child(3){padding-left:0;}
+    .kpi:nth-child(3)::before{display:none;}
+    .offre__grid{grid-template-columns:1fr;}
+    .step{grid-template-columns:1fr;gap:24px;}
+    .step__media{order:-1;}
+    .hero{min-height:auto;padding-top:130px;}
+  }
+  @media (max-width:560px){
+    .kpis{grid-template-columns:1fr;gap:26px;}
+    .kpi{padding:0 0 24px;border-bottom:1px solid var(--rule-ink-2);}
+    .kpi + .kpi{padding-left:0;}
+    .kpi + .kpi::before{display:none;}
+    .prob__stamp{position:static;text-align:left;margin-top:22px;}
+    .prob__stamp b{text-shadow:none;}
+    .prob__stamp small{margin-left:0;}
+    .modal__row{flex-direction:column;}
   }
 </style>
 </head>
 <body>
 
-<div class="topbar">
-  <div class="wrap">
-    <div class="brand">Assistant<span>·</span>docs</div>
-    <a class="toplink" href="#reserver">Réserver 15 min →</a>
-  </div>
+<div class="curtain" aria-hidden="true">
+  <div class="curtain__word">Assistant<i>·</i><b>docs</b></div>
 </div>
+<div class="grain" aria-hidden="true"></div>
+<div data-progress aria-hidden="true"></div>
 
-<header class="hero">
-  <div class="wrap">
-    <p class="eyebrow">IA sur vos documents · pour PME</p>
-    <h1>Vos équipes arrêtent de chercher l'info dans <span class="mark">40 fichiers</span>.</h1>
-    <p class="lead">Un assistant IA qui répond aux questions de vos équipes ou de vos clients à partir de <em>vos</em> documents — procédures, catalogues, contrats, FAQ. Réponse en secondes, source citée. Livré fonctionnel sur une instance à votre nom.</p>
-    <p class="who">Pour les PME qui croulent sous les documents : <b>cabinets comptables &amp; juridiques · distributeurs · cliniques · franchises · e-commerce</b></p>
-    <div class="cta-row">
-      <a class="btn" href="#reserver">Réserver un appel de 15 min</a>
-      <a class="btn-ghost" href="#demo">Voir la démo en 2 minutes</a>
-    </div>
-    <div class="badges">
-      <span class="badge-pill">Réponses sourcées</span>
-      <span class="badge-pill">N'invente jamais</span>
-      <span class="badge-pill">Vos documents restent sur votre instance</span>
-    </div>
+<!-- ============================ NAVIGATION ============================= -->
+<header class="nav" data-nav>
+  <div class="nav__in">
+    <a class="brand" href="#top">Assistant<i>·</i>docs<span class="brand__dot"></span></a>
+    <nav class="nav__links">
+      <a href="#demo">Démo</a>
+      <a href="#offre">L'offre</a>
+      <a href="#fonctionnement">Méthode</a>
+      <a href="#prix">Prix</a>
+    </nav>
+    <a class="btn btn--sig nav__cta" href="#reserver" data-magnetic="0.22"><span>Réserver 15 min</span>
+      <svg viewBox="0 0 24 24"><path d="M5 12h13"/><path d="m12 5 7 7-7 7"/></svg></a>
+    <button class="burger" id="burger" type="button" aria-label="Ouvrir le menu" aria-expanded="false">
+      <i></i><i></i>
+    </button>
   </div>
 </header>
 
-<section id="demo">
-  <div class="wrap">
-    <p class="eyebrow">La démo &amp; vos questions</p>
-    <h2>Voyez-le fonctionner — et posez-vous les bonnes questions.</h2>
-    <p class="sec-sub">2 minutes de démonstration réelle à gauche, les réponses aux inquiétudes qu'on me pose le plus souvent à droite.</p>
-    <div class="demo-grid">
-      <div class="video-col">
-        <div class="video-frame">
-          <iframe src="https://www.youtube-nocookie.com/embed/zOcjEhi_-oY?rel=0&modestbranding=1"
-            title="Assistant IA sur vos documents — démo"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen loading="lazy"></iframe>
+<div class="menu" id="menu">
+  <a href="#demo">Démo</a>
+  <a href="#offre">L'offre</a>
+  <a href="#fonctionnement">Méthode</a>
+  <a href="#prix">Prix</a>
+  <a href="#reserver">Réserver 15 min</a>
+  <div class="menu__foot">jonas@jonasmionnet.com · France &amp; Québec</div>
+</div>
+
+<!-- =============================== HERO =============================== -->
+<header class="hero" id="top">
+  <div class="hero__bg" data-parallax="0.14">
+    <img src="img/office.jpg" alt="" width="1920" height="1080" fetchpriority="high">
+  </div>
+  <div class="hero__veil"></div>
+
+  <div class="hero__in shell">
+    <div class="hero__grid">
+      <div>
+        <p class="eyebrow" data-reveal="fade">IA sur vos documents · pour PME</p>
+        <h1 data-reveal="fade" data-split>Vos équipes arrêtent de chercher l'info dans <span class="mark sig">40 fichiers</span>.</h1>
+        <p class="hero__lead" data-reveal="up" data-delay="180">
+          Un assistant IA qui répond aux questions de vos équipes ou de vos clients à partir de
+          <em>vos</em> documents — procédures, catalogues, contrats, FAQ. Réponse en secondes,
+          source citée. Livré fonctionnel sur une instance à votre nom.
+        </p>
+        <div class="hero__cta" data-reveal="up" data-delay="280">
+          <a class="btn btn--sig" href="#reserver" data-magnetic="0.25"><span>Réserver un appel de 15 min</span>
+            <svg viewBox="0 0 24 24"><path d="M5 12h13"/><path d="m12 5 7 7-7 7"/></svg></a>
+          <a class="link" href="#demo">Voir la démo en 2 minutes
+            <svg viewBox="0 0 24 24"><path d="M12 5v14"/><path d="m5 12 7 7 7-7"/></svg></a>
         </div>
-        <p class="video-cap">Démo réelle : réponse sourcée, question de suivi, refus quand l'info n'existe pas, ajout d'un document en direct.</p>
-        <div class="try-live">
-          <p>Vous avez reçu un code d'accès lors de notre échange ?</p>
-          <button class="try-btn" id="try-btn">Essayer l'assistant en direct</button>
+        <div class="hero__pills" data-stagger="90" data-reveal="fade" data-delay="380">
+          <span class="pill">Réponses sourcées</span>
+          <span class="pill">N'invente jamais</span>
+          <span class="pill">Vos documents restent sur votre instance</span>
         </div>
       </div>
-      <div class="faq">
+
+      <div data-reveal="up" data-delay="420">
+        <div class="peek">
+          <div class="peek__q">
+            <span>Quelle est la garantie du compresseur d'une thermopompe BOR-TP24 ?</span>
+          </div>
+          <div class="peek__a">
+            <b>D'après la politique de garantie</b>, le compresseur est couvert par le fabricant
+            au-delà de la garantie générale de l'appareil. Le détail des durées et des exclusions
+            figure dans le document cité ci-dessous.
+          </div>
+          <div class="peek__src">
+            <span class="peek__chip"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>politique-garantie.pdf</span>
+            <span class="peek__chip"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>catalogue-produits.pdf</span>
+          </div>
+          <p class="peek__cap">Exemple de réponse<span class="peek__dots"><i></i><i></i><i></i></span><br>
+            démonstration Boréale Équipement — entreprise fictive</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero__cue"><i></i>Faites défiler</div>
+</header>
+
+<!-- ============================= MARQUEE ============================== -->
+<div class="band-mq" aria-hidden="true">
+  <div class="marquee" style="--dur:44s">
+    <div class="marquee__track">
+      <span class="mq-item">Procédures<i></i>Catalogues<i></i>Contrats<i></i>FAQ<i></i>Manuels<i></i>Garanties<i></i>Tarifs<i></i>Devis<i></i></span>
+      <span class="mq-item">Procédures<i></i>Catalogues<i></i>Contrats<i></i>FAQ<i></i>Manuels<i></i>Garanties<i></i>Tarifs<i></i>Devis<i></i></span>
+    </div>
+  </div>
+</div>
+
+<!-- ============================= PROBLÈME ============================= -->
+<section class="band prob">
+  <div class="shell">
+    <div class="prob__grid">
+      <div class="prob__figure">
+        <div class="prob__media" data-reveal="mask">
+          <img src="img/chaos.jpg" alt="Bureau couvert d'ordinateurs, de carnets et de documents" loading="lazy" width="1600" height="1100">
+        </div>
+        <div class="prob__stamp" data-reveal="up" data-delay="260">
+          <b data-count="40">40</b>
+          <small>fichiers ouverts avant de trouver</small>
+        </div>
+      </div>
+      <div>
+        <p class="eyebrow" data-reveal="fade">Le vrai coût</p>
+        <h2 class="h2" data-reveal="fade" data-split>L'information existe. Personne ne la retrouve.</h2>
+        <ul class="prob__list" data-stagger="90">
+          <li>La bonne réponse dort dans un PDF que <b>trois personnes</b> savent ouvrir.</li>
+          <li>La même question revient <b>chaque semaine</b>, à la même personne.</li>
+          <li>Un client attend une réponse simple <b>pendant deux jours</b>.</li>
+          <li>Le document a changé, mais <b>la version qui circule</b>, non.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== KPIS ================================ -->
+<section class="band band--tight" style="background:var(--ink-950);">
+  <div class="shell">
+    <div class="kpis">
+      <div class="kpi" data-reveal="up">
+        <div class="kpi__v"><span class="num" data-count="15">15</span><span class="kpi__u">min</span></div>
+        <span class="num-lbl">l'appel qui lance tout</span>
+      </div>
+      <div class="kpi" data-reveal="up" data-delay="90">
+        <div class="kpi__v"><span class="num" data-count="2">2</span><span class="kpi__u">min</span></div>
+        <span class="num-lbl">de démonstration réelle</span>
+      </div>
+      <div class="kpi" data-reveal="up" data-delay="180">
+        <div class="kpi__v"><span class="num" data-count="0.005" data-dec="3">0,005</span><span class="kpi__u">$</span></div>
+        <span class="num-lbl">environ, par question posée</span>
+      </div>
+      <div class="kpi" data-reveal="up" data-delay="270">
+        <div class="kpi__v"><span class="num" data-count="25">25</span><span class="kpi__u">$ / mois</span></div>
+        <span class="num-lbl">au maximum, hébergement compris</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== DÉMO ================================ -->
+<section class="band" id="demo">
+  <div class="shell">
+    <div style="max-width:64ch;margin-bottom:clamp(34px,4.4vw,64px)">
+      <p class="eyebrow" data-reveal="fade">La démo &amp; vos questions</p>
+      <h2 class="h2" data-reveal="fade" data-split>Voyez-le fonctionner — et posez-vous les bonnes questions.</h2>
+      <p class="lead" style="margin-top:22px" data-reveal="up" data-delay="140">
+        2 minutes de démonstration réelle à gauche, les réponses aux inquiétudes qu'on me pose
+        le plus souvent à droite.
+      </p>
+    </div>
+
+    <div class="demo__grid">
+      <div class="demo__col">
+        <div data-reveal="scale">
+          <div class="frame">
+            <div class="frame__glow" aria-hidden="true"></div>
+            <iframe src="https://www.youtube-nocookie.com/embed/zOcjEhi_-oY?rel=0&modestbranding=1"
+              title="Assistant IA sur vos documents — démo"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen loading="lazy"></iframe>
+          </div>
+        </div>
+        <p class="cap" data-reveal="up" data-delay="120">Démo réelle : réponse sourcée, question de suivi,
+          refus quand l'info n'existe pas, ajout d'un document en direct.</p>
+        <div class="try" data-reveal="up" data-delay="200">
+          <p>Vous avez reçu un code d'accès lors de notre échange ?</p>
+          <button class="btn btn--ghost" id="try-btn" type="button" data-magnetic="0.2">
+            <span>Essayer l'assistant en direct</span></button>
+        </div>
+      </div>
+
+      <div class="faq" data-stagger="60">
         <details open>
-          <summary>Où sont stockés nos documents ?</summary>
-          <p>Sur une instance ouverte à votre nom, avec votre moyen de paiement. Vos documents y sont stockés et indexés ; au moment de répondre, seuls les extraits pertinents sont envoyés au fournisseur du modèle de langage, qui, sur ses offres professionnelles, ne les utilise pas pour entraîner ses modèles. Après livraison, je n'en conserve aucune copie.</p>
+          <summary><span>Où sont stockés nos documents ?</span><i class="faq__sign"></i></summary>
+          <div class="faq__body">Sur une instance ouverte à votre nom, avec votre moyen de paiement. Vos documents y sont stockés et indexés ; au moment de répondre, seuls les extraits pertinents sont envoyés au fournisseur du modèle de langage, qui, sur ses offres professionnelles, ne les utilise pas pour entraîner ses modèles. Après livraison, je n'en conserve aucune copie.</div>
         </details>
         <details>
-          <summary>Et s'il invente une réponse ?</summary>
-          <p>Il est cadré pour répondre uniquement à partir de vos documents et chaque réponse cite son document d'origine, extraits consultables en un clic. Quand l'information n'y figure pas, il le dit plutôt que de deviner. Avant livraison, je passe un jeu de questions de contrôle sur vos propres documents et je vous remets le résultat chiffré.</p>
+          <summary><span>Et s'il invente une réponse ?</span><i class="faq__sign"></i></summary>
+          <div class="faq__body">Il est cadré pour répondre uniquement à partir de vos documents et chaque réponse cite son document d'origine, extraits consultables en un clic. Quand l'information n'y figure pas, il le dit plutôt que de deviner. Avant livraison, je passe un jeu de questions de contrôle sur vos propres documents et je vous remets le résultat chiffré.</div>
         </details>
         <details>
-          <summary>Pourquoi pas simplement ChatGPT ?</summary>
-          <p>ChatGPT répond à partir du web, et il faut lui redonner vos fichiers à chaque conversation. Ici, l'assistant connaît vos documents en permanence, cite ses sources, refuse de répondre quand l'info n'y est pas — et vos équipes ne téléversent rien nulle part.</p>
+          <summary><span>Pourquoi pas simplement ChatGPT ?</span><i class="faq__sign"></i></summary>
+          <div class="faq__body">ChatGPT répond à partir du web, et il faut lui redonner vos fichiers à chaque conversation. Ici, l'assistant connaît vos documents en permanence, cite ses sources, refuse de répondre quand l'info n'y est pas — et vos équipes ne téléversent rien nulle part.</div>
         </details>
         <details>
-          <summary>Combien ça coûte par mois après la livraison ?</summary>
-          <p>Deux abonnements, à votre nom et sous votre contrôle : l'hébergement (~10 à 20 $ CAD/mois) et l'usage du modèle (~2 à 7 $ CAD/mois pour ~500 questions, soit ~0,005 $ la question). Total : environ 15 à 25 $ CAD par mois, plafonnable. L'indexation ne coûte rien.</p>
+          <summary><span>Combien ça coûte par mois après la livraison ?</span><i class="faq__sign"></i></summary>
+          <div class="faq__body">Deux abonnements, à votre nom et sous votre contrôle : l'hébergement (~10 à 20 $ CAD/mois) et l'usage du modèle (~2 à 7 $ CAD/mois pour ~500 questions, soit ~0,005 $ la question). Total : environ 15 à 25 $ CAD par mois, plafonnable. L'indexation ne coûte rien.</div>
         </details>
         <details>
-          <summary>Nos documents changent souvent.</summary>
-          <p>Vous ajoutez, remplacez ou retirez vos fichiers vous-même depuis une page de gestion protégée — l'assistant se met à jour automatiquement, aucune commande technique. Et si vous préférez déléguer, c'est inclus dans le forfait maintenance.</p>
+          <summary><span>Nos documents changent souvent.</span><i class="faq__sign"></i></summary>
+          <div class="faq__body">Vous ajoutez, remplacez ou retirez vos fichiers vous-même depuis une page de gestion protégée — l'assistant se met à jour automatiquement, aucune commande technique. Et si vous préférez déléguer, c'est inclus dans le forfait maintenance.</div>
         </details>
         <details>
-          <summary>Faut-il être technique de notre côté ?</summary>
-          <p>Non. Vous fournissez vos documents (PDF, Word, texte — tableaux compris), je livre un lien fonctionnel. Vos équipes posent leurs questions en langage normal.</p>
+          <summary><span>Faut-il être technique de notre côté ?</span><i class="faq__sign"></i></summary>
+          <div class="faq__body">Non. Vous fournissez vos documents (PDF, Word, texte — tableaux compris), je livre un lien fonctionnel. Vos équipes posent leurs questions en langage normal.</div>
         </details>
         <details>
-          <summary>Et le RGPD / la Loi 25 ? Et si on arrête ?</summary>
-          <p>Une annexe de sous-traitance est jointe au devis quand des documents sont concernés : finalité, durée, mesures de sécurité. Et si vous arrêtez : vous supprimez l'instance, tout disparaît avec — documents, index, historique. Rien ailleurs.</p>
+          <summary><span>Et le RGPD / la Loi 25 ? Et si on arrête ?</span><i class="faq__sign"></i></summary>
+          <div class="faq__body">Une annexe de sous-traitance est jointe au devis quand des documents sont concernés : finalité, durée, mesures de sécurité. Et si vous arrêtez : vous supprimez l'instance, tout disparaît avec — documents, index, historique. Rien ailleurs.</div>
         </details>
       </div>
     </div>
   </div>
 </section>
 
-<section id="offre">
-  <div class="wrap">
-    <p class="eyebrow">Ce que vous obtenez</p>
-    <h2>Un périmètre écrit noir sur blanc.</h2>
-    <p class="sec-sub">Tout est dans le devis — jamais de facture surprise.</p>
-    <div class="cols">
-      <div class="panel in">
-        <h3>Inclus dans la mission</h3>
-        <ul class="clean in">
+<!-- ============================ SECTEURS ============================== -->
+<section class="band band--tight" style="background:var(--ink-950);overflow:hidden;">
+  <div class="shell sect__head">
+    <div>
+      <p class="eyebrow" data-reveal="fade">Pour qui</p>
+      <h2 class="h2" data-reveal="fade" data-split>Les PME qui croulent sous les documents.</h2>
+    </div>
+    <p class="lead" style="max-width:34ch" data-reveal="up" data-delay="140">
+      Quand la réponse existe déjà, écrite quelque part, et que personne n'a le temps de la retrouver.
+    </p>
+  </div>
+  <div class="marquee" style="--dur:52s">
+    <div class="marquee__track">
+      <figure class="sect-card"><img src="img/sector-cabinet.jpg" alt="Salle de réunion d'un cabinet" loading="lazy"><span class="scrim scrim--b"></span><figcaption><small>01</small>Cabinets comptables &amp; juridiques</figcaption></figure>
+      <figure class="sect-card"><img src="img/sector-distrib.jpg" alt="Entrepôt de distribution" loading="lazy"><span class="scrim scrim--b"></span><figcaption><small>02</small>Distributeurs</figcaption></figure>
+      <figure class="sect-card"><img src="img/sector-clinique.jpg" alt="Salle d'attente claire" loading="lazy"><span class="scrim scrim--b"></span><figcaption><small>03</small>Cliniques</figcaption></figure>
+      <figure class="sect-card"><img src="img/sector-franchise.jpg" alt="Immeubles vus depuis la rue" loading="lazy"><span class="scrim scrim--b"></span><figcaption><small>04</small>Franchises</figcaption></figure>
+      <figure class="sect-card"><img src="img/sector-ecom.jpg" alt="Bureau vu de haut avec ordinateurs" loading="lazy"><span class="scrim scrim--b"></span><figcaption><small>05</small>E-commerce</figcaption></figure>
+      <figure class="sect-card" aria-hidden="true"><img src="img/sector-cabinet.jpg" alt="" loading="lazy"><span class="scrim scrim--b"></span><figcaption><small>01</small>Cabinets comptables &amp; juridiques</figcaption></figure>
+      <figure class="sect-card" aria-hidden="true"><img src="img/sector-distrib.jpg" alt="" loading="lazy"><span class="scrim scrim--b"></span><figcaption><small>02</small>Distributeurs</figcaption></figure>
+      <figure class="sect-card" aria-hidden="true"><img src="img/sector-clinique.jpg" alt="" loading="lazy"><span class="scrim scrim--b"></span><figcaption><small>03</small>Cliniques</figcaption></figure>
+      <figure class="sect-card" aria-hidden="true"><img src="img/sector-franchise.jpg" alt="" loading="lazy"><span class="scrim scrim--b"></span><figcaption><small>04</small>Franchises</figcaption></figure>
+      <figure class="sect-card" aria-hidden="true"><img src="img/sector-ecom.jpg" alt="" loading="lazy"><span class="scrim scrim--b"></span><figcaption><small>05</small>E-commerce</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== OFFRE =============================== -->
+<section class="band paper" id="offre">
+  <div class="shell">
+    <div style="max-width:60ch;margin-bottom:clamp(32px,4vw,58px)">
+      <p class="eyebrow" data-reveal="fade">Ce que vous obtenez</p>
+      <h2 class="h2" data-reveal="fade" data-split>Un périmètre écrit noir sur blanc.</h2>
+      <p class="lead" style="margin-top:20px" data-reveal="up" data-delay="140">
+        Tout est dans le devis — jamais de facture surprise.
+      </p>
+    </div>
+
+    <div class="offre__grid">
+      <div class="panel panel--in" data-reveal="up" data-spot>
+        <span class="panel__tag">Inclus dans la mission</span>
+        <h3>Livré, installé, fonctionnel</h3>
+        <ul>
           <li>Lecture de vos documents PDF, Word et texte (volume convenu à l'avance).</li>
           <li>Widget de questions-réponses sur votre site ou en usage interne — à vos couleurs.</li>
           <li>Réponses sourcées, extraits consultables en un clic.</li>
@@ -256,77 +655,183 @@
           <li>Un aller-retour d'ajustement après la livraison.</li>
         </ul>
       </div>
-      <div class="panel out">
-        <h3>En option ou sur devis séparé</h3>
-        <ul class="clean out">
+
+      <div class="panel panel--out" data-reveal="up" data-delay="120">
+        <span class="panel__tag">En option ou sur devis séparé</span>
+        <h3 style="color:var(--on-paper-2)">Ce qui vient après, si vous le voulez</h3>
+        <ul>
           <li>Forfait maintenance mensuel (surveillance, réindexation, correctifs).</li>
           <li>Tableau de bord d'usage : questions les plus posées, taux de refus.</li>
           <li>Intégrations à vos logiciels internes (intranet, CRM).</li>
           <li>OCR de PDF scannés · volumes massifs de documents.</li>
         </ul>
       </div>
+
+      <figure class="offre__media" data-reveal="mask">
+        <img src="img/dashboard.jpg" alt="Courbe d'usage affichée sur un écran d'ordinateur" loading="lazy">
+        <span class="scrim scrim--l"></span>
+        <figcaption>Le tableau de bord d'usage : ce qu'on vous demande vraiment.</figcaption>
+      </figure>
     </div>
   </div>
 </section>
 
-<section id="fonctionnement">
-  <div class="wrap">
-    <p class="eyebrow">Comment ça marche</p>
-    <h2>Trois étapes, un livrable qui fonctionne.</h2>
-    <p class="sec-sub">&nbsp;</p>
-    <div class="steps">
-      <div class="step"><div class="num">01</div><h3>Appel de 15 minutes</h3><p>On identifie où vos équipes perdent du temps et sur quels documents l'assistant aura le plus d'impact.</p></div>
-      <div class="step"><div class="num">02</div><h3>Construction sur vos documents</h3><p>Je monte l'assistant sur votre contenu réel. Vous recevez un lien fonctionnel, pas des diapositives.</p></div>
-      <div class="step"><div class="num">03</div><h3>Livraison et ajustement</h3><p>Vos équipes testent, je corrige un tour, l'assistant est à vous — périmètre écrit dans le devis.</p></div>
+<!-- =========================== FONCTIONNEMENT ========================= -->
+<section class="band" id="fonctionnement">
+  <div class="shell">
+    <div class="steps__grid">
+      <div class="steps__aside">
+        <p class="eyebrow" data-reveal="fade">Comment ça marche</p>
+        <h2 class="h2" data-reveal="fade" data-split>Trois étapes, un livrable qui fonctionne.</h2>
+        <p class="lead" style="margin-top:22px" data-reveal="up" data-delay="140">
+          Pas de diapositives, pas d'atelier de cadrage à rallonge. Un appel, une construction
+          sur vos vrais fichiers, une livraison.
+        </p>
+        <a class="btn btn--sig" style="margin-top:32px" href="#reserver" data-reveal="up" data-delay="220" data-magnetic="0.25">
+          <span>Commencer par l'appel</span>
+          <svg viewBox="0 0 24 24"><path d="M5 12h13"/><path d="m12 5 7 7-7 7"/></svg></a>
+      </div>
+
+      <div class="steps">
+        <article class="step" data-reveal="up">
+          <div>
+            <div class="step__n">01</div>
+            <h3>Appel de 15 minutes</h3>
+            <p>On identifie où vos équipes perdent du temps et sur quels documents l'assistant
+              aura le plus d'impact.</p>
+          </div>
+          <div class="step__media"><img src="img/call.jpg" alt="Réunion autour d'une grande table" loading="lazy"></div>
+        </article>
+
+        <article class="step" data-reveal="up" data-delay="90">
+          <div>
+            <div class="step__n">02</div>
+            <h3>Construction sur vos documents</h3>
+            <p>Je monte l'assistant sur votre contenu réel. Vous recevez un lien fonctionnel,
+              pas des diapositives.</p>
+          </div>
+          <div class="step__media"><img src="img/build.jpg" alt="Atelier de travail avec notes murales" loading="lazy"></div>
+        </article>
+
+        <article class="step" data-reveal="up" data-delay="180">
+          <div>
+            <div class="step__n">03</div>
+            <h3>Livraison et ajustement</h3>
+            <p>Vos équipes testent, je corrige un tour, l'assistant est à vous — périmètre écrit
+              dans le devis.</p>
+          </div>
+          <div class="step__media"><img src="img/deliver.jpg" alt="Personne travaillant sur un ordinateur portable" loading="lazy"></div>
+        </article>
+      </div>
     </div>
   </div>
 </section>
 
-<section id="prix">
-  <div class="wrap">
-    <div class="price">
-      <p class="eyebrow">Tarif de lancement</p>
-      <div class="pricebig">500&nbsp;€<small> / 800 $ CAD · première mission</small></div>
-      <p class="maint">+ forfait maintenance optionnel : 100 à 150 $ CAD / mois</p>
-      <p class="note">Tarif consenti aux premières PME en échange d'un témoignage — il augmente dès les premières références. Acompte de 50 % pour démarrer, solde à la livraison.</p>
-      <a class="btn" href="#reserver">Réserver mon appel</a>
+<!-- =============================== PRIX =============================== -->
+<section class="band" id="prix" style="background:var(--ink-950);">
+  <div class="shell shell--tight">
+    <div class="prix" data-reveal="scale">
+      <p class="eyebrow" style="justify-content:center;color:var(--lime)">Tarif de lancement</p>
+      <div class="prix__big">
+        <span data-count="500">500</span>&nbsp;€
+        <small>soit 800 $ CAD · première mission</small>
+      </div>
+      <p class="prix__maint">+ forfait maintenance optionnel : 100 à 150 $ CAD / mois</p>
+      <p class="prix__note">Tarif consenti aux premières PME en échange d'un témoignage — il augmente
+        dès les premières références. Acompte de 50 % pour démarrer, solde à la livraison.</p>
+      <a class="btn btn--sig" href="#reserver" data-magnetic="0.25"><span>Réserver mon appel</span>
+        <svg viewBox="0 0 24 24"><path d="M5 12h13"/><path d="m12 5 7 7-7 7"/></svg></a>
     </div>
   </div>
 </section>
 
-<section id="reserver" class="final">
-  <div class="wrap">
-    <p class="eyebrow">On en parle ?</p>
-    <h2>15 minutes pour voir ce que ça donne sur vos documents.</h2>
-    <p class="sec-sub">Avant tout devis, je vous montre le résultat sur vos propres fichiers.</p>
-    <div class="cta-row">
-      <a class="btn" href="https://calendar.app.google/fmK8RGhTGHzwuksp7">Choisir un créneau</a>
-      <a class="btn-ghost" href="#demo">Ou revoir la démo</a>
+<!-- ============================== FINALE ============================== -->
+<section class="fin" id="reserver">
+  <div class="fin__bg" data-parallax="0.1">
+    <img src="img/hero.jpg" alt="" loading="lazy" width="1920" height="1280">
+  </div>
+  <div class="fin__veil"></div>
+  <div class="fin__in shell shell--tight">
+    <p class="eyebrow" style="justify-content:center" data-reveal="fade">On en parle ?</p>
+    <h2 class="h1" data-reveal="fade" data-split>15 minutes pour voir ce que ça donne sur vos documents.</h2>
+    <p class="lead" data-reveal="up" data-delay="160">Avant tout devis, je vous montre le résultat
+      sur vos propres fichiers.</p>
+    <div class="fin__cta" data-reveal="up" data-delay="240">
+      <a class="btn btn--sig" href="https://calendar.app.google/fmK8RGhTGHzwuksp7" data-magnetic="0.25">
+        <span>Choisir un créneau</span>
+        <svg viewBox="0 0 24 24"><path d="M5 12h13"/><path d="m12 5 7 7-7 7"/></svg></a>
+      <a class="btn btn--ghost" href="#demo"><span>Ou revoir la démo</span></a>
     </div>
   </div>
 </section>
 
-<footer>
-  <div class="wrap">
-    <div>Jonas Mionnet — Freelance IA &amp; automatisation — France &amp; Québec</div>
-    <div><a href="mailto:jonas@jonasmionnet.com">jonas@jonasmionnet.com</a> · <a href="https://www.linkedin.com/in/jonas-mionnet-5339012a0">LinkedIn</a> · <a href="mentions-legales.html">Mentions légales</a></div>
+<!-- ============================== FOOTER ============================== -->
+<footer class="foot">
+  <div class="shell">
+    <div class="foot__top">
+      <a class="foot__mail" href="mailto:jonas@jonasmionnet.com" data-reveal="up">
+        jonas@jonasmionnet.com
+        <svg viewBox="0 0 24 24"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg>
+      </a>
+      <a class="btn btn--paper" href="https://calendar.app.google/fmK8RGhTGHzwuksp7" data-reveal="up" data-delay="100" data-magnetic="0.2">
+        <span>Réserver 15 min</span></a>
+    </div>
+    <div class="foot__bot">
+      <div>Jonas Mionnet — Freelance IA &amp; automatisation — France &amp; Québec</div>
+      <div class="foot__links">
+        <a href="mailto:jonas@jonasmionnet.com">jonas@jonasmionnet.com</a>
+        <a href="https://www.linkedin.com/in/jonas-mionnet-5339012a0">LinkedIn</a>
+        <a href="mentions-legales.html">Mentions légales</a>
+      </div>
+    </div>
   </div>
 </footer>
 
-<div id="pw-modal" role="dialog" aria-modal="true">
-  <div class="box">
-    <h3>Essayer l'assistant</h3>
-    <p>Entrez le code d'accès reçu lors de notre échange. L'assistant de démonstration répond sur les documents d'une entreprise fictive (Boréale Équipement).</p>
+<!-- ============================== MODALE ============================== -->
+<div class="modal" id="pw-modal" role="dialog" aria-modal="true" aria-labelledby="pw-title">
+  <div class="modal__veil" id="pw-veil"></div>
+  <div class="modal__box">
+    <h3 id="pw-title">Essayer l'assistant</h3>
+    <p>Entrez le code d'accès reçu lors de notre échange. L'assistant de démonstration répond sur
+      les documents d'une entreprise fictive (Boréale Équipement).</p>
     <input id="pw-input" type="password" placeholder="Code d'accès" autocomplete="off">
-    <div class="err" id="pw-err"></div>
-    <div class="row">
-      <button class="go" id="pw-go">Lancer l'assistant</button>
-      <button class="cancel" id="pw-cancel">Annuler</button>
+    <div class="modal__err" id="pw-err"></div>
+    <div class="modal__row">
+      <button class="btn btn--sig" id="pw-go" type="button"><span>Lancer l'assistant</span></button>
+      <button class="btn btn--ghost" id="pw-cancel" type="button"><span>Annuler</span></button>
     </div>
   </div>
 </div>
 
+<script src="lenis.min.js"></script>
+<script src="motion.js"></script>
 <script>
+/* ---------------------------------------------------------------------------
+   Menu plein écran (mobile)
+   --------------------------------------------------------------------------- */
+(function(){
+  var burger = document.getElementById("burger"),
+      menu = document.getElementById("menu"),
+      nav = document.querySelector("[data-nav]");
+  function fermer(){
+    menu.classList.remove("is-open"); nav.classList.remove("is-open");
+    burger.setAttribute("aria-expanded","false");
+    if (window.Motion) window.Motion.start();
+  }
+  burger.addEventListener("click", function(){
+    var ouvert = menu.classList.toggle("is-open");
+    nav.classList.toggle("is-open", ouvert);
+    burger.setAttribute("aria-expanded", ouvert ? "true" : "false");
+    if (window.Motion) ouvert ? window.Motion.stop() : window.Motion.start();
+  });
+  menu.addEventListener("click", function(e){ if (e.target.tagName === "A") fermer(); });
+  document.addEventListener("keydown", function(e){ if (e.key === "Escape") fermer(); });
+})();
+
+/* ---------------------------------------------------------------------------
+   Assistant de démonstration — logique inchangée : vérification du code,
+   chargement du widget depuis l'API, montage en bulle.
+   --------------------------------------------------------------------------- */
 (function(){
   var API = "https://assistant-documentaire-demo-production.up.railway.app";
   var modal = document.getElementById("pw-modal"),
@@ -334,7 +839,21 @@
       err = document.getElementById("pw-err"),
       go = document.getElementById("pw-go"),
       cancel = document.getElementById("pw-cancel"),
+      veil = document.getElementById("pw-veil"),
       tryBtn = document.getElementById("try-btn");
+
+  function ouvrirModal(){
+    modal.classList.add("open");          // conservé : compat. avec l'ancien sélecteur
+    modal.classList.add("is-open");
+    if (window.Motion) window.Motion.stop();
+    input.focus();
+  }
+  function fermerModal(){
+    modal.classList.remove("open");
+    modal.classList.remove("is-open");
+    err.textContent = "";
+    if (window.Motion) window.Motion.start();
+  }
 
   function verify(pw){
     return fetch(API + "/api/verify", { headers: { "X-API-Password": pw } })
@@ -358,7 +877,7 @@
         assistantName: "Assistant documentaire",
         clientName: "Boréale Équipement (démo)"
       });
-      tryBtn.textContent = "Assistant lancé — voir en bas à droite";
+      tryBtn.querySelector("span").textContent = "Assistant lancé — voir en bas à droite";
       tryBtn.disabled = true;
     }).catch(function(){
       err.textContent = "Impossible de charger l'assistant. Réessayez plus tard.";
@@ -369,9 +888,9 @@
     if (stored) {
       verify(stored).then(function(ok){
         if (ok) { mountAssistant(); }
-        else { localStorage.removeItem("da_api_password"); modal.classList.add("open"); input.focus(); }
+        else { localStorage.removeItem("da_api_password"); ouvrirModal(); }
       });
-    } else { modal.classList.add("open"); input.focus(); }
+    } else { ouvrirModal(); }
   });
   function attempt(){
     var pw = (input.value || "").trim();
@@ -381,8 +900,7 @@
       go.disabled = false;
       if (ok) {
         localStorage.setItem("da_api_password", pw);
-        err.textContent = "";
-        modal.classList.remove("open");
+        fermerModal();
         mountAssistant();
       } else {
         err.textContent = "Code incorrect.";
@@ -392,7 +910,11 @@
   }
   go.addEventListener("click", attempt);
   input.addEventListener("keydown", function(e){ if (e.key === "Enter") attempt(); });
-  cancel.addEventListener("click", function(){ modal.classList.remove("open"); err.textContent = ""; });
+  cancel.addEventListener("click", fermerModal);
+  veil.addEventListener("click", fermerModal);
+  document.addEventListener("keydown", function(e){
+    if (e.key === "Escape" && modal.classList.contains("is-open")) fermerModal();
+  });
 })();
 </script>
 </body>
