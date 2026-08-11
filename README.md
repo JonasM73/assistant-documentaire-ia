@@ -116,6 +116,8 @@ Le thème clair ne redéfinit que des **valeurs de jetons**, jamais des règles 
 
 Le contenu reste lisible sans JavaScript : les états masqués sont conditionnés à une classe posée par `motion.js`, et un filet de sécurité révèle tout au bout de 3 secondes. `prefers-reduced-motion` neutralise l'ensemble des animations.
 
+`app.py` (Streamlit) est volontairement **hors** de ce système : c'est un banc d'essai local, pas une surface montrée à un client. Ne jamais le filmer ni le montrer en appel — c'est le widget qui se lit comme un produit.
+
 ## Limites (à dire au client, c'est une démo)
 
 - Pas de gestion multi-utilisateurs : un mot de passe partagé pour le chat, un pour l'administration.
