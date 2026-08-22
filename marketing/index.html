@@ -1,776 +1,934 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Assistant IA sur vos documents — Jonas Mionnet</title>
-<meta name="description" content="Un assistant qui répond aux questions de vos équipes à partir de vos propres documents, en citant ses sources. Livré en 5 jours ouvrables, 2 500 €.">
-<link rel="canonical" href="https://jonasmionnet.com/">
-<meta name="theme-color" content="#1b2a4a">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Vos équipes perdent des heures à chercher dans les PDF. Un assistant IA répond à leur place, à partir de vos documents : 4 secondes, source citée, 0 invention. Livré en 5 jours.">
+<meta property="og:title" content="Assistant IA sur vos documents — la réponse en 4 secondes, source citée">
+<meta property="og:description" content="Vos équipes perdent des heures à chercher dans les PDF. Réponse en 4 secondes, source citée, 0 invention. Démo en 2 minutes.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://jonasmionnet.com/">
-<meta property="og:locale" content="fr_FR">
-<meta property="og:site_name" content="Jonas Mionnet — assistants documentaires">
-<meta property="og:title" content="Vos équipes cherchent dans les fichiers. L'assistant, lui, a déjà lu.">
-<meta property="og:description" content="Un assistant qui répond aux questions de vos équipes à partir de vos propres documents, en citant ses sources. Quand l'information n'y est pas, il le dit. Livré en 5 jours ouvrables, 2 500 €.">
-<meta property="og:image" content="https://jonasmionnet.com/partage.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Assistant documentaire pour PME — réponse sourcée à partir de vos documents.">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Vos équipes cherchent dans les fichiers. L'assistant, lui, a déjà lu.">
-<meta name="twitter:description" content="Un assistant qui répond à partir de vos propres documents, en citant ses sources. Livré en 5 jours ouvrables, 2 500 €.">
-<meta name="twitter:image" content="https://jonasmionnet.com/partage.png">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='13' fill='%231b2a4a'/%3E%3Cpath d='M18 20h20M18 30h28M18 40h16' stroke='%23fff' stroke-width='5' stroke-linecap='round'/%3E%3Ccircle cx='42' cy='42' r='9' fill='none' stroke='%2372a7cd' stroke-width='4.5'/%3E%3Cpath d='M49 49l6 6' stroke='%2372a7cd' stroke-width='4.5' stroke-linecap='round'/%3E%3C/svg%3E">
-<script type="application/ld+json">
-{"@context":"https://schema.org","@type":"ProfessionalService",
-"name":"Jonas Mionnet — assistants documentaires",
-"description":"Conception et exploitation d'assistants documentaires pour PME : l'assistant répond aux questions des équipes à partir des documents de l'entreprise, en citant ses sources.",
-"url":"https://jonasmionnet.com/","email":"jonas@jonasmionnet.com",
-"areaServed":{"@type":"Country","name":"France"},
-"founder":{"@type":"Person","name":"Jonas Mionnet","url":"https://www.linkedin.com/in/jonas-mionnet-5339012a0"},
-"offers":{"@type":"Offer","name":"Mise en place d'un assistant documentaire",
-"price":"2500","priceCurrency":"EUR",
-"description":"Conception, ingestion des documents, recette de livraison d'au moins 20 questions, prise en main. Abonnement de service 149 € par mois."}}
-</script>
+<meta name="theme-color" content="#070D0B">
+<title>Assistant IA sur vos documents — la réponse en 4 secondes, source citée</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;450;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="da.css">
 <style>
-:root{
-  --encre:#1b2a4a; --texte:#22262e; --gris:#5a6270; --gris-c:#8a919c;
-  --ligne:#dfe3ea; --fond:#f6f7f9; --blanc:#fff; --accent:#1b5e8f;
-  --max:1080px;
-}
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{
-  font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-  color:var(--texte);background:var(--blanc);
-  font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased;
-}
-.enveloppe{max-width:var(--max);margin:0 auto;padding:0 24px}
-section{padding:76px 0;border-top:1px solid var(--ligne)}
-section:first-of-type{border-top:0}
-h1,h2,h3{color:var(--encre);line-height:1.25;font-weight:700;letter-spacing:-.015em}
-h1{font-size:clamp(29px,4.2vw,42px);margin-bottom:20px}
-h2{font-size:clamp(23px,3vw,30px);margin-bottom:14px}
-h3{font-size:18px;margin-bottom:8px}
-p{margin-bottom:16px;max-width:66ch}
-a{color:var(--accent)}
-.chapeau{font-size:13px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;
-  color:var(--gris-c);margin-bottom:12px}
-.intro{font-size:18px;color:var(--gris);margin-bottom:34px;max-width:64ch}
-.note{font-size:14px;color:var(--gris);}
+  /* =========================================================================
+     Page de l'offre — composition propre à cette page.
+     Le vocabulaire commun (jetons, boutons, révélations) vit dans da.css.
+     ========================================================================= */
+  html{scroll-behavior:smooth;}
+  body{background:var(--ink-900);}
 
-/* --- en-tête --- */
-header{position:sticky;top:0;z-index:60;background:rgba(255,255,255,.96);
-  border-bottom:1px solid var(--ligne);backdrop-filter:saturate(180%) blur(6px)}
-.barre{display:flex;align-items:center;justify-content:space-between;
-  height:62px;max-width:var(--max);margin:0 auto;padding:0 24px}
-.marque{font-weight:700;color:var(--encre);text-decoration:none;font-size:16px}
-.marque span{color:var(--gris-c);font-weight:500}
-nav{display:flex;gap:26px;align-items:center}
-nav a{color:var(--gris);text-decoration:none;font-size:15px;font-weight:500}
-nav a:hover{color:var(--encre)}
-@media(max-width:760px){nav a:not(.bouton):not(.garder){display:none}.marque span{display:none}
-  nav{gap:16px}
-  .barre{height:56px;padding:0 16px}.enveloppe{padding:0 16px}.bouton{padding:9px 14px;font-size:14px}}
-@media(max-width:430px){nav a.garder{display:none}}
+  /* ---------------------------------------------------------------- NAV --- */
+  .nav{position:fixed;top:0;left:0;right:0;z-index:300;
+    transition:transform .6s var(--e),background .6s var(--e),backdrop-filter .6s var(--e);}
+  .nav.is-stuck{background:rgba(12,22,19,.78);
+    -webkit-backdrop-filter:blur(18px) saturate(1.5);backdrop-filter:blur(18px) saturate(1.5);
+    box-shadow:0 1px 0 var(--rule-ink-2);}
+  .nav.is-hidden{transform:translateY(-102%);}
+  .nav__in{display:flex;align-items:center;gap:26px;
+    height:clamp(64px,7vw,84px);max-width:var(--maxw);margin:0 auto;
+    padding-left:var(--gut);padding-right:var(--gut);}
+  .brand{display:flex;align-items:baseline;gap:2px;font-family:var(--disp);font-weight:800;
+    font-size:17px;letter-spacing:-.035em;color:var(--on-ink);}
+  .brand i{font-style:normal;color:var(--sig-400);}
+  .brand__dot{width:7px;height:7px;border-radius:50%;background:var(--lime);
+    margin-left:8px;align-self:center;animation:pulse 2.6s var(--e) infinite;}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.35;transform:scale(.72);}}
+  .nav__links{display:flex;gap:30px;margin-left:auto;}
+  .nav__links a{position:relative;font-size:14px;font-weight:500;color:var(--on-ink-2);
+    padding:6px 0;transition:color .3s var(--e);}
+  .nav__links a::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;
+    background:var(--sig-400);transform:scaleX(0);transform-origin:right;
+    transition:transform .45s var(--e);}
+  .nav__links a:hover{color:var(--on-ink);}
+  .nav__links a:hover::after{transform:scaleX(1);transform-origin:left;}
+  .nav__cta{margin-left:6px;padding:12px 22px;font-size:14px;}
+  .burger{display:none;margin-left:auto;width:44px;height:44px;border:none;background:none;
+    cursor:pointer;position:relative;}
+  .burger i{position:absolute;left:11px;right:11px;height:1.5px;background:var(--on-ink);
+    transition:transform .5s var(--e),opacity .3s var(--e);}
+  .burger i:nth-child(1){top:18px;} .burger i:nth-child(2){top:25px;}
+  .nav.is-open .burger i:nth-child(1){transform:translateY(3.5px) rotate(45deg);}
+  .nav.is-open .burger i:nth-child(2){transform:translateY(-3.5px) rotate(-45deg);}
 
-/* --- accessibilité --- */
-.saut{position:absolute;left:-9999px;top:0;background:var(--encre);color:#fff;
-  padding:10px 16px;z-index:200;border-radius:0 0 5px 0}
-.saut:focus{left:0}
-a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible{
-  outline:2px solid var(--accent);outline-offset:3px;border-radius:3px}
+  .menu{position:fixed;inset:0;z-index:290;background:var(--ink-950);
+    display:flex;flex-direction:column;justify-content:center;gap:6px;
+    padding:0 var(--gut);clip-path:inset(0 0 100% 0);visibility:hidden;
+    transition:clip-path .8s var(--e),visibility 0s linear .8s;}
+  .menu.is-open{clip-path:inset(0 0 0 0);visibility:visible;transition:clip-path .8s var(--e);}
+  .menu a{font-family:var(--disp);font-weight:800;font-size:clamp(2rem,9vw,3.4rem);
+    letter-spacing:-.05em;color:var(--on-ink);padding:8px 0;
+    opacity:0;transform:translateY(28px);transition:opacity .6s var(--e),transform .7s var(--e);}
+  .menu.is-open a{opacity:1;transform:none;}
+  .menu.is-open a:nth-child(1){transition-delay:.14s;}
+  .menu.is-open a:nth-child(2){transition-delay:.2s;}
+  .menu.is-open a:nth-child(3){transition-delay:.26s;}
+  .menu.is-open a:nth-child(4){transition-delay:.32s;}
+  .menu.is-open a:nth-child(5){transition-delay:.38s;}
+  .menu a:hover{color:var(--sig-400);}
+  .menu__foot{margin-top:44px;font:var(--t-micro);letter-spacing:.16em;text-transform:uppercase;
+    color:var(--on-ink-4);}
 
-/* --- bande secteurs --- */
-.secteurs{border:1px solid var(--ligne);border-radius:8px;padding:18px 22px;margin-top:26px;
-  background:var(--fond)}
-.secteurs p{margin:0;font-size:15.5px;color:var(--gris);max-width:none}
-.secteurs b{color:var(--encre);font-weight:600}
+  /* --------------------------------------------------------------- HERO --- */
+  .hero{position:relative;min-height:100svh;display:flex;align-items:flex-end;
+    overflow:hidden;padding-bottom:clamp(40px,7vw,90px);padding-top:clamp(110px,14vw,180px);}
+  .hero__bg{position:absolute;inset:-14% 0 -14% 0;z-index:0;}
+  .hero__bg img{width:100%;height:100%;object-fit:cover;
+    filter:saturate(.78) contrast(1.04) brightness(1.12);}
+  /* Le voile éclaire la photo au lieu de l'éteindre : on doit distinguer
+     l'espace derrière le titre, pas deviner un aplat noir. */
+  .hero__veil{position:absolute;inset:0;z-index:1;pointer-events:none;
+    background:
+      linear-gradient(180deg,rgba(8,15,13,.82) 0%,rgba(8,15,13,.34) 34%,rgba(8,15,13,.66) 74%,var(--ink-900) 100%),
+      linear-gradient(100deg,rgba(8,15,13,.72) 4%,rgba(8,15,13,.2) 44%,transparent 72%),
+      radial-gradient(90% 70% at 82% 12%,rgba(16,185,129,.3),transparent 62%),
+      radial-gradient(70% 60% at 8% 96%,rgba(198,242,78,.14),transparent 60%);}
+  .hero__in{position:relative;z-index:2;width:100%;}
+  .hero__grid{display:grid;grid-template-columns:minmax(0,1.28fr) minmax(0,.72fr);
+    gap:clamp(28px,4vw,64px);align-items:end;}
+  .hero h1{font-size:clamp(2.4rem,5.9vw,5.9rem);line-height:.92;letter-spacing:-.05em;
+    margin:0 0 26px;max-width:16ch;}
+  .hero h1 .thin{font-weight:500;color:var(--on-ink-2);}
+  .hero__lead{max-width:46ch;color:var(--on-ink-2);font-size:clamp(1rem,1.2vw,1.22rem);
+    line-height:1.6;margin-bottom:34px;}
+  .hero__lead em{font-family:var(--serif);font-style:italic;color:var(--on-ink);
+    font-size:1.08em;}
+  .hero__cta{display:flex;gap:14px;flex-wrap:wrap;align-items:center;}
+  .hero__pills{display:flex;flex-wrap:wrap;gap:10px;margin-top:38px;}
+  /* Ce sont des PHRASES, pas des étiquettes : capitales et monospace les
+     faisaient lire comme une fiche technique. */
+  .hero__pills .pill{font:450 13.5px/1.45 var(--ui);letter-spacing:-.005em;
+    text-transform:none;color:var(--on-ink-2);padding:10px 17px 10px 15px;}
+  .hero__cue{position:absolute;left:var(--gut);bottom:22px;z-index:3;display:flex;
+    align-items:center;gap:12px;font:var(--t-micro);letter-spacing:.2em;text-transform:uppercase;
+    color:var(--on-ink-4);}
+  .hero__cue i{display:block;width:1px;height:34px;background:linear-gradient(var(--sig-400),transparent);
+    animation:cue 2.2s var(--e) infinite;transform-origin:top;}
+  @keyframes cue{0%{transform:scaleY(0);}45%{transform:scaleY(1);}100%{transform:scaleY(0);transform-origin:bottom;}}
 
-/* --- bloc auteur --- */
-.auteur{display:flex;gap:22px;align-items:flex-start;flex-wrap:wrap;
-  border:1px solid var(--ligne);border-radius:8px;padding:24px}
-.auteur .portrait{width:96px;height:96px;flex:none;border-radius:50%;object-fit:cover;
-  border:1px solid var(--ligne);background:var(--fond);display:block}
-.auteur .texte{flex:1 1 320px;min-width:0}
-.auteur.sans-photo .portrait{display:none}
-.auteur p:last-child{margin-bottom:0}
+  /* Aperçu de réponse : la promesse du produit, montrée plutôt qu'écrite. */
+  .peek{position:relative;border-radius:var(--r-lg);padding:24px 24px 20px;
+    background:linear-gradient(160deg,rgba(30,48,42,.82),rgba(12,22,19,.76));
+    -webkit-backdrop-filter:blur(20px) saturate(1.3);backdrop-filter:blur(20px) saturate(1.3);
+    box-shadow:inset 0 0 0 1px rgba(244,247,245,.17),0 40px 90px -50px #000;
+    animation:float 7s ease-in-out infinite;}
+  @keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+  .peek__q{display:flex;gap:11px;align-items:flex-start;margin-bottom:18px;}
+  .peek__q span{font-size:13.5px;line-height:1.5;color:var(--on-ink);
+    background:var(--sig-600);padding:10px 14px;border-radius:14px 14px 4px 14px;}
+  .peek__a{font-size:13.5px;line-height:1.62;color:var(--on-ink-2);}
+  .peek__a b{color:var(--on-ink);font-weight:600;}
+  .peek__src{margin-top:15px;padding-top:12px;display:flex;flex-wrap:wrap;gap:8px;
+    border-top:1px solid var(--rule-ink);}
+  .peek__chip{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);
+    font-size:10.5px;color:var(--sig-300);letter-spacing:.02em;}
+  .peek__chip svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2;opacity:.7;}
+  .peek__cap{margin-top:14px;font:var(--t-micro);letter-spacing:.13em;text-transform:uppercase;
+    color:var(--on-ink-4);line-height:1.6;}
+  .peek__dots{display:inline-flex;gap:4px;align-items:center;margin-left:2px;}
+  .peek__dots i{width:5px;height:5px;border-radius:50%;background:var(--sig-400);opacity:.35;
+    animation:blink 1.3s infinite;}
+  .peek__dots i:nth-child(2){animation-delay:.16s;} .peek__dots i:nth-child(3){animation-delay:.32s;}
+  @keyframes blink{0%,100%{opacity:.25;}50%{opacity:1;}}
 
-/* --- boutons --- */
-.bouton{display:inline-block;background:var(--encre);color:#fff;text-decoration:none;
-  padding:11px 20px;border-radius:5px;font-size:15px;font-weight:600;border:0;cursor:pointer;
-  font-family:inherit}
-.bouton:hover{background:#26375c}
-.bouton.creux{background:transparent;color:var(--encre);border:1px solid var(--ligne)}
-.bouton.creux:hover{background:var(--fond)}
-.boutons{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px}
+  /* ------------------------------------------------------------ MARQUEE --- */
+  .band-mq{padding:clamp(22px,2.6vw,34px) 0;border-top:1px solid var(--rule-ink-2);
+    border-bottom:1px solid var(--rule-ink-2);background:var(--ink-950);}
+  .mq-item{display:inline-flex;align-items:center;gap:clamp(28px,3vw,52px);
+    padding-right:clamp(28px,3vw,52px);font-family:var(--disp);font-weight:700;
+    font-size:clamp(15px,1.5vw,20px);letter-spacing:-.025em;color:var(--on-ink-3);
+    white-space:nowrap;}
+  .mq-item i{width:5px;height:5px;border-radius:50%;background:var(--sig-500);flex:none;}
 
-/* --- accroche --- */
-.accroche{padding:60px 0 66px}
-.accroche-grille{display:grid;grid-template-columns:1.05fr .95fr;gap:52px;align-items:start}
-@media(max-width:880px){.accroche-grille{grid-template-columns:1fr;gap:36px}}
-.garanties{list-style:none;margin-top:28px;border-top:1px solid var(--ligne);padding-top:18px}
-.garanties li{font-size:15px;color:var(--gris);padding:5px 0 5px 20px;position:relative}
-.garanties li::before{content:"";position:absolute;left:0;top:14px;width:8px;height:1px;
-  background:var(--gris-c)}
+  /* ------------------------------------------------------------ PROBLÈME -- */
+  .prob{position:relative;overflow:hidden;}
+  .prob__grid{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);
+    gap:clamp(30px,5vw,88px);align-items:center;}
+  .prob__figure{position:relative;}
+  .prob__media{position:relative;aspect-ratio:4/5;border-radius:var(--r-lg);overflow:hidden;
+    background:var(--ink-800);}
+  .prob__media img{width:100%;height:100%;object-fit:cover;filter:grayscale(.18) contrast(1.02) brightness(1.04);}
+  .prob__stamp{position:absolute;right:-10%;bottom:-5%;z-index:3;text-align:right;
+    pointer-events:none;}
+  .prob__stamp b{display:block;font-family:var(--disp);font-weight:800;
+    font-size:clamp(4.4rem,11vw,9.5rem);letter-spacing:-.07em;line-height:.8;
+    color:var(--lime);text-shadow:0 26px 60px rgba(4,9,7,.85);font-variant-numeric:tabular-nums;}
+  .prob__stamp small{display:block;font-family:var(--mono);font-size:10.5px;font-weight:700;
+    letter-spacing:.19em;text-transform:uppercase;color:var(--on-ink-3);margin:14px 0 0 auto;
+    max-width:18ch;line-height:1.6;}
+  .prob__list{margin:34px 0 0;padding:0;list-style:none;}
+  .prob__list li{position:relative;padding:18px 0 18px 34px;font-size:16px;
+    color:var(--on-ink-2);border-bottom:1px solid var(--rule-ink-2);}
+  .prob__list li::before{content:"";position:absolute;left:0;top:26px;width:14px;height:1.5px;
+    background:var(--sig-400);}
+  .prob__list li b{color:var(--on-ink);font-weight:600;}
 
-/* --- carte d'exemple --- */
-.echange{border:1px solid var(--ligne);border-radius:8px;overflow:hidden;background:var(--blanc)}
-.echange-tete{background:var(--fond);border-bottom:1px solid var(--ligne);
-  padding:9px 16px;font-size:12.5px;color:var(--gris);display:flex;justify-content:space-between}
-.echange-corps{padding:18px 16px}
-.q{font-weight:600;color:var(--encre);font-size:15.5px;margin-bottom:12px}
-.r{font-size:15px;color:var(--texte);margin-bottom:14px}
-.sources{display:flex;gap:8px;flex-wrap:wrap;border-top:1px solid var(--ligne);padding-top:12px}
-.src{font-size:12.5px;background:var(--fond);border:1px solid var(--ligne);
-  border-radius:4px;padding:4px 9px;color:var(--gris)}
-.refus{color:var(--gris);font-style:italic}
+  /* --------------------------------------------------------------- KPIS --- */
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(18px,2vw,30px);}
+  .kpi{position:relative;padding:0 clamp(14px,2vw,26px) 0 0;}
+  .kpi + .kpi{padding-left:clamp(14px,2vw,26px);}
+  .kpi + .kpi::before{content:"";position:absolute;left:0;top:6px;bottom:6px;width:1px;
+    background:linear-gradient(180deg,transparent,var(--rule-ink) 24%,var(--rule-ink) 76%,transparent);}
+  .kpi__v{display:flex;align-items:baseline;gap:6px;}
+  .kpi__v .num{color:var(--on-ink);}
+  .kpi__u{font-family:var(--disp);font-weight:700;font-size:clamp(1rem,1.6vw,1.5rem);
+    color:var(--sig-400);letter-spacing:-.03em;}
 
-/* --- listes de constat --- */
-.constats{list-style:none;margin:6px 0 22px;max-width:70ch}
-.constats li{padding:11px 0 11px 0;border-bottom:1px solid var(--ligne);font-size:16px}
-.constats li:first-child{border-top:1px solid var(--ligne)}
+  /* --------------------------------------------------------------- DÉMO --- */
+  .demo__grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);
+    gap:clamp(30px,4.4vw,72px);align-items:start;}
+  .demo__col{position:sticky;top:clamp(88px,11vw,116px);}
+  .frame{position:relative;padding-top:56.25%;border-radius:var(--r-md);overflow:hidden;
+    background:var(--ink-950);box-shadow:0 50px 100px -50px #000,inset 0 0 0 1px var(--rule-ink);}
+  .frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
+  .frame__glow{position:absolute;inset:-30% -10%;z-index:-1;
+    background:radial-gradient(50% 50% at 50% 50%,var(--sig-glow),transparent 70%);
+    opacity:.5;filter:blur(30px);}
+  .cap{display:flex;align-items:flex-start;gap:11px;margin-top:20px;font-size:14px;
+    color:var(--on-ink-3);line-height:1.55;}
+  .cap::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--sig-400);
+    flex:none;margin-top:7px;box-shadow:0 0 0 4px rgba(16,185,129,.16);}
+  .try{margin-top:24px;padding:18px 20px;border-radius:var(--r-md);
+    background:var(--tint);
+    box-shadow:inset 0 0 0 1px var(--rule-ink);
+    display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+  .try p{font-size:14.5px;color:var(--on-ink-2);max-width:34ch;}
+  .try button{padding:12px 20px;font-size:14px;}
+  .try button:disabled{opacity:.6;cursor:default;--s:1;}
 
-/* --- calculateur --- */
-.calc{display:grid;grid-template-columns:1fr 1fr;gap:34px;align-items:start}
-@media(max-width:880px){.calc{grid-template-columns:1fr}}
-.champs{border:1px solid var(--ligne);border-radius:8px;padding:22px}
-.champ{margin-bottom:18px}
-.champ:last-child{margin-bottom:0}
-.champ label{display:block;font-size:14.5px;font-weight:500;margin-bottom:7px;color:var(--texte)}
-.champ .val{float:right;font-weight:700;color:var(--encre);font-variant-numeric:tabular-nums}
-input[type=range]{width:100%;accent-color:var(--encre);height:22px}
-.resultat{border:1px solid var(--ligne);border-radius:8px;padding:22px;background:var(--fond)}
-.chiffre{font-size:38px;font-weight:700;color:var(--encre);line-height:1.1;
-  font-variant-numeric:tabular-nums;letter-spacing:-.02em}
-.chiffre-sous{font-size:14.5px;color:var(--gris);margin-bottom:22px}
-.ligne-res{display:flex;justify-content:space-between;gap:14px;font-size:15px;
-  padding:9px 0;border-top:1px solid var(--ligne)}
-.ligne-res b{font-variant-numeric:tabular-nums;color:var(--encre)}
-.verdict{margin-top:16px;padding-top:14px;border-top:2px solid var(--encre);
-  font-size:15.5px;color:var(--encre)}
+  .faq details{position:relative;border-top:1px solid var(--rule-ink);}
+  .faq details:last-of-type{border-bottom:1px solid var(--rule-ink);}
+  .faq summary{list-style:none;cursor:pointer;display:flex;align-items:flex-start;gap:20px;
+    padding:24px 0;font-family:var(--disp);font-weight:700;font-size:clamp(1rem,1.35vw,1.2rem);
+    letter-spacing:-.028em;color:var(--on-ink-2);transition:color .3s var(--e);}
+  .faq summary::-webkit-details-marker{display:none;}
+  .faq summary:hover{color:var(--on-ink);}
+  .faq details[open] summary{color:var(--on-ink);}
+  .faq summary span{flex:1;}
+  .faq__sign{position:relative;flex:none;width:20px;height:20px;margin-top:3px;}
+  .faq__sign::before,.faq__sign::after{content:"";position:absolute;left:50%;top:50%;
+    background:var(--sig-400);transition:transform .45s var(--e),background .3s var(--e);}
+  .faq__sign::before{width:14px;height:1.5px;transform:translate(-50%,-50%);}
+  .faq__sign::after{width:1.5px;height:14px;transform:translate(-50%,-50%);}
+  .faq details[open] .faq__sign::after{transform:translate(-50%,-50%) scaleY(0);}
+  .faq details[open] .faq__sign::before{background:var(--lime);}
+  .faq__body{padding:0 0 26px 40px;color:var(--on-ink-3);font-size:15.5px;line-height:1.68;
+    max-width:62ch;animation:faqin .55s var(--e) both;}
+  @keyframes faqin{from{opacity:0;transform:translateY(-8px);}to{opacity:1;transform:none;}}
 
-/* --- exemples --- */
-.exemples{display:grid;grid-template-columns:1fr 1fr;gap:26px}
-@media(max-width:880px){.exemples{grid-template-columns:1fr}}
-.exemple{border:1px solid var(--ligne);border-radius:8px;padding:24px}
-.exemple h3{margin-bottom:4px}
-.metier{font-size:13.5px;color:var(--gris-c);margin-bottom:16px}
-.exemple .paire{border-top:1px solid var(--ligne);padding-top:13px;margin-top:13px}
-.exemple .paire:first-of-type{border-top:0;padding-top:0;margin-top:0}
-.exemple .pq{font-weight:600;font-size:14.5px;color:var(--encre);margin-bottom:5px}
-.exemple .pr{font-size:14.5px;color:var(--gris);margin:0}
+  /* ------------------------------------------------------------ SECTEURS -- */
+  .sect__head{display:flex;align-items:flex-end;justify-content:space-between;gap:30px;
+    flex-wrap:wrap;margin-bottom:clamp(30px,4vw,54px);}
+  .sect-card{position:relative;flex:none;width:clamp(210px,22vw,290px);aspect-ratio:3/4;
+    border-radius:var(--r-md);overflow:hidden;margin-right:clamp(14px,1.6vw,22px);}
+  .sect-card img{width:100%;height:100%;object-fit:cover;filter:grayscale(.35) contrast(1.02) brightness(1.06);
+    transition:filter .6s var(--e),transform 1s var(--e);}
+  .sect-card:hover img{filter:grayscale(0) contrast(1.02);transform:scale(1.05);}
+  .sect-card figcaption{position:absolute;left:0;right:0;bottom:0;z-index:3;padding:20px;
+    font-family:var(--disp);font-weight:700;font-size:15.5px;letter-spacing:-.025em;
+    color:var(--on-ink);}
+  .sect-card figcaption small{display:block;font:var(--t-micro);letter-spacing:.17em;
+    text-transform:uppercase;color:var(--sig-300);margin-bottom:7px;}
 
-/* --- étapes --- */
-.etapes{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;margin-top:8px}
-@media(max-width:760px){.etapes{grid-template-columns:1fr}}
-.etape{border-top:2px solid var(--encre);padding-top:14px}
-.etape .num{font-size:13px;font-weight:700;color:var(--gris-c);margin-bottom:6px}
-.etape p{font-size:15px;color:var(--gris);margin:0}
+  /* --------------------------------------------------------------- OFFRE -- */
+  .offre__grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:clamp(22px,3vw,44px);}
+  .panel{position:relative;border-radius:var(--r-lg);padding:clamp(26px,3vw,40px);}
+  .panel--in{background:var(--white);
+    box-shadow:0 2px 4px rgba(11,21,18,.04),0 40px 70px -46px rgba(11,21,18,.5);}
+  .panel--out{background:transparent;box-shadow:inset 0 0 0 1.5px var(--rule-paper);}
+  .panel h3{font-size:clamp(1.15rem,1.6vw,1.5rem);margin-bottom:6px;}
+  .panel__tag{font:var(--t-micro);letter-spacing:.19em;text-transform:uppercase;
+    margin-bottom:22px;display:block;}
+  .panel--in .panel__tag{color:var(--sig-600);}
+  .panel--out .panel__tag{color:var(--on-paper-3);}
+  .panel ul{list-style:none;margin:26px 0 0;padding:0;}
+  .panel li{position:relative;padding:15px 0 15px 38px;font-size:15.5px;line-height:1.5;
+    color:var(--on-paper-2);border-top:1px solid var(--rule-paper-2);}
+  .panel li:first-child{border-top:none;}
+  .panel--in li::before{content:"";position:absolute;left:4px;top:20px;width:13px;height:7px;
+    border-left:2px solid var(--sig-600);border-bottom:2px solid var(--sig-600);
+    transform:rotate(-45deg);}
+  .panel--out li::before{content:"";position:absolute;left:4px;top:24px;width:14px;height:1.5px;
+    background:var(--on-paper-4);}
+  .offre__media{grid-column:1 / -1;position:relative;border-radius:var(--r-lg);overflow:hidden;
+    aspect-ratio:21/7;margin-top:clamp(10px,1.6vw,20px);}
+  .offre__media img{width:100%;height:100%;object-fit:cover;}
+  .offre__media figcaption{position:absolute;left:clamp(20px,3vw,38px);bottom:clamp(20px,3vw,32px);
+    z-index:3;font-family:var(--disp);font-weight:700;font-size:clamp(1rem,1.8vw,1.5rem);
+    letter-spacing:-.03em;color:var(--on-ink);max-width:24ch;}
 
-/* --- prix --- */
-.prix-grille{display:grid;grid-template-columns:1.15fr .85fr;gap:34px;align-items:start}
-@media(max-width:880px){.prix-grille{grid-template-columns:1fr}}
-.tarif{border:1px solid var(--ligne);border-radius:8px;overflow:hidden}
-.tarif-ligne{display:flex;justify-content:space-between;gap:16px;padding:15px 20px;
-  border-bottom:1px solid var(--ligne);font-size:15.5px}
-.tarif-ligne:last-child{border-bottom:0}
-.tarif-ligne b{white-space:nowrap;color:var(--encre);font-size:16px}
-.tarif-ligne .det{font-size:13.5px;color:var(--gris);display:block;margin-top:3px}
-.tarif-tete{background:var(--encre);color:#fff;padding:13px 20px;font-size:14px;font-weight:600}
-.inclus{list-style:none}
-.inclus li{padding:9px 0 9px 22px;border-bottom:1px solid var(--ligne);
-  font-size:15.5px;position:relative}
-.inclus li::before{content:"✓";position:absolute;left:0;color:var(--accent);font-weight:700}
+  /* ------------------------------------------------------------- ÉTAPES --- */
+  .steps{position:relative;}
+  .steps__aside{position:sticky;top:clamp(96px,13vw,150px);align-self:start;}
+  .steps__grid{display:grid;grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);
+    gap:clamp(28px,5vw,86px);align-items:start;}
+  .step{position:relative;display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);
+    gap:clamp(20px,3vw,40px);align-items:center;padding:clamp(26px,3.4vw,44px) 0;
+    border-top:1px solid var(--rule-ink);}
+  .step:last-child{border-bottom:1px solid var(--rule-ink);}
+  .step__n{font-family:var(--disp);font-weight:800;font-size:clamp(2.4rem,4.6vw,4.4rem);
+    letter-spacing:-.06em;line-height:.85;color:transparent;
+    -webkit-text-stroke:1.4px var(--on-ink-4);margin-bottom:16px;
+    transition:color .6s var(--e),-webkit-text-stroke-color .6s var(--e);}
+  .step:hover .step__n{color:var(--sig-400);-webkit-text-stroke-color:transparent;}
+  .step h3{font-size:clamp(1.2rem,1.9vw,1.7rem);margin-bottom:12px;}
+  .step p{color:var(--on-ink-3);font-size:15.5px;line-height:1.62;max-width:42ch;}
+  .step__media{position:relative;aspect-ratio:16/11;border-radius:var(--r-md);overflow:hidden;}
+  .step__media img{width:100%;height:100%;object-fit:cover;filter:grayscale(.22) contrast(1.02) brightness(1.05);
+    transition:filter .7s var(--e),transform 1.1s var(--e);}
+  .step:hover .step__media img{filter:grayscale(0);transform:scale(1.05);}
 
-/* --- questions --- */
-details{border-bottom:1px solid var(--ligne)}
-summary{padding:15px 0;cursor:pointer;font-weight:600;color:var(--encre);font-size:16px;
-  list-style:none;display:flex;justify-content:space-between;gap:16px}
-summary::-webkit-details-marker{display:none}
-summary::after{content:"+";color:var(--gris-c);font-weight:400;font-size:20px;line-height:1;flex:none}
-summary>span{flex:1 1 auto}
-details[open] summary::after{content:"–"}
-details p{padding:0 0 16px;color:var(--gris);font-size:15.5px}
+  /* ---------------------------------------------------------------- PRIX -- */
+  .prix{position:relative;overflow:hidden;border-radius:var(--r-xl);
+    padding:clamp(40px,6vw,86px) clamp(24px,4vw,64px);text-align:center;
+    background:linear-gradient(155deg,var(--ink-700),var(--ink-900) 66%);
+    box-shadow:inset 0 0 0 1px var(--rule-ink);}
+  .prix::before{content:"";position:absolute;inset:-40% -10% auto -10%;height:120%;
+    background:radial-gradient(50% 50% at 50% 30%,var(--sig-glow),transparent 66%);
+    opacity:.45;pointer-events:none;}
+  .prix::after{content:"";position:absolute;inset:0;pointer-events:none;
+    background-image:var(--grain);opacity:.05;mix-blend-mode:overlay;}
+  .prix > *{position:relative;z-index:2;}
+  .prix__big{font-family:var(--disp);font-weight:800;letter-spacing:-.055em;line-height:.9;
+    font-size:clamp(3.4rem,9.5vw,8rem);margin:14px 0 10px;color:var(--on-ink);}
+  .prix__big small{display:block;font-size:clamp(.95rem,1.5vw,1.28rem);font-weight:500;
+    letter-spacing:-.01em;color:var(--on-ink-3);margin-top:20px;font-family:var(--ui);}
+  .prix__maint{font-family:var(--disp);font-weight:700;font-size:clamp(1rem,1.5vw,1.18rem);
+    color:var(--lime);letter-spacing:-.02em;margin:18px 0 0;}
+  .prix__note{color:var(--on-ink-3);font-size:15.5px;line-height:1.62;max-width:54ch;
+    margin:20px auto 34px;}
 
-/* --- final --- */
-.final{background:var(--fond)}
-footer{border-top:1px solid var(--ligne);padding:28px 0;font-size:14px;color:var(--gris)}
-.pied{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
-footer a{color:var(--gris)}
+  /* -------------------------------------------------------------- FINALE -- */
+  .fin{position:relative;overflow:hidden;min-height:82svh;display:flex;align-items:center;
+    text-align:center;}
+  .fin__bg{position:absolute;inset:-12% 0;z-index:0;}
+  .fin__bg img{width:100%;height:100%;object-fit:cover;
+    filter:saturate(.72) contrast(1.03) brightness(1.1);}
+  .fin__veil{position:absolute;inset:0;z-index:1;
+    background:linear-gradient(180deg,var(--ink-900),rgba(8,15,13,.72) 40%,rgba(8,15,13,.9)),
+      radial-gradient(60% 60% at 50% 44%,var(--sig-glow),transparent 68%);}
+  .fin__in{position:relative;z-index:2;width:100%;}
+  .fin h2{margin:0 auto 18px;max-width:19ch;}
+  .fin .lead{margin:0 auto 38px;}
+  .fin__cta{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;}
 
-/* --- fenêtre code démo --- */
-.voile{position:fixed;inset:0;background:rgba(20,24,32,.5);display:none;
-  align-items:center;justify-content:center;z-index:100;padding:20px}
-.voile.ouvert{display:flex}
-.fenetre{background:#fff;border-radius:9px;padding:26px;max-width:420px;width:100%}
-.fenetre h3{margin-bottom:8px}
-.fenetre p{font-size:14.5px;color:var(--gris)}
-.fenetre input[type=password]{width:100%;padding:10px 12px;border:1px solid var(--ligne);
-  border-radius:5px;font-size:15px;font-family:inherit;margin-bottom:12px}
-.err{color:#b3261e;font-size:14px;min-height:20px}
+  /* -------------------------------------------------------------- FOOTER -- */
+  .foot{background:var(--ink-950);padding:clamp(46px,6vw,80px) 0 clamp(28px,3vw,40px);}
+  .foot__top{display:flex;align-items:flex-end;justify-content:space-between;gap:30px;
+    flex-wrap:wrap;padding-bottom:clamp(32px,4vw,54px);}
+  .foot__mail{font-family:var(--disp);font-weight:800;letter-spacing:-.045em;
+    font-size:clamp(1.5rem,4.4vw,3.2rem);color:var(--on-ink);display:inline-flex;
+    align-items:center;gap:16px;}
+  .foot__mail svg{width:.7em;height:.7em;stroke:var(--sig-400);fill:none;stroke-width:1.8;
+    stroke-linecap:round;stroke-linejoin:round;transition:transform .5s var(--e);}
+  .foot__mail:hover svg{transform:translate(5px,-5px);}
+  .foot__bot{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;
+    padding-top:26px;border-top:1px solid var(--rule-ink-2);
+    font-size:13.5px;color:var(--on-ink-4);}
+  .foot__bot a{color:var(--on-ink-3);transition:color .3s var(--e);}
+  .foot__bot a:hover{color:var(--sig-400);}
+  .foot__links{display:flex;gap:20px;flex-wrap:wrap;}
+
+  /* --------------------------------------------------------------- MODAL -- */
+  .modal{position:fixed;inset:0;z-index:500;display:none;align-items:center;justify-content:center;
+    padding:22px;}
+  .modal.is-open{display:flex;}
+  .modal__veil{position:absolute;inset:0;background:rgba(8,15,13,.78);
+    -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+    animation:fadein .4s var(--e);}
+  @keyframes fadein{from{opacity:0;}to{opacity:1;}}
+  .modal__box{position:relative;width:min(430px,94vw);border-radius:var(--r-lg);
+    padding:clamp(26px,3.4vw,38px);background:linear-gradient(160deg,var(--ink-700),var(--ink-850));
+    box-shadow:inset 0 0 0 1px var(--rule-ink),0 60px 120px -50px #000;
+    animation:popin .55s var(--e);}
+  @keyframes popin{from{opacity:0;transform:translateY(22px) scale(.97);}to{opacity:1;transform:none;}}
+  .modal__box h3{font-size:1.5rem;margin-bottom:10px;}
+  .modal__box p{color:var(--on-ink-3);font-size:14.5px;line-height:1.6;margin-bottom:24px;}
+  .modal__box input{width:100%;padding:14px 2px;border:none;border-bottom:1.5px solid var(--rule-ink);
+    background:transparent;color:var(--on-ink);font-family:var(--ui);font-size:17px;
+    letter-spacing:-.01em;outline:none;transition:border-color .35s var(--e);}
+  .modal__box input::placeholder{color:var(--on-ink-4);}
+  .modal__box input:focus{border-bottom-color:var(--sig-400);}
+  .modal__err{color:var(--coral);font-size:13px;min-height:20px;margin:12px 0 18px;}
+  .modal__row{display:flex;gap:12px;}
+  .modal__row .btn{flex:1;padding:14px 20px;font-size:14.5px;}
+  .modal__row .btn:disabled{opacity:.55;cursor:wait;--s:1;}
+
+  /* ---------------------------------------------------------- RESPONSIVE -- */
+  @media (max-width:1080px){
+    .hero__grid{grid-template-columns:1fr;gap:44px;}
+    .peek{max-width:520px;}
+    .demo__grid,.prob__grid,.steps__grid{grid-template-columns:1fr;}
+    .demo__col{position:static;}
+    .steps__aside{position:static;}
+    .prob__media{aspect-ratio:16/10;}
+    .prob__stamp{right:0;bottom:-4%;}
+  }
+  @media (max-width:860px){
+    .nav__links{display:none;}
+    .nav__cta{display:none;}
+    .burger{display:block;}
+    .kpis{grid-template-columns:repeat(2,1fr);row-gap:34px;}
+    .kpi:nth-child(3){padding-left:0;}
+    .kpi:nth-child(3)::before{display:none;}
+    .offre__grid{grid-template-columns:1fr;}
+    .step{grid-template-columns:1fr;gap:24px;}
+    .step__media{order:-1;}
+    .hero{min-height:auto;padding-top:130px;}
+  }
+  @media (max-width:560px){
+    .kpis{grid-template-columns:1fr;gap:26px;}
+    .kpi{padding:0 0 24px;border-bottom:1px solid var(--rule-ink-2);}
+    .kpi + .kpi{padding-left:0;}
+    .kpi + .kpi::before{display:none;}
+    .prob__stamp{position:static;text-align:left;margin-top:22px;}
+    .prob__stamp b{text-shadow:none;}
+    .prob__stamp small{margin-left:0;}
+    .modal__row{flex-direction:column;}
+  }
 </style>
 </head>
 <body>
 
-<a class="saut" href="#contenu">Aller au contenu</a>
+<div class="curtain" aria-hidden="true">
+  <div class="curtain__word">Assistant<i>·</i><b>docs</b></div>
+</div>
+<div class="grain" aria-hidden="true"></div>
+<div data-progress aria-hidden="true"></div>
 
-<header>
-  <div class="barre">
-    <a class="marque" href="#">Jonas Mionnet <span>· assistants documentaires</span></a>
-    <nav>
-      <a href="#calcul">Le calcul</a>
-      <a href="#exemples">Exemples</a>
-      <a class="garder" href="#prix">Prix</a>
-      <a class="bouton" href="https://calendar.app.google/fmK8RGhTGHzwuksp7">Prendre rendez-vous</a>
+<!-- ============================ NAVIGATION ============================= -->
+<header class="nav" data-nav>
+  <div class="nav__in">
+    <a class="brand" href="#top">Assistant<i>·</i>docs<span class="brand__dot"></span></a>
+    <nav class="nav__links">
+      <a href="#demo">Démo</a>
+      <a href="#offre">L'offre</a>
+      <a href="#fonctionnement">Méthode</a>
+      <a href="#prix">Prix</a>
     </nav>
+    <a class="btn btn--sig nav__cta" href="#reserver" data-magnetic="0.22"><span>Réserver 15 min</span>
+      <svg viewBox="0 0 24 24"><path d="M5 12h13"/><path d="m12 5 7 7-7 7"/></svg></a>
+    <button class="burger" id="burger" type="button" aria-label="Ouvrir le menu" aria-expanded="false">
+      <i></i><i></i>
+    </button>
   </div>
 </header>
 
-<main id="contenu">
+<div class="menu" id="menu">
+  <a href="#demo">Démo</a>
+  <a href="#offre">L'offre</a>
+  <a href="#fonctionnement">Méthode</a>
+  <a href="#prix">Prix</a>
+  <a href="#reserver">Réserver 15 min</a>
+  <div class="menu__foot">jonas@jonasmionnet.com · France &amp; Québec</div>
+</div>
 
-<!-- ====================== ACCROCHE ====================== -->
-<section class="accroche">
-  <div class="enveloppe accroche-grille">
-    <div>
-      <h1>Vos équipes cherchent dans les fichiers. L'assistant, lui, a déjà lu.</h1>
-      <p class="intro">Je construis pour les PME un assistant qui répond aux questions de leurs équipes
-        et de leurs clients à partir de leurs propres documents. La réponse arrive en quelques secondes,
-        avec le document d'origine cité. Quand l'information n'y est pas, il le dit.</p>
-      <div class="boutons">
-        <a class="bouton" href="https://calendar.app.google/fmK8RGhTGHzwuksp7">Prendre rendez-vous</a>
-        <a class="bouton creux" href="#calcul">Calculer ce que ça vous coûte</a>
-      </div>
-      <ul class="garanties">
-        <li>Livré en 5 jours ouvrables, 2 500 €.</li>
-        <li>Je vous montre le résultat sur vos propres fichiers avant tout devis.</li>
-        <li>Rien à installer, aucun compte à ouvrir de votre côté.</li>
-      </ul>
-    </div>
-
-    <div>
-      <div class="echange">
-        <div class="echange-tete">
-          <span>Extrait de la démonstration — réseau d'agences immobilières</span>
-          <span>6 documents</span>
-        </div>
-        <div class="echange-corps">
-          <p class="q">Un appartement part à 320 000 € à Orléans Centre, sous mandat exclusif.
-            Quels honoraires ?</p>
-          <p class="r">L'agence d'Orléans Centre est en zone A. Pour la tranche 250 001 à 400 000 €,
-            le barème applique 4,5 %. Le mandat exclusif ouvre droit à une remise de 0,5 point.
-            Le taux retenu est donc de <strong>4,0 %</strong>, soit 12 800 € d'honoraires.</p>
-          <div class="sources">
-            <span class="src">bareme-honoraires-2026.pdf · p. 1</span>
-          </div>
-        </div>
-      </div>
-      <p class="note" style="margin-top:12px">Trois informations croisées dans deux tableaux différents.
-        Documents d'un réseau fictif utilisé pour la démonstration.</p>
-    </div>
+<!-- =============================== HERO =============================== -->
+<header class="hero" id="top">
+  <div class="hero__bg" data-parallax="0.14">
+    <img src="img/office.jpg" alt="" width="1920" height="1080" fetchpriority="high">
   </div>
-</section>
+  <div class="hero__veil"></div>
 
-<!-- ====================== CONSTAT ====================== -->
-<section>
-  <div class="enveloppe">
-    <p class="chapeau">Le problème</p>
-    <h2>Là où le temps part vraiment.</h2>
-    <p class="intro">Dans la plupart des PME que je rencontre, la bonne réponse existe déjà. Elle est
-      écrite, validée, à jour. Elle est simplement dans un fichier que trois personnes savent ouvrir.</p>
-    <ul class="constats">
-      <li>La même question revient chaque semaine et mobilise à chaque fois quelqu'un qui a autre chose à faire.</li>
-      <li>Un client attend deux jours une réponse qui tient en une ligne.</li>
-      <li>Le tarif a changé au 1<sup>er</sup> janvier, mais l'ancienne version circule encore. Il faut refaire le devis.</li>
-      <li>Le nouveau n'ose pas poser la même question une troisième fois, alors il devine.</li>
-      <li>Le dirigeant devient le moteur de recherche de sa propre entreprise.</li>
-    </ul>
-    <p>Vous n'avez pas besoin d'écrire de nouveaux documents. Vous avez besoin que ceux que vous
-      avez déjà répondent tout seuls.</p>
-
-    <div class="secteurs">
-      <p><b>C'est fait pour les entreprises dont les réponses sont déjà écrites</b> —
-        réseaux d'agences, distributeurs et négoces, cabinets, franchises, services techniques,
-        services clients. Autrement dit&nbsp;: partout où la même question revient et où
-        quelqu'un connaît le fichier qui contient la réponse.</p>
-    </div>
-  </div>
-</section>
-
-<!-- ====================== CALCULATEUR ====================== -->
-<section id="calcul">
-  <div class="enveloppe">
-    <p class="chapeau">Vos chiffres</p>
-    <h2>Combien vous coûte la recherche d'information, chez vous ?</h2>
-    <p class="intro">Je ne vais pas vous sortir un chiffre inventé. Mettez les vôtres et regardez.
-      Les valeurs de départ sont volontairement prudentes.</p>
-
-    <div class="calc">
-      <div class="champs">
-        <div class="champ">
-          <label for="c1">Questions internes ou clients par jour <span class="val" id="v1">12</span></label>
-          <input type="range" id="c1" min="2" max="40" value="12" step="1">
-        </div>
-        <div class="champ">
-          <label for="c2">Minutes pour retrouver la réponse <span class="val" id="v2">7</span></label>
-          <input type="range" id="c2" min="2" max="20" value="7" step="1">
-        </div>
-        <div class="champ">
-          <label for="c3">Coût horaire chargé de la personne qui cherche <span class="val" id="v3">32 €</span></label>
-          <input type="range" id="c3" min="18" max="70" value="32" step="1">
-        </div>
-        <div class="champ">
-          <label for="c4">Part des recherches que l'assistant évite <span class="val" id="v4">70 %</span></label>
-          <input type="range" id="c4" min="30" max="95" value="70" step="5">
-          <p class="note" style="margin:6px 0 0">Il ne remplace pas tout. Les cas particuliers,
-            les négociations et les décisions restent humains.</p>
-        </div>
-      </div>
-
-      <div class="resultat" aria-live="polite">
-        <div class="chiffre" id="rHeures">7 h 00</div>
-        <div class="chiffre-sous">par semaine, passées à chercher</div>
-        <div class="ligne-res"><span>Sur une année (46 semaines travaillées)</span><b id="rAn">322 h</b></div>
-        <div class="ligne-res"><span>Ce que ça représente en salaire</span><b id="rCout">10 304 €</b></div>
-        <div class="ligne-res"><span>Temps rendu, valorisé au coût chargé</span><b id="rGain">7 213 €</b></div>
-        <div class="ligne-res"><span>Ce que l'assistant coûte la première année</span><b id="rPrix">4 288 €</b></div>
-        <div class="verdict" id="rVerdict"></div>
-      </div>
-    </div>
-    <p class="note" style="margin-top:18px">Prix retenus dans ce calcul : 2 500 € de mise en place et
-      149 € par mois d'abonnement, soit 4 288 € la première année et 1 788 € les suivantes.
-      Ce que vous récupérez, ce sont des heures, pas de la trésorerie : elles se réinvestissent
-      là où votre équipe crée de la valeur.</p>
-  </div>
-</section>
-
-<!-- ====================== EXEMPLES ====================== -->
-<section id="exemples">
-  <div class="enveloppe">
-    <p class="chapeau">Deux cas construits en entier</p>
-    <h2>Reconnaissez-vous vos propres documents là-dedans ?</h2>
-    <p class="intro">Ce sont deux démonstrations complètes, montées sur des documents que j'ai écrits
-      de toutes pièces pour deux entreprises fictives. Les questions ci-dessous sont celles que
-      l'assistant traite réellement.</p>
-
-    <div class="exemples">
-      <div class="exemple">
-        <h3>Boréale Équipement</h3>
-        <p class="metier">Distributeur en chauffage, climatisation et plomberie · 6 documents</p>
-        <div class="paire">
-          <p class="pq">Quelle est la garantie du compresseur d'une thermopompe ?</p>
-          <p class="pr">Dix ans, à condition que le produit ait été enregistré dans les 60 jours
-            suivant l'installation. Sans enregistrement, cinq ans.</p>
-        </div>
-        <div class="paire">
-          <p class="pq">Peut-on retourner un produit acheté il y a deux mois ?</p>
-          <p class="pr">Oui, mais avec des frais de remise en stock de 20 % : le retour est libre
-            dans les 30 jours, puis facturé jusqu'à 90 jours. Au-delà, aucun retour n'est accepté.
-            Un numéro d'autorisation reste obligatoire dans tous les cas.</p>
-        </div>
-        <div class="paire">
-          <p class="pq">Quel est le délai de rétractation pour un particulier ?</p>
-          <p class="pr"><span class="refus">Cette information ne figure pas dans les documents.
-            Contactez le service à la clientèle.</span></p>
-        </div>
-      </div>
-
-      <div class="exemple">
-        <h3>Horizon Immobilier</h3>
-        <p class="metier">Réseau de six agences · barèmes, mandats, diagnostics · 6 documents</p>
-        <div class="paire">
-          <p class="pq">Un logement classé F peut-il encore être loué ?</p>
-          <p class="pr">Oui. Seule la classe G est interdite à la location. Les logements F le
-            resteront jusqu'au 1<sup>er</sup> janvier 2028.</p>
-        </div>
-        <div class="paire">
-          <p class="pq">Plafond d'honoraires locataire pour l'agence de Chartres ?</p>
-          <p class="pr">8,07 € par m² de surface habitable, plus 3,03 € pour l'état des lieux.
-            Chartres est hors zone tendue.</p>
-        </div>
-        <div class="paire">
-          <p class="pq">Quels sont vos tarifs de syndic ?</p>
-          <p class="pr"><span class="refus">Le réseau n'exerce pas d'activité de syndic. Cette
-            information ne figure pas dans les documents.</span></p>
-        </div>
-      </div>
-    </div>
-
-    <div class="boutons" style="margin-top:26px">
-      <a class="bouton creux" href="https://www.youtube.com/watch?v=zOcjEhi_-oY">Voir la démonstration en vidéo</a>
-      <button class="bouton creux" id="essai"><span>J'ai un code de démonstration</span></button>
-    </div>
-    <p class="note" style="margin-top:10px">Le code d'accès à l'assistant en direct est remis lors
-      de notre échange. La vidéo, elle, est ouverte à tous.</p>
-  </div>
-</section>
-
-<!-- ====================== MÉTHODE ====================== -->
-<section>
-  <div class="enveloppe">
-    <p class="chapeau">Comment ça se passe</p>
-    <h2>Trois étapes, et un lien qui fonctionne au bout.</h2>
-    <div class="etapes">
-      <div class="etape">
-        <div class="num">1 — 15 MINUTES</div>
-        <h3>On regarde où part le temps</h3>
-        <p>Quelles questions reviennent, dans quels documents dorment les réponses,
-          et qui les cherche aujourd'hui.</p>
-      </div>
-      <div class="etape">
-        <div class="num">2 — 5 JOURS OUVRÉS</div>
-        <h3>Je monte l'assistant sur vos documents</h3>
-        <p>Sur votre contenu réel, pas sur un exemple. Vous recevez un lien qui fonctionne,
-          pas une présentation.</p>
-      </div>
-      <div class="etape">
-        <div class="num">3 — À LA LIVRAISON</div>
-        <h3>Vous testez, je corrige, c'est à vous</h3>
-        <p>Avec une recette écrite : au moins 20 questions passées sur vos documents,
-          résultat chiffré remis.</p>
-      </div>
-    </div>
-    <p style="margin-top:30px">La recette de livraison est le point sur lequel j'insiste le plus.
-      Les questions de contrôle sont arrêtées <strong>avant</strong> le test, avec vous. J'en écris
-      au moins vingt à la main dans vos documents, j'en glisse plusieurs dont la réponse ne s'y
-      trouve pas, et je vérifie trois choses&nbsp;: que chaque réponse s'appuie sur un extrait que
-      vous pouvez ouvrir, que l'assistant refuse quand l'information n'existe pas, et qu'il
-      n'invente aucun engagement. Le résultat complet vous est remis avec le livrable, et vous
-      pouvez le relire ligne par ligne.</p>
-    <p>Si les critères convenus ne sont pas atteints, les corrections nécessaires sont faites sans
-      supplément avant la facturation du solde.</p>
-  </div>
-</section>
-
-<!-- ====================== PRIX ====================== -->
-<section id="prix">
-  <div class="enveloppe">
-    <p class="chapeau">Prix</p>
-    <h2>Ce que ça coûte, écrit à l'avance.</h2>
-    <p class="intro">Tout figure au devis. Aucune facture surprise, et le solde ne se règle qu'une
-      fois l'assistant entre vos mains.</p>
-
-    <div class="prix-grille">
+  <div class="hero__in shell">
+    <div class="hero__grid">
       <div>
-        <div class="tarif">
-          <div class="tarif-tete">Ce que vous payez</div>
-          <div class="tarif-ligne">
-            <span>Mise en place
-              <span class="det">Conception, ingestion de vos documents, recette de livraison,
-                prise en main de 30 minutes, un aller-retour d'ajustement.</span></span>
-            <b>2 500 €</b>
-          </div>
-          <div class="tarif-ligne">
-            <!-- Remettre « hébergement en Europe » ici UNIQUEMENT après avoir vérifié
-                 la région du service Railway. Voir OFFRE_ACTUELLE.md. -->
-            <span>Abonnement de service
-              <span class="det">Instance dédiée hébergée et exploitée par mes soins, usage du
-                modèle jusqu'à 1 500 questions par mois, surveillance, réindexation, sauvegarde.
-                Premier mois inclus. Sans engagement, préavis de 30 jours.</span></span>
-            <b>149 € / mois</b>
-          </div>
-          <div class="tarif-ligne">
-            <span>Au-delà de 1 500 questions par mois
-              <span class="det">Facturé au réel, sans forfait supplémentaire ni palier imposé.
-                Aucune coupure de service : vous êtes prévenu avant.</span></span>
-            <b>0,02 € / question</b>
-          </div>
-          <div class="tarif-ligne">
-            <span>Tableau de bord d'usage — en option
-              <span class="det">Ce qu'on demande vraiment à l'assistant, les sujets qui reviennent,
-                et surtout les questions restées sans réponse — c'est-à-dire les documents qui
-                vous manquent encore.</span></span>
-            <b>490 €</b>
-          </div>
+        <p class="eyebrow" data-reveal="fade">IA sur vos documents · pour PME</p>
+        <h1 data-reveal="fade" data-split>La réponse qu'on cherche dans <span class="mark sig">40 fichiers</span>, vos équipes l'obtiennent en 4 secondes.</h1>
+        <p class="hero__lead" data-reveal="up" data-delay="180">
+          Un assistant IA qui répond à leur place, à partir de
+          <em>vos</em> documents — procédures, catalogues, contrats, FAQ. Réponse sourcée,
+          vérifiable en un clic ; si l'info n'y est pas, il le dit. Livré fonctionnel en 5 jours,
+          rien à installer de votre côté.
+        </p>
+        <div class="hero__cta" data-reveal="up" data-delay="280">
+          <a class="btn btn--sig" href="#reserver" data-magnetic="0.25"><span>Voir le résultat sur vos documents</span>
+            <svg viewBox="0 0 24 24"><path d="M5 12h13"/><path d="m12 5 7 7-7 7"/></svg></a>
+          <a class="link" href="#demo">Voir la démo en 2 minutes
+            <svg viewBox="0 0 24 24"><path d="M12 5v14"/><path d="m5 12 7 7 7-7"/></svg></a>
         </div>
-        <p class="note" style="margin-top:14px">TVA non applicable, article 293 B du code général
-          des impôts. Acompte de 50 % pour démarrer, solde à la livraison, après validation de la
-          recette. <strong>Ce tarif est consenti aux trois premières entreprises</strong> en
-          échange d'un témoignage écrit ; la mise en place passe ensuite à 3 500 €.</p>
+        <div class="hero__pills" data-stagger="90" data-reveal="fade" data-delay="380">
+          <span class="pill">Chaque réponse cite son document</span>
+          <span class="pill">Si l'info n'y est pas, il le dit</span>
+          <span class="pill">Vos documents restent sur votre instance, pas chez moi</span>
+        </div>
       </div>
 
-      <div>
-        <h3 style="margin-bottom:12px">Ce que vous n'avez pas à faire</h3>
-        <ul class="inclus">
-          <li>Ouvrir un compte chez un hébergeur</li>
-          <li>Gérer une clé d'API</li>
-          <li>Installer quoi que ce soit</li>
-          <li>Former quelqu'un à un outil de plus</li>
-          <li>Réécrire vos documents</li>
-          <li>Signer pour douze mois</li>
-        </ul>
-        <h3 style="margin:26px 0 8px">Pourquoi 149 € et pas un prix par personne</h3>
-        <p class="note">Les assistants intégrés aux suites bureautiques se facturent par
-          utilisateur et par mois. Ici le prix est celui de l'entreprise : à partir de cinq ou six
-          personnes, vous payez moins. Et il comprend le travail que ces outils ne font pas —
-          préparer vos documents, vérifier les réponses, corriger ce qui ne passe pas la recette.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ====================== QUI ====================== -->
-<section>
-  <div class="enveloppe">
-    <p class="chapeau">Qui construit</p>
-    <h2>Vous parlez à la personne qui livre.</h2>
-    <div class="auteur" style="margin-top:22px">
-      <img class="portrait" src="portrait.jpg" alt="Portrait de Jonas Mionnet"
-        onerror="this.closest('.auteur').classList.add('sans-photo')">
-      <div class="texte">
-        <p>Je m'appelle Jonas Mionnet. Je conçois, j'installe et je teste personnellement chaque
-          assistant — il n'y a ni agence, ni sous-traitant, ni service commercial entre vous et
-          moi. Le même interlocuteur du premier fichier reçu jusqu'à la livraison, puis ensuite.</p>
-        <p style="margin-bottom:0">Je travaille en indépendant depuis la France et je n'ai
-          volontairement qu'un petit nombre de clients à la fois, parce que la recette de
-          livraison prend du temps et que c'est elle qui fait la différence.
-          <a href="https://www.linkedin.com/in/jonas-mionnet-5339012a0">Mon profil LinkedIn</a>.</p>
+      <div data-reveal="up" data-delay="420">
+        <div class="peek">
+          <div class="peek__q">
+            <span>Quelle est la garantie du compresseur d'une thermopompe BOR-TP24 ?</span>
+          </div>
+          <div class="peek__a">
+            <b>D'après la politique de garantie</b>, le compresseur est couvert par le fabricant
+            au-delà de la garantie générale de l'appareil. Le détail des durées et des exclusions
+            figure dans le document cité ci-dessous.
+          </div>
+          <div class="peek__src">
+            <span class="peek__chip"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>politique-garantie.pdf</span>
+            <span class="peek__chip"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>catalogue-produits.pdf</span>
+          </div>
+          <p class="peek__cap">Exemple de réponse<span class="peek__dots"><i></i><i></i><i></i></span><br>
+            démonstration Boréale Équipement — entreprise fictive</p>
+        </div>
       </div>
     </div>
   </div>
-</section>
 
-<!-- ====================== QUESTIONS ====================== -->
-<section>
-  <div class="enveloppe">
-    <p class="chapeau">Ce qu'on me demande</p>
-    <h2>Les questions qui reviennent à chaque appel.</h2>
-    <div style="max-width:74ch;margin-top:10px">
+  <div class="hero__cue"><i></i>Faites défiler</div>
+</header>
 
-      <details><summary>Et s'il invente une réponse ?</summary>
-        <p>Il répond uniquement à partir de vos documents, et chaque réponse cite le document dont
-          elle est tirée, consultable en un clic. Quand l'information ne s'y trouve pas, il le dit.
-          Je ne vous demanderai pas de me croire sur parole : chaque livraison comprend une recette
-          d'au moins 20 questions arrêtées avec vous <em>avant</em> le test, dont plusieurs sans
-          réponse dans vos documents. Les réponses, les refus et les sources sont vérifiés un par un
-          avant la mise en production, et le résultat complet vous est remis. Aucun système n'est
-          infaillible — c'est précisément pourquoi la vérification est écrite au contrat plutôt que
-          promise sur une page.</p></details>
-
-      <details><summary>Où sont nos documents ?</summary>
-        <!-- Ajouter « hébergée en Europe » APRÈS vérification de la région Railway.
-             En attendant, la région exacte est indiquée au devis. -->
-        <p>Sur une instance dédiée à votre entreprise, qui n'est partagée avec aucun autre client.
-          La région d'hébergement est précisée dans le devis et dans l'annexe. Au moment de
-          répondre, seuls les extraits pertinents sont transmis au fournisseur du modèle de langage,
-          qui ne les utilise pas pour entraîner ses modèles sur ses offres professionnelles. Une
-          annexe de sous-traitance conforme à l'article 28 du RGPD est jointe au devis, et vos
-          documents sont sauvegardés de mon côté.</p></details>
-
-      <details><summary>Et si nous arrêtons ?</summary>
-        <p>Vous récupérez vos documents dans leur format d'origine, sans frais et sous quinze jours.
-          À l'arrêt de l'abonnement, tout est supprimé sous trente jours et une attestation de
-          suppression vous est adressée. L'abonnement est sans engagement de durée, avec un préavis
-          de trente jours.</p></details>
-
-      <details><summary><span>Et si <em>vous</em> vous arrêtez ?</span></summary>
-        <p>C'est une question légitime quand on confie ses documents à un indépendant, et je préfère
-          y répondre avant qu'on me la pose. Vos documents restent les vôtres et vous sont rendus
-          dans leur format d'origine à première demande — la réversibilité est écrite au contrat,
-          pas suspendue à ma bonne volonté. Rien de ce que je livre n'est enfermé dans un format
-          exclusif : ce sont vos PDF et vos Word, tels que vous me les avez donnés.</p></details>
-
-      <details><summary>Pourquoi pas simplement ChatGPT ?</summary>
-        <p>Parce qu'il faut lui redonner vos fichiers à chaque conversation, qu'il ne cite pas le
-          document d'origine, et qu'il répond même quand il ne sait pas. Ici vos documents sont connus
-          en permanence, chaque réponse est traçable, et vos équipes ne téléversent rien nulle part.</p></details>
-
-      <details><summary>Nos documents changent souvent.</summary>
-        <p>Vous ajoutez, remplacez ou retirez vos fichiers vous-même depuis une page de gestion
-          protégée, et l'assistant se met à jour sans commande technique. Si vous préférez ne pas
-          vous en occuper, c'est compris dans l'abonnement.</p></details>
-
-      <details><summary>Faut-il être technique de notre côté ?</summary>
-        <p>Non. Vous fournissez vos documents en PDF, Word ou texte — y compris les tableaux
-          contenus dans ces fichiers, barèmes et grilles tarifaires compris. Je livre un lien qui
-          fonctionne. Vos équipes posent leurs questions en français normal.</p>
-        <p>Ce qui n'est pas couvert aujourd'hui, et je préfère le dire maintenant qu'à la
-          livraison : les classeurs Excel, les boîtes mail, et la connexion directe à SharePoint ou
-          Drive. Si vos tarifs vivent dans un classeur, on l'exporte une fois en PDF et le compte
-          est bon — mais dites-le-moi avant le devis.</p></details>
-
-      <details><summary>Combien de documents peut-il lire ?</summary>
-        <p>Jusqu'à 40 fichiers ou 400 pages dans la mission de lancement, ce qui couvre la grande
-          majorité des PME. Au-delà, c'est un devis séparé, et le prix reste proportionné.</p></details>
-
-      <details><summary>Vous débutez ?</summary>
-        <p>Oui, en tant qu'indépendant. Le produit, lui, existe et fonctionne : vous pouvez l'essayer
-          avant de signer, sur vos propres fichiers. C'est aussi pourquoi le tarif actuel est consenti
-          contre un témoignage écrit. Je préfère le dire que le laisser découvrir.</p></details>
-
-      <details><summary>Pourquoi pas un outil que nous installons nous-mêmes ?</summary>
-        <p>Vous pouvez. Ce que vous achetez ici n'est pas le logiciel — c'est le fait que quelqu'un
-          lise vos documents, écrive les questions de contrôle, vérifie les refus, corrige ce qui ne
-          passe pas, et reste joignable ensuite. Un outil installé en interne vous laisse ce travail,
-          et c'est celui qui prend le temps.</p></details>
-
-    </div>
-  </div>
-</section>
-
-<!-- ====================== FINAL ====================== -->
-<section class="final">
-  <div class="enveloppe">
-    <p class="chapeau">La suite</p>
-    <h2>Quinze minutes pour voir ce que ça donne sur vos documents.</h2>
-    <p class="intro">Envoyez-moi quelques fichiers représentatifs. Je monte une démonstration dessus
-      et je vous la montre avant de vous envoyer le moindre devis. Vous ne signez rien sans avoir vu.</p>
-    <div class="boutons">
-      <a class="bouton" href="https://calendar.app.google/fmK8RGhTGHzwuksp7">Choisir un créneau</a>
-      <a class="bouton creux" href="mailto:jonas@jonasmionnet.com?subject=Assistant%20documentaire%20%E2%80%94%20demande&amp;body=Bonjour%20Jonas%2C%0A%0AEntreprise%20%3A%0ACe%20qu'on%20cherche%20le%20plus%20souvent%20%3A%0AType%20de%20documents%20(PDF%2C%20Word%2C%20nombre%20approximatif)%20%3A%0A%0AMerci.">Écrire, sans prendre rendez-vous</a>
-    </div>
-    <p class="note" style="margin-top:14px">Si vous préférez ne pas bloquer de créneau tout de
-      suite : décrivez en trois lignes ce que vos équipes cherchent le plus souvent, je vous réponds
-      par écrit. Aucun rendez-vous n'est nécessaire pour obtenir un avis honnête sur la
-      faisabilité — y compris quand la réponse est que ça ne vaut pas le coup chez vous.</p>
-  </div>
-</section>
-
-</main>
-
-<footer>
-  <div class="enveloppe pied">
-    <span>Jonas Mionnet — assistants documentaires pour PME · jonas@jonasmionnet.com</span>
-    <span>
-      <a href="https://www.linkedin.com/in/jonas-mionnet-5339012a0">LinkedIn</a> ·
-      <a href="mentions-legales.html">Mentions légales</a>
-    </span>
-  </div>
-</footer>
-
-<!-- fenêtre code d'accès -->
-<div class="voile" id="voile">
-  <div class="fenetre">
-    <h3>Essayer l'assistant</h3>
-    <p>Entrez le code d'accès reçu lors de notre échange. L'assistant de démonstration répond sur les
-      documents d'une entreprise fictive.</p>
-    <input type="password" id="code" placeholder="Code d'accès" autocomplete="off">
-    <div class="err" id="err"></div>
-    <div class="boutons">
-      <button class="bouton" id="valider">Lancer l'assistant</button>
-      <button class="bouton creux" id="annuler">Annuler</button>
+<!-- ============================= MARQUEE ============================== -->
+<div class="band-mq" aria-hidden="true">
+  <div class="marquee" style="--dur:44s">
+    <div class="marquee__track">
+      <span class="mq-item">Procédures<i></i>Catalogues<i></i>Contrats<i></i>FAQ<i></i>Manuels<i></i>Garanties<i></i>Tarifs<i></i>Devis<i></i></span>
+      <span class="mq-item">Procédures<i></i>Catalogues<i></i>Contrats<i></i>FAQ<i></i>Manuels<i></i>Garanties<i></i>Tarifs<i></i>Devis<i></i></span>
     </div>
   </div>
 </div>
 
+<!-- ============================= PROBLÈME ============================= -->
+<section class="band prob">
+  <div class="shell">
+    <div class="prob__grid">
+      <div class="prob__figure">
+        <div class="prob__media" data-reveal="mask">
+          <img src="img/chaos.jpg" alt="Bureau couvert d'ordinateurs, de carnets et de documents" loading="lazy" width="1600" height="1100">
+        </div>
+        <div class="prob__stamp" data-reveal="up" data-delay="260">
+          <b data-count="40">40</b>
+          <small>fichiers ouverts avant de trouver</small>
+        </div>
+      </div>
+      <div>
+        <p class="eyebrow" data-reveal="fade">Ce que ça vous coûte aujourd'hui</p>
+        <h2 class="h2" data-reveal="fade" data-split>La réponse est déjà écrite. C'est la chercher qui coûte cher.</h2>
+        <ul class="prob__list" data-stagger="90">
+          <li>La bonne réponse dort dans un PDF que <b>trois personnes</b> savent ouvrir.</li>
+          <li>La même question revient chaque semaine et mobilise chaque fois
+            <b>quelqu'un qui a mieux à faire</b>.</li>
+          <li>Un client attend <b>deux jours</b> une réponse qui tient en une ligne.</li>
+          <li>Le document a changé, la version qui circule non — et c'est
+            <b>un devis à refaire</b>.</li>
+          <li>Le nouveau salarié n'ose pas poser la même question une troisième fois — alors
+            <b>il devine</b>.</li>
+        </ul>
+        <p class="cap" data-reveal="up" data-delay="160"><span><b>Faites le calcul :</b> 10 questions par jour
+          × 8 minutes de recherche, c'est plus de 6 heures par semaine. Refaites-le avec vos chiffres.
+          L'assistant : 4 secondes par question, ~0,005&nbsp;$ pièce.</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== KPIS ================================ -->
+<section class="band band--tight" style="background:var(--ink-950);">
+  <div class="shell">
+    <div class="kpis">
+      <div class="kpi" data-reveal="up">
+        <div class="kpi__v"><span class="num" data-count="4">4</span><span class="kpi__u">secondes</span></div>
+        <span class="num-lbl">la réponse et sa source, au lieu de minutes de recherche</span>
+      </div>
+      <div class="kpi" data-reveal="up" data-delay="90">
+        <div class="kpi__v"><span class="num" data-count="0">0</span></div>
+        <span class="num-lbl">réponse inventée — quand l'info manque, il le dit</span>
+      </div>
+      <div class="kpi" data-reveal="up" data-delay="180">
+        <div class="kpi__v"><span class="num" data-count="5">5</span><span class="kpi__u">jours</span></div>
+        <span class="num-lbl">ouvrables entre vos fichiers et un assistant au travail</span>
+      </div>
+      <div class="kpi" data-reveal="up" data-delay="270">
+        <div class="kpi__v"><span class="num" data-count="300">300</span><span class="kpi__u">pages</span></div>
+        <span class="num-lbl">lues et interrogeables dès le premier jour</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== DÉMO ================================ -->
+<section class="band" id="demo">
+  <div class="shell">
+    <div style="max-width:64ch;margin-bottom:clamp(34px,4.4vw,64px)">
+      <p class="eyebrow" data-reveal="fade">La démo &amp; vos questions</p>
+      <h2 class="h2" data-reveal="fade" data-split>Voyez-le fonctionner — et posez-vous les bonnes questions.</h2>
+      <p class="lead" style="margin-top:22px" data-reveal="up" data-delay="140">
+        2 minutes de démonstration réelle à gauche, les réponses aux inquiétudes qu'on me pose
+        le plus souvent à droite.
+      </p>
+    </div>
+
+    <div class="demo__grid">
+      <div class="demo__col">
+        <div data-reveal="scale">
+          <div class="frame">
+            <div class="frame__glow" aria-hidden="true"></div>
+            <iframe src="https://www.youtube-nocookie.com/embed/zOcjEhi_-oY?rel=0&modestbranding=1"
+              title="Assistant IA sur vos documents — démo"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen loading="lazy"></iframe>
+          </div>
+        </div>
+        <p class="cap" data-reveal="up" data-delay="120">Démo réelle : réponse sourcée, question de suivi,
+          refus quand l'info n'existe pas, ajout d'un document en direct.</p>
+        <div class="try" data-reveal="up" data-delay="200">
+          <p>Vous avez reçu un code d'accès lors de notre échange ?</p>
+          <button class="btn btn--ghost" id="try-btn" type="button" data-magnetic="0.2">
+            <span>Essayer l'assistant en direct</span></button>
+        </div>
+      </div>
+
+      <div class="faq" data-stagger="60">
+        <details open>
+          <summary><span>Où sont stockés nos documents ?</span><i class="faq__sign"></i></summary>
+          <div class="faq__body"><b>Chez vous.</b> Sur une instance ouverte à votre nom, avec votre moyen de paiement. Vos documents y sont stockés et indexés ; au moment de répondre, seuls les extraits pertinents sont envoyés au fournisseur du modèle de langage, qui, sur ses offres professionnelles, ne les utilise pas pour entraîner ses modèles. Après livraison, je n'en conserve aucune copie.</div>
+        </details>
+        <details>
+          <summary><span>Et s'il invente une réponse ?</span><i class="faq__sign"></i></summary>
+          <div class="faq__body"><b>Il ne peut pas broder.</b> Il répond uniquement à partir de vos documents et chaque réponse cite son document d'origine, extraits consultables en un clic. Quand l'information n'y figure pas, il le dit plutôt que de deviner. Avant livraison, je passe un jeu de questions de contrôle sur vos propres documents et je vous remets le résultat chiffré.</div>
+        </details>
+        <details>
+          <summary><span>Pourquoi pas simplement ChatGPT ?</span><i class="faq__sign"></i></summary>
+          <div class="faq__body"><b>Ici, vos documents sont connus en permanence.</b> ChatGPT répond à partir du web, et il faut lui redonner vos fichiers à chaque conversation. L'assistant, lui, cite ses sources, refuse de répondre quand l'info n'y est pas — et vos équipes ne téléversent rien nulle part.</div>
+        </details>
+        <details>
+          <summary><span>Combien ça coûte par mois après la livraison ?</span><i class="faq__sign"></i></summary>
+          <div class="faq__body"><b>Environ 15 à 25 $ CAD par mois, plafonnable.</b> Deux abonnements, à votre nom et sous votre contrôle : l'hébergement (~10 à 20 $ CAD/mois) et l'usage du modèle (~2 à 7 $ CAD/mois pour ~500 questions, soit ~0,005 $ la question). L'indexation ne coûte rien — moins que ce que vous coûte une seule heure de recherche.</div>
+        </details>
+        <details>
+          <summary><span>Nos documents changent souvent.</span><i class="faq__sign"></i></summary>
+          <div class="faq__body"><b>L'assistant suit, tout seul.</b> Vous ajoutez, remplacez ou retirez vos fichiers vous-même depuis une page de gestion protégée — mise à jour automatique, aucune commande technique. Et si vous préférez déléguer, c'est inclus dans le forfait maintenance.</div>
+        </details>
+        <details>
+          <summary><span>Faut-il être technique de notre côté ?</span><i class="faq__sign"></i></summary>
+          <div class="faq__body"><b>Non — rien à installer, rien à apprendre.</b> Vous fournissez vos documents (PDF, Word, texte — tableaux compris), je livre un lien fonctionnel. Vos équipes posent leurs questions en langage normal.</div>
+        </details>
+        <details>
+          <summary><span>Et le RGPD / la Loi 25 ? Et si on arrête ?</span><i class="faq__sign"></i></summary>
+          <div class="faq__body"><b>C'est cadré par écrit.</b> Une annexe de sous-traitance est jointe au devis quand des documents sont concernés : finalité, durée, mesures de sécurité. Et si vous arrêtez : vous supprimez l'instance, tout disparaît avec — documents, index, historique. Rien ailleurs.</div>
+        </details>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ SECTEURS ============================== -->
+<section class="band band--tight" style="background:var(--ink-950);overflow:hidden;">
+  <div class="shell sect__head">
+    <div>
+      <p class="eyebrow" data-reveal="fade">Pour qui</p>
+      <h2 class="h2" data-reveal="fade" data-split>Les PME qui croulent sous les documents.</h2>
+    </div>
+    <p class="lead" style="max-width:34ch" data-reveal="up" data-delay="140">
+      Quand la réponse existe déjà, écrite quelque part, et que personne n'a le temps de la retrouver.
+    </p>
+  </div>
+  <div class="marquee" style="--dur:52s">
+    <div class="marquee__track">
+      <figure class="sect-card"><img src="img/sector-cabinet.jpg" alt="Salle de réunion d'un cabinet" loading="lazy"><span class="scrim scrim--b"></span><figcaption><small>01</small>Cabinets comptables &amp; juridiques<span style="display:block;margin-top:6px;font:italic 400 12.5px/1.45 var(--ui);letter-spacing:0;text-transform:none;color:var(--on-ink-2);">« Quel taux s'applique à ce dossier ? »</span></figcaption></figure>
+      <figure class="sect-card"><img src="img/sector-distrib.jpg" alt="Entrepôt de distribution" loading="lazy"><span class="scrim scrim--b"></span><figcaption><small>02</small>Distributeurs<span style="display:block;margin-top:6px;font:italic 400 12.5px/1.45 var(--ui);letter-spacing:0;text-transform:none;color:var(--on-ink-2);">« Quelle garantie sur cette réf ? »</span></figcaption></figure>
+      <figure class="sect-card"><img src="img/sector-clinique.jpg" alt="Salle d'attente claire" loading="lazy"><span class="scrim scrim--b"></span><figcaption><small>03</small>Cliniques<span style="display:block;margin-top:6px;font:italic 400 12.5px/1.45 var(--ui);letter-spacing:0;text-transform:none;color:var(--on-ink-2);">« Quel est le protocole pour ce cas ? »</span></figcaption></figure>
+      <figure class="sect-card"><img src="img/sector-franchise.jpg" alt="Immeubles vus depuis la rue" loading="lazy"><span class="scrim scrim--b"></span><figcaption><small>04</small>Franchises<span style="display:block;margin-top:6px;font:italic 400 12.5px/1.45 var(--ui);letter-spacing:0;text-transform:none;color:var(--on-ink-2);">« Que dit le manuel réseau ? »</span></figcaption></figure>
+      <figure class="sect-card"><img src="img/sector-ecom.jpg" alt="Bureau vu de haut avec ordinateurs" loading="lazy"><span class="scrim scrim--b"></span><figcaption><small>05</small>E-commerce<span style="display:block;margin-top:6px;font:italic 400 12.5px/1.45 var(--ui);letter-spacing:0;text-transform:none;color:var(--on-ink-2);">« Quel délai de retour ? »</span></figcaption></figure>
+      <figure class="sect-card" aria-hidden="true"><img src="img/sector-cabinet.jpg" alt="" loading="lazy"><span class="scrim scrim--b"></span><figcaption><small>01</small>Cabinets comptables &amp; juridiques<span style="display:block;margin-top:6px;font:italic 400 12.5px/1.45 var(--ui);letter-spacing:0;text-transform:none;color:var(--on-ink-2);">« Quel taux s'applique à ce dossier ? »</span></figcaption></figure>
+      <figure class="sect-card" aria-hidden="true"><img src="img/sector-distrib.jpg" alt="" loading="lazy"><span class="scrim scrim--b"></span><figcaption><small>02</small>Distributeurs<span style="display:block;margin-top:6px;font:italic 400 12.5px/1.45 var(--ui);letter-spacing:0;text-transform:none;color:var(--on-ink-2);">« Quelle garantie sur cette réf ? »</span></figcaption></figure>
+      <figure class="sect-card" aria-hidden="true"><img src="img/sector-clinique.jpg" alt="" loading="lazy"><span class="scrim scrim--b"></span><figcaption><small>03</small>Cliniques<span style="display:block;margin-top:6px;font:italic 400 12.5px/1.45 var(--ui);letter-spacing:0;text-transform:none;color:var(--on-ink-2);">« Quel est le protocole pour ce cas ? »</span></figcaption></figure>
+      <figure class="sect-card" aria-hidden="true"><img src="img/sector-franchise.jpg" alt="" loading="lazy"><span class="scrim scrim--b"></span><figcaption><small>04</small>Franchises<span style="display:block;margin-top:6px;font:italic 400 12.5px/1.45 var(--ui);letter-spacing:0;text-transform:none;color:var(--on-ink-2);">« Que dit le manuel réseau ? »</span></figcaption></figure>
+      <figure class="sect-card" aria-hidden="true"><img src="img/sector-ecom.jpg" alt="" loading="lazy"><span class="scrim scrim--b"></span><figcaption><small>05</small>E-commerce<span style="display:block;margin-top:6px;font:italic 400 12.5px/1.45 var(--ui);letter-spacing:0;text-transform:none;color:var(--on-ink-2);">« Quel délai de retour ? »</span></figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== OFFRE =============================== -->
+<section class="band paper" id="offre">
+  <div class="shell">
+    <div style="max-width:60ch;margin-bottom:clamp(32px,4vw,58px)">
+      <p class="eyebrow" data-reveal="fade">Ce que vous obtenez</p>
+      <h2 class="h2" data-reveal="fade" data-split>Un périmètre écrit noir sur blanc.</h2>
+      <p class="lead" style="margin-top:20px" data-reveal="up" data-delay="140">
+        Tout est dans le devis — jamais de facture surprise.
+      </p>
+    </div>
+
+    <div class="offre__grid">
+      <div class="panel panel--in" data-reveal="up" data-spot>
+        <span class="panel__tag">Inclus dans la mission</span>
+        <h3>Livré, installé, fonctionnel</h3>
+        <ul>
+          <li>Vos PDF, Word et textes deviennent interrogeables dès le premier jour — volume convenu à l'avance.</li>
+          <li>Vos équipes ou vos clients posent leurs questions là où ils travaillent : widget sur votre site ou en interne, à vos couleurs.</li>
+          <li>Des réponses qu'on peut croire : chaque réponse cite son document, vérifiable en un clic.</li>
+          <li>Tout tourne sur une instance à votre nom, mise en service comprise — rien ne dépend de mon infrastructure.</li>
+          <li>Vos documents changent ? Vous les remplacez vous-même, l'assistant suit — sans dépendre de moi ni d'un prestataire.</li>
+          <li>Un aller-retour d'ajustement après la livraison, pour coller à votre réalité.</li>
+        </ul>
+      </div>
+
+      <div class="panel panel--out" data-reveal="up" data-delay="120">
+        <span class="panel__tag">En option ou sur devis séparé</span>
+        <h3 style="color:var(--on-paper-2)">Ce qui vient après, si vous le voulez</h3>
+        <ul>
+          <li>Forfait maintenance mensuel (surveillance, réindexation, correctifs).</li>
+          <li>Tableau de bord d'usage : voyez ce qu'on vous demande vraiment — et le temps que l'assistant fait gagner.</li>
+          <li>Intégrations à vos logiciels internes (intranet, CRM).</li>
+          <li>OCR de PDF scannés · volumes massifs de documents.</li>
+        </ul>
+      </div>
+
+      <figure class="offre__media" data-reveal="mask">
+        <img src="img/dashboard.jpg" alt="Courbe d'usage affichée sur un écran d'ordinateur" loading="lazy">
+        <span class="scrim scrim--l"></span>
+        <figcaption>Le tableau de bord d'usage : ce qu'on vous demande vraiment.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- =========================== FONCTIONNEMENT ========================= -->
+<section class="band" id="fonctionnement">
+  <div class="shell">
+    <div class="steps__grid">
+      <div class="steps__aside">
+        <p class="eyebrow" data-reveal="fade">Comment ça marche</p>
+        <h2 class="h2" data-reveal="fade" data-split>Trois étapes, un livrable qui fonctionne.</h2>
+        <p class="lead" style="margin-top:22px" data-reveal="up" data-delay="140">
+          Pas de diapositives, pas d'atelier de cadrage à rallonge. Un appel, une construction
+          sur vos vrais fichiers, une livraison.
+        </p>
+        <a class="btn btn--sig" style="margin-top:32px" href="#reserver" data-reveal="up" data-delay="220" data-magnetic="0.25">
+          <span>Commencer par l'appel</span>
+          <svg viewBox="0 0 24 24"><path d="M5 12h13"/><path d="m12 5 7 7-7 7"/></svg></a>
+      </div>
+
+      <div class="steps">
+        <article class="step" data-reveal="up">
+          <div>
+            <div class="step__n">01</div>
+            <h3>Appel de 15 minutes</h3>
+            <p>On identifie où partent les heures — et sur quels documents l'assistant
+              en récupérera le plus.</p>
+          </div>
+          <div class="step__media"><img src="img/call.jpg" alt="Réunion autour d'une grande table" loading="lazy"></div>
+        </article>
+
+        <article class="step" data-reveal="up" data-delay="90">
+          <div>
+            <div class="step__n">02</div>
+            <h3>Construction sur vos documents</h3>
+            <p>Je monte l'assistant sur votre contenu réel. Vous recevez un lien fonctionnel,
+              pas des diapositives.</p>
+          </div>
+          <div class="step__media"><img src="img/build.jpg" alt="Atelier de travail avec notes murales" loading="lazy"></div>
+        </article>
+
+        <article class="step" data-reveal="up" data-delay="180">
+          <div>
+            <div class="step__n">03</div>
+            <h3>Livraison et ajustement</h3>
+            <p>Vos équipes testent, je corrige un tour, l'assistant est à vous. Périmètre écrit
+              dans le devis — et le solde ne se paie qu'à la livraison.</p>
+          </div>
+          <div class="step__media"><img src="img/deliver.jpg" alt="Personne travaillant sur un ordinateur portable" loading="lazy"></div>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================== PRIX =============================== -->
+<section class="band" id="prix" style="background:var(--ink-950);">
+  <div class="shell shell--tight">
+    <div class="prix" data-reveal="scale">
+      <p class="eyebrow" style="justify-content:center;color:var(--lime)">Tarif de lancement</p>
+      <div class="prix__big">
+        <span data-count="500">500</span>&nbsp;€
+        <small>soit 800 $ CAD · première mission</small>
+      </div>
+      <p class="prix__maint">+ forfait maintenance optionnel : 100 à 150 $ CAD / mois</p>
+      <p class="prix__note">Ensuite, 15 à 25 $ CAD par mois de fonctionnement — moins que ce que vous
+        coûte une seule heure de recherche. Tarif consenti aux premières PME en échange d'un témoignage :
+        il augmente dès les premières références. Acompte de 50 % pour démarrer, solde à la livraison —
+        vous ne payez la moitié qu'une fois l'assistant entre vos mains.</p>
+      <a class="btn btn--sig" href="#reserver" data-magnetic="0.25"><span>Réserver mon appel</span>
+        <svg viewBox="0 0 24 24"><path d="M5 12h13"/><path d="m12 5 7 7-7 7"/></svg></a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== FINALE ============================== -->
+<section class="fin" id="reserver">
+  <div class="fin__bg" data-parallax="0.1">
+    <img src="img/hero.jpg" alt="" loading="lazy" width="1920" height="1280">
+  </div>
+  <div class="fin__veil"></div>
+  <div class="fin__in shell shell--tight">
+    <p class="eyebrow" style="justify-content:center" data-reveal="fade">On en parle ?</p>
+    <h2 class="h1" data-reveal="fade" data-split>15 minutes pour voir ce que ça donne sur vos documents.</h2>
+    <p class="lead" data-reveal="up" data-delay="160">Avant tout devis, je vous montre le résultat
+      sur vos propres fichiers. Vous ne signez rien sans avoir vu.</p>
+    <div class="fin__cta" data-reveal="up" data-delay="240">
+      <a class="btn btn--sig" href="https://calendar.app.google/fmK8RGhTGHzwuksp7" data-magnetic="0.25">
+        <span>Choisir un créneau</span>
+        <svg viewBox="0 0 24 24"><path d="M5 12h13"/><path d="m12 5 7 7-7 7"/></svg></a>
+      <a class="btn btn--ghost" href="#demo"><span>Ou revoir la démo</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== FOOTER ============================== -->
+<footer class="foot">
+  <div class="shell">
+    <div class="foot__top">
+      <a class="foot__mail" href="mailto:jonas@jonasmionnet.com" data-reveal="up">
+        jonas@jonasmionnet.com
+        <svg viewBox="0 0 24 24"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg>
+      </a>
+      <a class="btn btn--paper" href="https://calendar.app.google/fmK8RGhTGHzwuksp7" data-reveal="up" data-delay="100" data-magnetic="0.2">
+        <span>Réserver 15 min</span></a>
+    </div>
+    <div class="foot__bot">
+      <div>Jonas Mionnet — Freelance IA &amp; automatisation — France &amp; Québec</div>
+      <div class="foot__links">
+        <a href="mailto:jonas@jonasmionnet.com">jonas@jonasmionnet.com</a>
+        <a href="https://www.linkedin.com/in/jonas-mionnet-5339012a0">LinkedIn</a>
+        <a href="mentions-legales.html">Mentions légales</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ============================== MODALE ============================== -->
+<div class="modal" id="pw-modal" role="dialog" aria-modal="true" aria-labelledby="pw-title">
+  <div class="modal__veil" id="pw-veil"></div>
+  <div class="modal__box">
+    <h3 id="pw-title">Essayer l'assistant</h3>
+    <p>Entrez le code d'accès reçu lors de notre échange. L'assistant de démonstration répond sur
+      les documents d'une entreprise fictive (Boréale Équipement).</p>
+    <input id="pw-input" type="password" placeholder="Code d'accès" autocomplete="off">
+    <div class="modal__err" id="pw-err"></div>
+    <div class="modal__row">
+      <button class="btn btn--sig" id="pw-go" type="button"><span>Lancer l'assistant</span></button>
+      <button class="btn btn--ghost" id="pw-cancel" type="button"><span>Annuler</span></button>
+    </div>
+  </div>
+</div>
+
+<script src="lenis.min.js"></script>
+<script src="motion.js"></script>
 <script>
-/* ---------- calculateur ---------- */
+/* ---------------------------------------------------------------------------
+   Menu plein écran (mobile)
+   --------------------------------------------------------------------------- */
 (function(){
-  var SEMAINES = 46, JOURS = 5, MISSION = 2500, MOIS = 149;
-  var e = function(id){ return document.getElementById(id); };
-  var ch = [e("c1"), e("c2"), e("c3"), e("c4")];
-
-  function heures(h){
-    var hh = Math.floor(h), mm = Math.round((h - hh) * 60);
-    if (mm === 60) { hh += 1; mm = 0; }
-    return hh + " h " + (mm < 10 ? "0" : "") + mm;
+  var burger = document.getElementById("burger"),
+      menu = document.getElementById("menu"),
+      nav = document.querySelector("[data-nav]");
+  function fermer(){
+    menu.classList.remove("is-open"); nav.classList.remove("is-open");
+    burger.setAttribute("aria-expanded","false");
+    if (window.Motion) window.Motion.start();
   }
-  function euros(n){
-    return Math.round(n).toLocaleString("fr-FR").replace(/ | /g, " ") + " €";
-  }
-
-  function calculer(){
-    var q = +ch[0].value, min = +ch[1].value, taux = +ch[2].value, part = +ch[3].value / 100;
-
-    e("v1").textContent = q;
-    e("v2").textContent = min;
-    e("v3").textContent = taux + " €";
-    e("v4").textContent = Math.round(part * 100) + " %";
-
-    var hSemaine = q * JOURS * min / 60;
-    var hAn = hSemaine * SEMAINES;
-    var coutAn = hAn * taux;
-    var gain = coutAn * part;
-    var an1 = MISSION + MOIS * 12;
-
-    e("rHeures").textContent = heures(hSemaine);
-    e("rAn").textContent = Math.round(hAn).toLocaleString("fr-FR").replace(/ | /g, " ") + " h";
-    e("rCout").textContent = euros(coutAn);
-    e("rGain").textContent = euros(gain);
-    e("rPrix").textContent = euros(an1);
-
-    var v = e("rVerdict"), net = gain - an1;
-    if (net > 0) {
-      var mois = an1 / (gain / 12);
-      v.innerHTML = "Remboursé en <strong>" + (mois < 1 ? "moins d'un mois" :
-        Math.ceil(mois) + " mois") + "</strong>, puis " +
-        euros(gain - MOIS * 12) + " récupérés chaque année.";
-    } else {
-      v.innerHTML = "À ce niveau d'usage, l'assistant ne se rembourse pas la première année. " +
-        "Autant vous le dire ici plutôt qu'à l'appel.";
-    }
-  }
-  ch.forEach(function(c){ c.addEventListener("input", calculer); });
-  calculer();
+  burger.addEventListener("click", function(){
+    var ouvert = menu.classList.toggle("is-open");
+    nav.classList.toggle("is-open", ouvert);
+    burger.setAttribute("aria-expanded", ouvert ? "true" : "false");
+    if (window.Motion) ouvert ? window.Motion.stop() : window.Motion.start();
+  });
+  menu.addEventListener("click", function(e){ if (e.target.tagName === "A") fermer(); });
+  document.addEventListener("keydown", function(e){ if (e.key === "Escape") fermer(); });
 })();
 
-/* ---------- assistant de démonstration ---------- */
+/* ---------------------------------------------------------------------------
+   Assistant de démonstration — logique inchangée : vérification du code,
+   chargement du widget depuis l'API, montage en bulle.
+   --------------------------------------------------------------------------- */
 (function(){
   var API = "https://assistant-documentaire-demo-production.up.railway.app";
-  var voile = document.getElementById("voile"),
-      code = document.getElementById("code"),
-      err = document.getElementById("err"),
-      bouton = document.getElementById("essai");
+  var modal = document.getElementById("pw-modal"),
+      input = document.getElementById("pw-input"),
+      err = document.getElementById("pw-err"),
+      go = document.getElementById("pw-go"),
+      cancel = document.getElementById("pw-cancel"),
+      veil = document.getElementById("pw-veil"),
+      tryBtn = document.getElementById("try-btn");
 
-  function ouvrir(){ voile.classList.add("ouvert"); code.focus(); }
-  function fermer(){ voile.classList.remove("ouvert"); err.textContent = ""; }
+  function ouvrirModal(){
+    modal.classList.add("open");          // conservé : compat. avec l'ancien sélecteur
+    modal.classList.add("is-open");
+    if (window.Motion) window.Motion.stop();
+    input.focus();
+  }
+  function fermerModal(){
+    modal.classList.remove("open");
+    modal.classList.remove("is-open");
+    err.textContent = "";
+    if (window.Motion) window.Motion.start();
+  }
 
-  function verifier(pw){
+  function verify(pw){
     return fetch(API + "/api/verify", { headers: { "X-API-Password": pw } })
       .then(function(r){ return r.status === 200; })
       .catch(function(){ return false; });
   }
-  function charger(){
-    return new Promise(function(ok, ko){
-      if (window.DocAssistant) return ok();
+  function loadWidget(){
+    return new Promise(function(res, rej){
+      if (window.DocAssistant) return res();
       var s = document.createElement("script");
       s.src = API + "/widget.js";
-      s.onload = ok; s.onerror = ko;
+      s.onload = res; s.onerror = rej;
       document.head.appendChild(s);
     });
   }
-  function monter(){
-    charger().then(function(){
+  function mountAssistant(){
+    loadWidget().then(function(){
       window.DocAssistant.mount({
-        mode: "floating", apiBase: API,
+        mode: "floating",
+        apiBase: API,
         assistantName: "Assistant documentaire",
         clientName: "Boréale Équipement (démo)"
       });
-      bouton.querySelector("span").textContent = "Assistant lancé, en bas à droite";
-      bouton.disabled = true;
-      fermer();
+      tryBtn.querySelector("span").textContent = "Assistant lancé — voir en bas à droite";
+      tryBtn.disabled = true;
     }).catch(function(){
       err.textContent = "Impossible de charger l'assistant. Réessayez plus tard.";
     });
   }
-
-  bouton.addEventListener("click", function(){
-    var garde = localStorage.getItem("da_api_password") || "";
-    if (!garde) return ouvrir();
-    verifier(garde).then(function(ok){
-      if (ok) monter();
-      else { localStorage.removeItem("da_api_password"); ouvrir(); }
-    });
+  tryBtn.addEventListener("click", function(){
+    var stored = localStorage.getItem("da_api_password") || "";
+    if (stored) {
+      verify(stored).then(function(ok){
+        if (ok) { mountAssistant(); }
+        else { localStorage.removeItem("da_api_password"); ouvrirModal(); }
+      });
+    } else { ouvrirModal(); }
   });
-
-  function tenter(){
-    var pw = (code.value || "").trim();
+  function attempt(){
+    var pw = (input.value || "").trim();
     if (!pw) { err.textContent = "Entrez le code d'accès."; return; }
-    err.textContent = "Vérification…";
-    verifier(pw).then(function(ok){
-      if (ok) { localStorage.setItem("da_api_password", pw); monter(); }
-      else { err.textContent = "Code incorrect."; }
+    go.disabled = true; err.textContent = "Vérification…";
+    verify(pw).then(function(ok){
+      go.disabled = false;
+      if (ok) {
+        localStorage.setItem("da_api_password", pw);
+        fermerModal();
+        mountAssistant();
+      } else {
+        err.textContent = "Code incorrect.";
+        input.select();
+      }
     });
   }
-  document.getElementById("valider").addEventListener("click", tenter);
-  document.getElementById("annuler").addEventListener("click", fermer);
-  code.addEventListener("keydown", function(ev){ if (ev.key === "Enter") tenter(); });
-  voile.addEventListener("click", function(ev){ if (ev.target === voile) fermer(); });
-  document.addEventListener("keydown", function(ev){ if (ev.key === "Escape") fermer(); });
+  go.addEventListener("click", attempt);
+  input.addEventListener("keydown", function(e){ if (e.key === "Enter") attempt(); });
+  cancel.addEventListener("click", fermerModal);
+  veil.addEventListener("click", fermerModal);
+  document.addEventListener("keydown", function(e){
+    if (e.key === "Escape" && modal.classList.contains("is-open")) fermerModal();
+  });
 })();
 </script>
 </body>
