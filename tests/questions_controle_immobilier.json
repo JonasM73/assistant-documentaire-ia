@@ -1,0 +1,70 @@
+{
+  "_avertissement": "Réponses vérifiées à la main dans les PDF du réseau Horizon Immobilier, jamais générées par l'assistant. Ne pas régénérer les 'attendu' en interrogeant le modèle : cela invaliderait le test.",
+  "_jeu": "Démo verticale immobilier — réseau fictif Horizon Immobilier (6 agences, Centre-Val de Loire)",
+  "_sources": [
+    "01_bareme-honoraires-2026.pdf",
+    "02_guide-des-mandats.pdf",
+    "03_diagnostics-obligatoires.pdf",
+    "04_procedure-de-la-prise-de-mandat-a-l-acte.pdf",
+    "05_faq-clients.pdf",
+    "06_manuel-interne-des-conseillers.pdf"
+  ],
+  "questions": [
+
+    {"id": "F01", "type": "factuelle", "question": "Quels sont les honoraires pour la vente d'un bien à 300 000 € par l'agence de Blois ?", "attendu": ["4,2", "4.2"], "source": "01_bareme-honoraires-2026.pdf", "page": 1, "doit_refuser": false, "note_verif": "Blois = H03 = Zone B ; tranche 250 001 à 400 000 € = 4,2 %"},
+
+    {"id": "F02", "type": "factuelle", "question": "Combien facturez-vous la représentation du bailleur en assemblée générale de copropriété ?", "attendu": ["130"], "source": "01_bareme-honoraires-2026.pdf", "page": 2, "doit_refuser": false},
+
+    {"id": "F03", "type": "factuelle", "question": "Quel est le montant minimum d'honoraires pour la cession d'un fonds de commerce ?", "attendu": ["9 000", "9000"], "source": "01_bareme-honoraires-2026.pdf", "page": 1, "doit_refuser": false},
+
+    {"id": "F04", "type": "factuelle", "question": "Quelle prime touche un conseiller pour un mandat exclusif rentré puis vendu ?", "attendu": ["250"], "source": "06_manuel-interne-des-conseillers.pdf", "page": 1, "doit_refuser": false, "note_verif": "Présent aussi dans 02_guide-des-mandats.pdf (tableau des trois formes de mandat) — cohérent"},
+
+    {"id": "F05", "type": "factuelle", "question": "Un négociateur salarié a réalisé 70 000 € de chiffre d'affaires honoraires HT depuis janvier. Quel est son taux de rétrocession ?", "attendu": ["62"], "source": "06_manuel-interne-des-conseillers.pdf", "page": 1, "doit_refuser": false, "note_verif": "Tranche 60 001 à 100 000 € = 62 %"},
+
+    {"id": "F06", "type": "factuelle", "question": "Combien de temps le diagnostic de l'installation électrique est-il valable pour une location ?", "attendu": ["6 ans"], "source": "03_diagnostics-obligatoires.pdf", "page": 1, "doit_refuser": false, "note_verif": "Piège : 3 ans en vente, 6 ans en location"},
+
+    {"id": "F07", "type": "factuelle", "question": "Quel est le dépôt de garantie maximum pour une location meublée ?", "attendu": ["2 mois", "deux mois"], "source": "05_faq-clients.pdf", "page": 2, "doit_refuser": false},
+
+    {"id": "F08", "type": "factuelle", "question": "À partir de quel montant d'apport faut-il documenter l'origine des fonds ?", "attendu": ["50 000", "50000"], "source": "04_procedure-de-la-prise-de-mandat-a-l-acte.pdf", "page": 2, "doit_refuser": false},
+
+    {"id": "F09", "type": "factuelle", "question": "Combien d'heures de formation continue Hoguet faut-il suivre par an ?", "attendu": ["14"], "source": "06_manuel-interne-des-conseillers.pdf", "page": 2, "doit_refuser": false, "note_verif": "14 h/an ou 42 h sur trois ans"},
+
+    {"id": "F10", "type": "factuelle", "question": "Quel est le plafond de paiement en espèces pour un résident fiscal français ?", "attendu": ["1 000", "1000"], "source": "04_procedure-de-la-prise-de-mandat-a-l-acte.pdf", "page": 2, "doit_refuser": false},
+
+    {"id": "F11", "type": "factuelle", "question": "Sous combien de temps le compte rendu de visite doit-il être transmis au vendeur ?", "attendu": ["24 heures", "24h", "24 h"], "source": "04_procedure-de-la-prise-de-mandat-a-l-acte.pdf", "page": 1, "doit_refuser": false},
+
+    {"id": "F12", "type": "factuelle", "question": "Combien de photographies minimum pour une annonce ?", "attendu": ["huit", "8"], "source": "04_procedure-de-la-prise-de-mandat-a-l-acte.pdf", "page": 1, "doit_refuser": false},
+
+    {"id": "T01", "type": "tableau", "question": "Quel taux d'honoraires s'applique en zone A pour un bien vendu 500 000 € ?", "attendu": ["3,8", "3.8"], "source": "01_bareme-honoraires-2026.pdf", "page": 1, "doit_refuser": false, "note_verif": "Lecture croisée ligne 400 001-700 000 € / colonne Zone A"},
+
+    {"id": "T02", "type": "tableau", "question": "Quel est le plafond d'honoraires au mètre carré facturable au locataire par l'agence de Chartres ?", "attendu": ["8,07", "8.07"], "source": "01_bareme-honoraires-2026.pdf", "page": 2, "doit_refuser": false, "note_verif": "Chartres = H05 = reste du territoire = 8,07 €/m². Exige de croiser le tableau des agences et celui des plafonds."},
+
+    {"id": "T03", "type": "tableau", "question": "Un bien est vendu 70 000 € par l'agence de Vendôme. Quels honoraires ?", "attendu": ["5 900", "5900"], "source": "01_bareme-honoraires-2026.pdf", "page": 1, "doit_refuser": false, "note_verif": "Vendôme = Zone C ; tranche jusqu'à 80 000 € = forfait 5 900 €"},
+
+    {"id": "T04", "type": "tableau", "question": "Quelle est la validité du diagnostic plomb en vente lorsque la concentration atteint le seuil ?", "attendu": ["1 an", "un an"], "source": "03_diagnostics-obligatoires.pdf", "page": 1, "doit_refuser": false},
+
+    {"id": "C01", "type": "croisee", "question": "Un appartement part à 320 000 € à Orléans Centre, sous mandat exclusif. Quel taux d'honoraires ?", "attendu": ["4,0", "4 %", "4.0"], "source": "01_bareme-honoraires-2026.pdf", "page": 1, "doit_refuser": false, "note_verif": "Orléans Centre = Zone A ; tranche 250 001-400 000 = 4,5 % ; remise exclusivité -0,5 point = 4,0 %. Trois informations à combiner."},
+
+    {"id": "C02", "type": "croisee", "question": "Une maison classée F est-elle encore vendable, et faut-il un audit énergétique ?", "attendu": ["audit"], "source": "03_diagnostics-obligatoires.pdf", "page": 2, "doit_refuser": false, "note_verif": "Oui vendable ; audit obligatoire pour F depuis le 1er avril 2023. Croise 03 et 05."},
+
+    {"id": "C03", "type": "croisee", "question": "Un locataire quitte un appartement vide à Tours. Quel préavis doit-il respecter ?", "attendu": ["1 mois", "un mois"], "source": "05_faq-clients.pdf", "page": 2, "doit_refuser": false, "note_verif": "Tours = zone tendue (tableau des agences, doc 01) donc préavis réduit à 1 mois. Croise 01 et 05."},
+
+    {"id": "P01", "type": "piege", "question": "De combien de temps dispose l'acquéreur pour se rétracter après la signature du compromis ?", "attendu": ["10 jours", "dix jours"], "source": "02_guide-des-mandats.pdf", "page": 2, "doit_refuser": false, "note_verif": "PIÈGE : ne pas confondre avec les 14 jours du mandat signé hors établissement"},
+
+    {"id": "P02", "type": "piege", "question": "Un propriétaire a signé le mandat chez lui. Peut-il revenir dessus et sous quel délai ?", "attendu": ["14 jours", "quatorze jours"], "source": "02_guide-des-mandats.pdf", "page": 2, "doit_refuser": false, "note_verif": "PIÈGE symétrique de P01"},
+
+    {"id": "P03", "type": "piege", "question": "Un logement classé F peut-il encore être mis en location aujourd'hui ?", "attendu": ["2028"], "source": "03_diagnostics-obligatoires.pdf", "page": 2, "doit_refuser": false, "note_verif": "Oui, jusqu'au 1er janvier 2028. Seule la classe G est interdite en août 2026. Le modèle doit résister à la tentation de dire 'non, c'est une passoire'."},
+
+    {"id": "P04", "type": "piege", "question": "Quelle est la durée de validité du diagnostic amiante ?", "attendu": ["illimit"], "source": "03_diagnostics-obligatoires.pdf", "page": 1, "doit_refuser": false, "note_verif": "PIÈGE : illimitée si absence d'amiante et constat établi à partir du 1er avril 2013. Les 3 ans souvent cités sont le délai de re-contrôle en cas de présence."},
+
+    {"id": "R01", "type": "sans_reponse", "question": "Quels sont vos tarifs de syndic de copropriété ?", "attendu": [], "source": null, "page": null, "doit_refuser": true, "note_verif": "Le réseau n'exerce pas le syndic — explicitement écrit dans 01 et 05. L'assistant doit le dire, pas inventer un tarif."},
+
+    {"id": "R02", "type": "sans_reponse", "question": "À combien s'élèvent les frais de notaire pour un achat à 250 000 € ?", "attendu": [], "source": null, "page": null, "doit_refuser": true, "note_verif": "Hors barème, explicitement exclu section 8 du doc 01"},
+
+    {"id": "R03", "type": "sans_reponse", "question": "Quel a été le chiffre d'affaires du réseau en 2025 ?", "attendu": [], "source": null, "page": null, "doit_refuser": true, "note_verif": "Information absente de tous les documents"},
+
+    {"id": "R04", "type": "sans_reponse", "question": "Quelle est la politique de télétravail pour les conseillers ?", "attendu": [], "source": null, "page": null, "doit_refuser": true, "note_verif": "Le manuel interne traite horaires, congés et permanence du samedi, mais jamais le télétravail"},
+
+    {"id": "H01", "type": "hors_perimetre", "question": "Peux-tu me donner une recette de tarte aux pommes ?", "attendu": [], "source": null, "page": null, "doit_refuser": true, "note_verif": "Hors périmètre documentaire"}
+  ]
+}

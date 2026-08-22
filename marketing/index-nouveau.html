@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Assistant IA sur vos documents — Jonas Mionnet</title>
+<meta name="description" content="Un assistant qui répond aux questions de vos équipes à partir de vos propres documents, en citant ses sources. Livré en 5 jours, 2 500 €.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --encre:#1b2a4a; --texte:#22262e; --gris:#5a6270; --gris-c:#8a919c;
+  --ligne:#dfe3ea; --fond:#f6f7f9; --blanc:#fff; --accent:#1b5e8f;
+  --max:1080px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  color:var(--texte);background:var(--blanc);
+  font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased;
+}
+.enveloppe{max-width:var(--max);margin:0 auto;padding:0 24px}
+section{padding:76px 0;border-top:1px solid var(--ligne)}
+section:first-of-type{border-top:0}
+h1,h2,h3{color:var(--encre);line-height:1.25;font-weight:700;letter-spacing:-.015em}
+h1{font-size:clamp(29px,4.2vw,42px);margin-bottom:20px}
+h2{font-size:clamp(23px,3vw,30px);margin-bottom:14px}
+h3{font-size:18px;margin-bottom:8px}
+p{margin-bottom:16px;max-width:66ch}
+a{color:var(--accent)}
+.chapeau{font-size:13px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--gris-c);margin-bottom:12px}
+.intro{font-size:18px;color:var(--gris);margin-bottom:34px;max-width:64ch}
+.note{font-size:14px;color:var(--gris);}
+
+/* --- en-tête --- */
+header{position:sticky;top:0;z-index:60;background:rgba(255,255,255,.96);
+  border-bottom:1px solid var(--ligne);backdrop-filter:saturate(180%) blur(6px)}
+.barre{display:flex;align-items:center;justify-content:space-between;
+  height:62px;max-width:var(--max);margin:0 auto;padding:0 24px}
+.marque{font-weight:700;color:var(--encre);text-decoration:none;font-size:16px}
+.marque span{color:var(--gris-c);font-weight:500}
+nav{display:flex;gap:26px;align-items:center}
+nav a{color:var(--gris);text-decoration:none;font-size:15px;font-weight:500}
+nav a:hover{color:var(--encre)}
+@media(max-width:760px){nav a:not(.bouton){display:none}.marque span{display:none}
+  .barre{height:56px;padding:0 16px}.enveloppe{padding:0 16px}.bouton{padding:9px 14px;font-size:14px}}
+
+/* --- boutons --- */
+.bouton{display:inline-block;background:var(--encre);color:#fff;text-decoration:none;
+  padding:11px 20px;border-radius:5px;font-size:15px;font-weight:600;border:0;cursor:pointer;
+  font-family:inherit}
+.bouton:hover{background:#26375c}
+.bouton.creux{background:transparent;color:var(--encre);border:1px solid var(--ligne)}
+.bouton.creux:hover{background:var(--fond)}
+.boutons{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px}
+
+/* --- accroche --- */
+.accroche{padding:60px 0 66px}
+.accroche-grille{display:grid;grid-template-columns:1.05fr .95fr;gap:52px;align-items:start}
+@media(max-width:880px){.accroche-grille{grid-template-columns:1fr;gap:36px}}
+.garanties{list-style:none;margin-top:28px;border-top:1px solid var(--ligne);padding-top:18px}
+.garanties li{font-size:15px;color:var(--gris);padding:5px 0 5px 20px;position:relative}
+.garanties li::before{content:"";position:absolute;left:0;top:14px;width:8px;height:1px;
+  background:var(--gris-c)}
+
+/* --- carte d'exemple --- */
+.echange{border:1px solid var(--ligne);border-radius:8px;overflow:hidden;background:var(--blanc)}
+.echange-tete{background:var(--fond);border-bottom:1px solid var(--ligne);
+  padding:9px 16px;font-size:12.5px;color:var(--gris);display:flex;justify-content:space-between}
+.echange-corps{padding:18px 16px}
+.q{font-weight:600;color:var(--encre);font-size:15.5px;margin-bottom:12px}
+.r{font-size:15px;color:var(--texte);margin-bottom:14px}
+.sources{display:flex;gap:8px;flex-wrap:wrap;border-top:1px solid var(--ligne);padding-top:12px}
+.src{font-size:12.5px;background:var(--fond);border:1px solid var(--ligne);
+  border-radius:4px;padding:4px 9px;color:var(--gris)}
+.refus{color:var(--gris);font-style:italic}
+
+/* --- listes de constat --- */
+.constats{list-style:none;margin:6px 0 22px;max-width:70ch}
+.constats li{padding:11px 0 11px 0;border-bottom:1px solid var(--ligne);font-size:16px}
+.constats li:first-child{border-top:1px solid var(--ligne)}
+
+/* --- calculateur --- */
+.calc{display:grid;grid-template-columns:1fr 1fr;gap:34px;align-items:start}
+@media(max-width:880px){.calc{grid-template-columns:1fr}}
+.champs{border:1px solid var(--ligne);border-radius:8px;padding:22px}
+.champ{margin-bottom:18px}
+.champ:last-child{margin-bottom:0}
+.champ label{display:block;font-size:14.5px;font-weight:500;margin-bottom:7px;color:var(--texte)}
+.champ .val{float:right;font-weight:700;color:var(--encre);font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;accent-color:var(--encre);height:22px}
+.resultat{border:1px solid var(--ligne);border-radius:8px;padding:22px;background:var(--fond)}
+.chiffre{font-size:38px;font-weight:700;color:var(--encre);line-height:1.1;
+  font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.chiffre-sous{font-size:14.5px;color:var(--gris);margin-bottom:22px}
+.ligne-res{display:flex;justify-content:space-between;gap:14px;font-size:15px;
+  padding:9px 0;border-top:1px solid var(--ligne)}
+.ligne-res b{font-variant-numeric:tabular-nums;color:var(--encre)}
+.verdict{margin-top:16px;padding-top:14px;border-top:2px solid var(--encre);
+  font-size:15.5px;color:var(--encre)}
+
+/* --- exemples --- */
+.exemples{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+@media(max-width:880px){.exemples{grid-template-columns:1fr}}
+.exemple{border:1px solid var(--ligne);border-radius:8px;padding:24px}
+.exemple h3{margin-bottom:4px}
+.metier{font-size:13.5px;color:var(--gris-c);margin-bottom:16px}
+.exemple .paire{border-top:1px solid var(--ligne);padding-top:13px;margin-top:13px}
+.exemple .paire:first-of-type{border-top:0;padding-top:0;margin-top:0}
+.exemple .pq{font-weight:600;font-size:14.5px;color:var(--encre);margin-bottom:5px}
+.exemple .pr{font-size:14.5px;color:var(--gris);margin:0}
+
+/* --- étapes --- */
+.etapes{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;margin-top:8px}
+@media(max-width:760px){.etapes{grid-template-columns:1fr}}
+.etape{border-top:2px solid var(--encre);padding-top:14px}
+.etape .num{font-size:13px;font-weight:700;color:var(--gris-c);margin-bottom:6px}
+.etape p{font-size:15px;color:var(--gris);margin:0}
+
+/* --- prix --- */
+.prix-grille{display:grid;grid-template-columns:1.15fr .85fr;gap:34px;align-items:start}
+@media(max-width:880px){.prix-grille{grid-template-columns:1fr}}
+.tarif{border:1px solid var(--ligne);border-radius:8px;overflow:hidden}
+.tarif-ligne{display:flex;justify-content:space-between;gap:16px;padding:15px 20px;
+  border-bottom:1px solid var(--ligne);font-size:15.5px}
+.tarif-ligne:last-child{border-bottom:0}
+.tarif-ligne b{white-space:nowrap;color:var(--encre);font-size:16px}
+.tarif-ligne .det{font-size:13.5px;color:var(--gris);display:block;margin-top:3px}
+.tarif-tete{background:var(--encre);color:#fff;padding:13px 20px;font-size:14px;font-weight:600}
+.inclus{list-style:none}
+.inclus li{padding:9px 0 9px 22px;border-bottom:1px solid var(--ligne);
+  font-size:15.5px;position:relative}
+.inclus li::before{content:"✓";position:absolute;left:0;color:var(--accent);font-weight:700}
+
+/* --- questions --- */
+details{border-bottom:1px solid var(--ligne)}
+summary{padding:15px 0;cursor:pointer;font-weight:600;color:var(--encre);font-size:16px;
+  list-style:none;display:flex;justify-content:space-between;gap:16px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--gris-c);font-weight:400;font-size:20px;line-height:1}
+details[open] summary::after{content:"–"}
+details p{padding:0 0 16px;color:var(--gris);font-size:15.5px}
+
+/* --- final --- */
+.final{background:var(--fond)}
+footer{border-top:1px solid var(--ligne);padding:28px 0;font-size:14px;color:var(--gris)}
+.pied{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+footer a{color:var(--gris)}
+
+/* --- fenêtre code démo --- */
+.voile{position:fixed;inset:0;background:rgba(20,24,32,.5);display:none;
+  align-items:center;justify-content:center;z-index:100;padding:20px}
+.voile.ouvert{display:flex}
+.fenetre{background:#fff;border-radius:9px;padding:26px;max-width:420px;width:100%}
+.fenetre h3{margin-bottom:8px}
+.fenetre p{font-size:14.5px;color:var(--gris)}
+.fenetre input[type=password]{width:100%;padding:10px 12px;border:1px solid var(--ligne);
+  border-radius:5px;font-size:15px;font-family:inherit;margin-bottom:12px}
+.err{color:#b3261e;font-size:14px;min-height:20px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="barre">
+    <a class="marque" href="#">Jonas Mionnet <span>· assistants documentaires</span></a>
+    <nav>
+      <a href="#calcul">Le calcul</a>
+      <a href="#exemples">Exemples</a>
+      <a href="#prix">Prix</a>
+      <a class="bouton" href="https://calendar.app.google/fmK8RGhTGHzwuksp7">Prendre rendez-vous</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ====================== ACCROCHE ====================== -->
+<section class="accroche">
+  <div class="enveloppe accroche-grille">
+    <div>
+      <h1>Vos équipes cherchent dans les fichiers. L'assistant, lui, a déjà lu.</h1>
+      <p class="intro">Je construis pour les PME un assistant qui répond aux questions de leurs équipes
+        et de leurs clients à partir de leurs propres documents. La réponse arrive en quelques secondes,
+        avec le document d'origine cité. Quand l'information n'y est pas, il le dit.</p>
+      <div class="boutons">
+        <a class="bouton" href="https://calendar.app.google/fmK8RGhTGHzwuksp7">Prendre rendez-vous</a>
+        <a class="bouton creux" href="#calcul">Calculer ce que ça vous coûte</a>
+      </div>
+      <ul class="garanties">
+        <li>Livré en 5 jours ouvrables, 2 500 €.</li>
+        <li>Je vous montre le résultat sur vos propres fichiers avant tout devis.</li>
+        <li>Rien à installer, aucun compte à ouvrir de votre côté.</li>
+      </ul>
+    </div>
+
+    <div>
+      <div class="echange">
+        <div class="echange-tete">
+          <span>Exemple réel — réseau d'agences immobilières</span>
+          <span>3,8 s</span>
+        </div>
+        <div class="echange-corps">
+          <p class="q">Un appartement part à 320 000 € à Orléans Centre, sous mandat exclusif.
+            Quels honoraires ?</p>
+          <p class="r">L'agence d'Orléans Centre est en zone A. Pour la tranche 250 001 à 400 000 €,
+            le barème applique 4,5 %. Le mandat exclusif ouvre droit à une remise de 0,5 point.
+            Le taux retenu est donc de <strong>4,0 %</strong>, soit 12 800 € d'honoraires.</p>
+          <div class="sources">
+            <span class="src">bareme-honoraires-2026.pdf · p. 1</span>
+          </div>
+        </div>
+      </div>
+      <p class="note" style="margin-top:12px">Trois informations croisées dans deux tableaux différents.
+        Documents d'un réseau fictif utilisé pour la démonstration.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ====================== CONSTAT ====================== -->
+<section>
+  <div class="enveloppe">
+    <p class="chapeau">Le problème</p>
+    <h2>Là où le temps part vraiment.</h2>
+    <p class="intro">Dans la plupart des PME que je rencontre, la bonne réponse existe déjà. Elle est
+      écrite, validée, à jour. Elle est simplement dans un fichier que trois personnes savent ouvrir.</p>
+    <ul class="constats">
+      <li>La même question revient chaque semaine et mobilise à chaque fois quelqu'un qui a autre chose à faire.</li>
+      <li>Un client attend deux jours une réponse qui tient en une ligne.</li>
+      <li>Le tarif a changé au 1<sup>er</sup> janvier, mais l'ancienne version circule encore. Il faut refaire le devis.</li>
+      <li>Le nouveau n'ose pas poser la même question une troisième fois, alors il devine.</li>
+      <li>Le dirigeant devient le moteur de recherche de sa propre entreprise.</li>
+    </ul>
+    <p>Vous n'avez pas besoin d'écrire de nouveaux documents. Vous avez besoin que ceux que vous
+      avez déjà répondent tout seuls.</p>
+  </div>
+</section>
+
+<!-- ====================== CALCULATEUR ====================== -->
+<section id="calcul">
+  <div class="enveloppe">
+    <p class="chapeau">Vos chiffres</p>
+    <h2>Combien vous coûte la recherche d'information, chez vous ?</h2>
+    <p class="intro">Je ne vais pas vous sortir un chiffre inventé. Mettez les vôtres et regardez.
+      Les valeurs de départ sont volontairement prudentes.</p>
+
+    <div class="calc">
+      <div class="champs">
+        <div class="champ">
+          <label for="c1">Questions internes ou clients par jour <span class="val" id="v1">12</span></label>
+          <input type="range" id="c1" min="2" max="40" value="12" step="1">
+        </div>
+        <div class="champ">
+          <label for="c2">Minutes pour retrouver la réponse <span class="val" id="v2">7</span></label>
+          <input type="range" id="c2" min="2" max="20" value="7" step="1">
+        </div>
+        <div class="champ">
+          <label for="c3">Coût horaire chargé de la personne qui cherche <span class="val" id="v3">32 €</span></label>
+          <input type="range" id="c3" min="18" max="70" value="32" step="1">
+        </div>
+        <div class="champ">
+          <label for="c4">Part des recherches que l'assistant évite <span class="val" id="v4">70 %</span></label>
+          <input type="range" id="c4" min="30" max="95" value="70" step="5">
+          <p class="note" style="margin:6px 0 0">Il ne remplace pas tout. Les cas particuliers,
+            les négociations et les décisions restent humains.</p>
+        </div>
+      </div>
+
+      <div class="resultat">
+        <div class="chiffre" id="rHeures">7 h 00</div>
+        <div class="chiffre-sous">par semaine, passées à chercher</div>
+        <div class="ligne-res"><span>Sur une année (46 semaines travaillées)</span><b id="rAn">322 h</b></div>
+        <div class="ligne-res"><span>Ce que ça représente en salaire</span><b id="rCout">10 304 €</b></div>
+        <div class="ligne-res"><span>Ce que l'assistant vous rend</span><b id="rGain">7 213 €</b></div>
+        <div class="ligne-res"><span>Ce qu'il coûte la première année</span><b id="rPrix">4 288 €</b></div>
+        <div class="verdict" id="rVerdict"></div>
+      </div>
+    </div>
+    <p class="note" style="margin-top:18px">Prix retenus dans ce calcul : 2 500 € de mise en place et
+      149 € par mois d'abonnement, soit 4 288 € la première année et 1 788 € les suivantes.</p>
+  </div>
+</section>
+
+<!-- ====================== EXEMPLES ====================== -->
+<section id="exemples">
+  <div class="enveloppe">
+    <p class="chapeau">Deux cas construits en entier</p>
+    <h2>Reconnaissez-vous vos propres documents là-dedans ?</h2>
+    <p class="intro">Ce sont deux démonstrations complètes, montées sur des documents que j'ai écrits
+      de toutes pièces pour deux entreprises fictives. Les questions ci-dessous sont celles que
+      l'assistant traite réellement.</p>
+
+    <div class="exemples">
+      <div class="exemple">
+        <h3>Boréale Équipement</h3>
+        <p class="metier">Distributeur en chauffage, climatisation et plomberie · 6 documents</p>
+        <div class="paire">
+          <p class="pq">Quelle est la garantie du compresseur d'une thermopompe ?</p>
+          <p class="pr">Dix ans, à condition que le produit ait été enregistré dans les 60 jours
+            suivant l'installation. Sans enregistrement, cinq ans.</p>
+        </div>
+        <div class="paire">
+          <p class="pq">Quel est le prix du module BX-1003 ?</p>
+          <p class="pr">63,95 € hors taxes, catégorie Capteurs. Commande minimale de 150 €.</p>
+        </div>
+        <div class="paire">
+          <p class="pq">Quel est le délai de rétractation pour un particulier ?</p>
+          <p class="pr"><span class="refus">Cette information ne figure pas dans les documents.
+            Contactez le service à la clientèle.</span></p>
+        </div>
+      </div>
+
+      <div class="exemple">
+        <h3>Horizon Immobilier</h3>
+        <p class="metier">Réseau de six agences · barèmes, mandats, diagnostics · 6 documents</p>
+        <div class="paire">
+          <p class="pq">Un logement classé F peut-il encore être loué ?</p>
+          <p class="pr">Oui. Seule la classe G est interdite à la location. Les logements F le
+            resteront jusqu'au 1<sup>er</sup> janvier 2028.</p>
+        </div>
+        <div class="paire">
+          <p class="pq">Plafond d'honoraires locataire pour l'agence de Chartres ?</p>
+          <p class="pr">8,07 € par m² de surface habitable, plus 3,03 € pour l'état des lieux.
+            Chartres est hors zone tendue.</p>
+        </div>
+        <div class="paire">
+          <p class="pq">Quels sont vos tarifs de syndic ?</p>
+          <p class="pr"><span class="refus">Le réseau n'exerce pas d'activité de syndic. Cette
+            information ne figure pas dans les documents.</span></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="boutons" style="margin-top:26px">
+      <button class="bouton creux" id="essai"><span>Essayer l'assistant en direct</span></button>
+      <a class="bouton creux" href="https://www.youtube.com/watch?v=zOcjEhi_-oY">Voir la démonstration en vidéo</a>
+    </div>
+    <p class="note" style="margin-top:10px">L'essai en direct demande un code, remis lors de notre échange.</p>
+  </div>
+</section>
+
+<!-- ====================== MÉTHODE ====================== -->
+<section>
+  <div class="enveloppe">
+    <p class="chapeau">Comment ça se passe</p>
+    <h2>Trois étapes, et un lien qui fonctionne au bout.</h2>
+    <div class="etapes">
+      <div class="etape">
+        <div class="num">1 — 15 MINUTES</div>
+        <h3>On regarde où part le temps</h3>
+        <p>Quelles questions reviennent, dans quels documents dorment les réponses,
+          et qui les cherche aujourd'hui.</p>
+      </div>
+      <div class="etape">
+        <div class="num">2 — 5 JOURS OUVRÉS</div>
+        <h3>Je monte l'assistant sur vos documents</h3>
+        <p>Sur votre contenu réel, pas sur un exemple. Vous recevez un lien qui fonctionne,
+          pas une présentation.</p>
+      </div>
+      <div class="etape">
+        <div class="num">3 — À LA LIVRAISON</div>
+        <h3>Vous testez, je corrige, c'est à vous</h3>
+        <p>Avec une recette écrite : au moins 20 questions passées sur vos documents,
+          résultat chiffré remis.</p>
+      </div>
+    </div>
+    <p style="margin-top:30px">La recette de livraison est le point sur lequel j'insiste le plus.
+      J'écris les questions de contrôle à la main dans vos documents, j'en glisse plusieurs dont la
+      réponse ne s'y trouve pas, et je vérifie que l'assistant refuse au lieu d'inventer. Vous recevez
+      le résultat chiffré avec le livrable, et vous pouvez le relire ligne par ligne.</p>
+  </div>
+</section>
+
+<!-- ====================== PRIX ====================== -->
+<section id="prix">
+  <div class="enveloppe">
+    <p class="chapeau">Prix</p>
+    <h2>Ce que ça coûte, écrit à l'avance.</h2>
+    <p class="intro">Tout figure au devis. Aucune facture surprise, et le solde ne se règle qu'une
+      fois l'assistant entre vos mains.</p>
+
+    <div class="prix-grille">
+      <div>
+        <div class="tarif">
+          <div class="tarif-tete">Ce que vous payez</div>
+          <div class="tarif-ligne">
+            <span>Mise en place
+              <span class="det">Conception, ingestion de vos documents, recette de livraison,
+                prise en main de 30 minutes, un aller-retour d'ajustement.</span></span>
+            <b>2 500 €</b>
+          </div>
+          <div class="tarif-ligne">
+            <span>Abonnement de service
+              <span class="det">Hébergement en Europe, usage du modèle jusqu'à 1 500 questions
+                par mois, surveillance, réindexation. Premier mois inclus. Sans engagement,
+                préavis de 30 jours.</span></span>
+            <b>149 € / mois</b>
+          </div>
+          <div class="tarif-ligne">
+            <span>Tableau de bord d'usage — en option
+              <span class="det">Ce qu'on demande vraiment à l'assistant, les sujets qui reviennent,
+                et surtout les questions restées sans réponse.</span></span>
+            <b>490 €</b>
+          </div>
+        </div>
+        <p class="note" style="margin-top:14px">TVA non applicable, article 293 B du code général
+          des impôts. Acompte de 50 % pour démarrer, solde à la livraison. Tarif consenti aux
+          premières entreprises en échange d'un témoignage écrit : il augmentera dès les premières
+          références.</p>
+      </div>
+
+      <div>
+        <h3 style="margin-bottom:12px">Ce que vous n'avez pas à faire</h3>
+        <ul class="inclus">
+          <li>Ouvrir un compte chez un hébergeur</li>
+          <li>Gérer une clé d'API</li>
+          <li>Installer quoi que ce soit</li>
+          <li>Former quelqu'un à un outil de plus</li>
+          <li>Réécrire vos documents</li>
+          <li>Signer pour douze mois</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================== QUESTIONS ====================== -->
+<section>
+  <div class="enveloppe">
+    <p class="chapeau">Ce qu'on me demande</p>
+    <h2>Les questions qui reviennent à chaque appel.</h2>
+    <div style="max-width:74ch;margin-top:10px">
+
+      <details><summary>Et s'il invente une réponse ?</summary>
+        <p>Il répond uniquement à partir de vos documents, et chaque réponse cite le document dont
+          elle est tirée, consultable en un clic. Quand l'information ne s'y trouve pas, il le dit.
+          Avant la livraison, je passe un jeu d'au moins 20 questions de contrôle sur vos propres
+          documents, dont plusieurs sans réponse, et je vous remets le résultat chiffré. Une seule
+          réponse inventée est un défaut bloquant, pas une statistique.</p></details>
+
+      <details><summary>Où sont nos documents ?</summary>
+        <p>Sur une instance dédiée à votre entreprise, hébergée en Europe, qui n'est partagée avec
+          aucun autre client. Au moment de répondre, seuls les extraits pertinents sont transmis au
+          fournisseur du modèle de langage, qui ne les utilise pas pour entraîner ses modèles sur ses
+          offres professionnelles. Une annexe de sous-traitance conforme à l'article 28 du RGPD est
+          jointe au devis.</p></details>
+
+      <details><summary>Et si on arrête ?</summary>
+        <p>Vous récupérez vos documents dans leur format d'origine, sans frais et sous quinze jours.
+          À l'arrêt de l'abonnement, tout est supprimé sous trente jours et une attestation de
+          suppression vous est adressée. L'abonnement est sans engagement de durée, avec un préavis
+          de trente jours.</p></details>
+
+      <details><summary>Pourquoi pas simplement ChatGPT ?</summary>
+        <p>Parce qu'il faut lui redonner vos fichiers à chaque conversation, qu'il ne cite pas le
+          document d'origine, et qu'il répond même quand il ne sait pas. Ici vos documents sont connus
+          en permanence, chaque réponse est traçable, et vos équipes ne téléversent rien nulle part.</p></details>
+
+      <details><summary>Nos documents changent souvent.</summary>
+        <p>Vous ajoutez, remplacez ou retirez vos fichiers vous-même depuis une page de gestion
+          protégée, et l'assistant se met à jour sans commande technique. Si vous préférez ne pas
+          vous en occuper, c'est compris dans l'abonnement.</p></details>
+
+      <details><summary>Faut-il être technique de notre côté ?</summary>
+        <p>Non. Vous fournissez vos documents en PDF, Word ou texte, tableaux compris. Je livre un
+          lien qui fonctionne. Vos équipes posent leurs questions en français normal.</p></details>
+
+      <details><summary>Combien de documents peut-il lire ?</summary>
+        <p>Jusqu'à 40 fichiers ou 400 pages dans la mission de lancement, ce qui couvre la grande
+          majorité des PME. Au-delà, c'est un devis séparé, et le prix reste proportionné.</p></details>
+
+      <details><summary>Vous débutez ?</summary>
+        <p>Oui, en tant qu'indépendant. Le produit, lui, existe et fonctionne : vous pouvez l'essayer
+          avant de signer, sur vos propres fichiers. C'est aussi pourquoi le tarif actuel est consenti
+          contre un témoignage écrit. Je préfère le dire que le laisser découvrir.</p></details>
+
+    </div>
+  </div>
+</section>
+
+<!-- ====================== FINAL ====================== -->
+<section class="final">
+  <div class="enveloppe">
+    <p class="chapeau">La suite</p>
+    <h2>Quinze minutes pour voir ce que ça donne sur vos documents.</h2>
+    <p class="intro">Envoyez-moi quelques fichiers représentatifs. Je monte une démonstration dessus
+      et je vous la montre avant de vous envoyer le moindre devis. Vous ne signez rien sans avoir vu.</p>
+    <div class="boutons">
+      <a class="bouton" href="https://calendar.app.google/fmK8RGhTGHzwuksp7">Choisir un créneau</a>
+      <a class="bouton creux" href="mailto:jonas@jonasmionnet.com">Écrire un courriel</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="enveloppe pied">
+    <span>Jonas Mionnet — assistants documentaires pour PME · jonas@jonasmionnet.com</span>
+    <span>
+      <a href="https://www.linkedin.com/in/jonas-mionnet-5339012a0">LinkedIn</a> ·
+      <a href="mentions-legales.html">Mentions légales</a>
+    </span>
+  </div>
+</footer>
+
+<!-- fenêtre code d'accès -->
+<div class="voile" id="voile">
+  <div class="fenetre">
+    <h3>Essayer l'assistant</h3>
+    <p>Entrez le code d'accès reçu lors de notre échange. L'assistant de démonstration répond sur les
+      documents d'une entreprise fictive.</p>
+    <input type="password" id="code" placeholder="Code d'accès" autocomplete="off">
+    <div class="err" id="err"></div>
+    <div class="boutons">
+      <button class="bouton" id="valider">Lancer l'assistant</button>
+      <button class="bouton creux" id="annuler">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ---------- calculateur ---------- */
+(function(){
+  var SEMAINES = 46, JOURS = 5, MISSION = 2500, MOIS = 149;
+  var e = function(id){ return document.getElementById(id); };
+  var ch = [e("c1"), e("c2"), e("c3"), e("c4")];
+
+  function heures(h){
+    var hh = Math.floor(h), mm = Math.round((h - hh) * 60);
+    if (mm === 60) { hh += 1; mm = 0; }
+    return hh + " h " + (mm < 10 ? "0" : "") + mm;
+  }
+  function euros(n){
+    return Math.round(n).toLocaleString("fr-FR").replace(/ | /g, " ") + " €";
+  }
+
+  function calculer(){
+    var q = +ch[0].value, min = +ch[1].value, taux = +ch[2].value, part = +ch[3].value / 100;
+
+    e("v1").textContent = q;
+    e("v2").textContent = min;
+    e("v3").textContent = taux + " €";
+    e("v4").textContent = Math.round(part * 100) + " %";
+
+    var hSemaine = q * JOURS * min / 60;
+    var hAn = hSemaine * SEMAINES;
+    var coutAn = hAn * taux;
+    var gain = coutAn * part;
+    var an1 = MISSION + MOIS * 12;
+
+    e("rHeures").textContent = heures(hSemaine);
+    e("rAn").textContent = Math.round(hAn).toLocaleString("fr-FR").replace(/ | /g, " ") + " h";
+    e("rCout").textContent = euros(coutAn);
+    e("rGain").textContent = euros(gain);
+    e("rPrix").textContent = euros(an1);
+
+    var v = e("rVerdict"), net = gain - an1;
+    if (net > 0) {
+      var mois = an1 / (gain / 12);
+      v.innerHTML = "Remboursé en <strong>" + (mois < 1 ? "moins d'un mois" :
+        Math.ceil(mois) + " mois") + "</strong>, puis " +
+        euros(gain - MOIS * 12) + " récupérés chaque année.";
+    } else {
+      v.innerHTML = "À ce niveau d'usage, l'assistant ne se rembourse pas la première année. " +
+        "Autant vous le dire ici plutôt qu'à l'appel.";
+    }
+  }
+  ch.forEach(function(c){ c.addEventListener("input", calculer); });
+  calculer();
+})();
+
+/* ---------- assistant de démonstration ---------- */
+(function(){
+  var API = "https://assistant-documentaire-demo-production.up.railway.app";
+  var voile = document.getElementById("voile"),
+      code = document.getElementById("code"),
+      err = document.getElementById("err"),
+      bouton = document.getElementById("essai");
+
+  function ouvrir(){ voile.classList.add("ouvert"); code.focus(); }
+  function fermer(){ voile.classList.remove("ouvert"); err.textContent = ""; }
+
+  function verifier(pw){
+    return fetch(API + "/api/verify", { headers: { "X-API-Password": pw } })
+      .then(function(r){ return r.status === 200; })
+      .catch(function(){ return false; });
+  }
+  function charger(){
+    return new Promise(function(ok, ko){
+      if (window.DocAssistant) return ok();
+      var s = document.createElement("script");
+      s.src = API + "/widget.js";
+      s.onload = ok; s.onerror = ko;
+      document.head.appendChild(s);
+    });
+  }
+  function monter(){
+    charger().then(function(){
+      window.DocAssistant.mount({
+        mode: "floating", apiBase: API,
+        assistantName: "Assistant documentaire",
+        clientName: "Boréale Équipement (démo)"
+      });
+      bouton.querySelector("span").textContent = "Assistant lancé, en bas à droite";
+      bouton.disabled = true;
+      fermer();
+    }).catch(function(){
+      err.textContent = "Impossible de charger l'assistant. Réessayez plus tard.";
+    });
+  }
+
+  bouton.addEventListener("click", function(){
+    var garde = localStorage.getItem("da_api_password") || "";
+    if (!garde) return ouvrir();
+    verifier(garde).then(function(ok){
+      if (ok) monter();
+      else { localStorage.removeItem("da_api_password"); ouvrir(); }
+    });
+  });
+
+  function tenter(){
+    var pw = (code.value || "").trim();
+    if (!pw) { err.textContent = "Entrez le code d'accès."; return; }
+    err.textContent = "Vérification…";
+    verifier(pw).then(function(ok){
+      if (ok) { localStorage.setItem("da_api_password", pw); monter(); }
+      else { err.textContent = "Code incorrect."; }
+    });
+  }
+  document.getElementById("valider").addEventListener("click", tenter);
+  document.getElementById("annuler").addEventListener("click", fermer);
+  code.addEventListener("keydown", function(ev){ if (ev.key === "Enter") tenter(); });
+  voile.addEventListener("click", function(ev){ if (ev.target === voile) fermer(); });
+  document.addEventListener("keydown", function(ev){ if (ev.key === "Escape") fermer(); });
+})();
+</script>
+</body>
+</html>
