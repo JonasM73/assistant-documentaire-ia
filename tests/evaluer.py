@@ -165,6 +165,11 @@ def main():
     ap.add_argument("--verbeux", action="store_true")
     ap.add_argument("--out",
                     default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "resultats_controle.json"))
+    ap.add_argument("--rapport", metavar="FICHIER.md",
+                    help="écrit en plus un procès-verbal de recette lisible, "
+                         "au format remis au client")
+    ap.add_argument("--client", default="", metavar="NOM",
+                    help="nom du client porté sur le procès-verbal de recette")
     args = ap.parse_args()
 
     if rag_core.resolve_llm_provider() != "anthropic":
@@ -204,6 +209,93 @@ def main():
     with open(args.out, "w", encoding="utf-8") as f:
         json.dump(resultats, f, ensure_ascii=False, indent=2)
     print(f"\n  Détail écrit dans {args.out}")
+
+    if args.rapport:
+        ecrire_rapport(args.rapport, resultats, questions, args)
+        print(f"  Procès-verbal de recette écrit dans {args.rapport}")
+
+
+def ecrire_rapport(chemin, resultats, questions, args):
+    """Procès-verbal de recette, au format remis au client.
+
+    Ce n'est pas un journal de mise au point : c'est la pièce que le client relit
+    ligne par ligne avant de régler le solde. Il doit pouvoir vérifier chaque
+    réponse contre ses propres documents.
+    """
+    from datetime import date
+
+    r = resultats[0]                      # le modèle retenu est le premier passé
+    c = r["compteur"]
+    halluc = c["halluc"]
+    client = args.client or "[nom du client]"
+    jeu = os.path.basename(args.questions)
+
+    L = []
+    L.append(f"# Procès-verbal de recette — {client}")
+    L.append("")
+    L.append(f"- **Date de la recette** : {date.today().strftime('%d/%m/%Y')}")
+    L.append(f"- **Jeu de questions** : `{jeu}` — {len(questions)} questions, "
+             f"arrêtées avec le client avant le test")
+    L.append(f"- **Modèle utilisé en production** : {r['modele']}")
+    L.append("")
+    L.append("## Résultat")
+    L.append("")
+    L.append("| Critère | Résultat |")
+    L.append("|---|---|")
+    L.append(f"| Réponses exactes | {c['exacte']} / {r['exactes_possibles']} |")
+    L.append(f"| Refus corrects sur les questions sans réponse | "
+             f"{c['refus_ok']} / {r['refus_possibles']} |")
+    L.append(f"| **Réponses inventées** | **{halluc}** |")
+    L.append("")
+    if halluc == 0:
+        L.append("> Aucune réponse inventée sur ce jeu de contrôle. Chaque réponse fournie "
+                 "s'appuie sur un extrait de vos documents, et l'assistant a refusé de "
+                 "répondre à chacune des questions dont la réponse ne s'y trouve pas.")
+    else:
+        L.append(f"> ⚠️ **{halluc} réponse(s) inventée(s). La recette n'est pas validée.** "
+                 "Conformément au devis, les corrections sont réalisées sans supplément "
+                 "avant toute facturation du solde et avant la mise en production.")
+    L.append("")
+    L.append("## Détail, question par question")
+    L.append("")
+    L.append("Chaque ligne est vérifiable dans vos documents. `attendu` est la valeur qui "
+             "devait figurer dans la réponse ; `sans réponse` signale les questions dont la "
+             "réponse n'existe volontairement pas dans le corpus fourni.")
+    L.append("")
+    L.append("| # | Question | Type | Source à vérifier | Verdict |")
+    L.append("|---|---|---|---|---|")
+    par_id = {q["id"]: q for q in questions}
+    libelle = {"exacte": "conforme",
+               "refus_ok": "refus correct",
+               "manque": "incomplet — à corriger",
+               "halluc": "**réponse inventée**",
+               "erreur": "erreur technique — à rejouer"}
+    for i, d in enumerate(r["details"], 1):
+        q = par_id.get(d.get("id"), {})
+        texte = str(q.get("question", d.get("id", ""))).replace("|", "\\|")
+        typ = "sans réponse" if q.get("doit_refuser") else "factuelle"
+        src = q.get("source", "")
+        if src and q.get("page"):
+            src = f"{src} · p. {q['page']}"
+        L.append(f"| {i} | {texte} | {typ} | {src or '—'} | "
+                 f"{libelle.get(d.get('verdict'), d.get('verdict', 'à revoir'))} |")
+    L.append("")
+    L.append("## Ce qui a été vérifié")
+    L.append("")
+    for ligne in [
+        "chaque réponse s'appuie sur un extrait du document source, ouvrable en un clic ;",
+        "l'assistant refuse explicitement quand l'information n'existe pas dans les documents ;",
+        "aucun engagement (prix, délai, garantie) n'est énoncé sans appui documentaire ;",
+        "les sources citées correspondent bien au document dont la réponse est tirée.",
+    ]:
+        L.append(f"- {ligne}")
+    L.append("")
+    L.append("---")
+    L.append("")
+    L.append("Jonas Mionnet — assistants documentaires pour PME · jonas@jonasmionnet.com")
+
+    with open(chemin, "w", encoding="utf-8") as f:
+        f.write("\n".join(L) + "\n")
 
 
 if __name__ == "__main__":
