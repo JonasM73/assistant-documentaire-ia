@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Calculez, avec vos propres chiffres, ce que la recherche d'information coûte à votre entreprise chaque année — et ce qu'un assistant documentaire vous rend.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jonasmionnet.com/simulation.html">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:site_name" content="Assistant·docs — Jonas Mionnet">
+<meta property="og:title" content="Combien vous coûte la recherche d'information ?">
+<meta property="og:description" content="Mettez vos chiffres. Le calcul est fait devant vous, hypothèses visibles — y compris quand la réponse est que ça ne vaut pas le coup.">
+<meta property="og:image" content="https://jonasmionnet.com/partage.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://jonasmionnet.com/simulation.html">
+<meta name="theme-color" content="#070D0B">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='13' fill='%23070D0B'/%3E%3Cpath d='M18 20h20M18 30h28M18 40h16' stroke='%23F2F5F3' stroke-width='5' stroke-linecap='round'/%3E%3Ccircle cx='42' cy='42' r='9' fill='none' stroke='%234ADE80' stroke-width='4.5'/%3E%3Cpath d='M49 49l6 6' stroke='%234ADE80' stroke-width='4.5' stroke-linecap='round'/%3E%3C/svg%3E">
+<title>Ce que la recherche d'information vous coûte — Assistant·docs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;450;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="da.css">
+<style>
+  html{scroll-behavior:smooth;}
+  body{background:var(--ink-900);}
+
+  /* ------------------------------------------------------------------ NAV */
+  .nav{position:fixed;top:0;left:0;right:0;z-index:300;
+    transition:background .6s var(--e),backdrop-filter .6s var(--e);}
+  .nav.is-stuck{background:rgba(12,22,19,.78);
+    -webkit-backdrop-filter:blur(18px) saturate(1.5);backdrop-filter:blur(18px) saturate(1.5);
+    box-shadow:0 1px 0 var(--rule-ink-2);}
+  .nav__in{display:flex;align-items:center;gap:26px;height:clamp(64px,7vw,84px);
+    max-width:var(--maxw);margin:0 auto;padding-left:var(--gut);padding-right:var(--gut);}
+  .brand{display:flex;align-items:baseline;gap:2px;font-family:var(--disp);font-weight:800;
+    font-size:17px;letter-spacing:-.035em;color:var(--on-ink);}
+  .brand i{font-style:normal;color:var(--sig-400);}
+  .nav__cta{margin-left:auto;padding:12px 22px;font-size:14px;}
+
+  /* --------------------------------------------------------------- ENTÊTE */
+  .tete{padding:clamp(130px,16vw,190px) 0 clamp(30px,4vw,50px);}
+  .tete h1{font-size:var(--t-h1);line-height:.95;margin:0 0 20px;max-width:19ch;}
+  .tete .lead{max-width:62ch;}
+
+  /* ------------------------------------------------------------- CALCUL */
+  .calc{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+    gap:clamp(22px,3vw,44px);align-items:start;margin-top:clamp(28px,4vw,44px);}
+  @media (max-width:940px){.calc{grid-template-columns:1fr;}}
+
+  .champs{border-radius:var(--r-lg);padding:clamp(22px,2.6vw,32px);
+    background:var(--tint);box-shadow:inset 0 0 0 1px var(--rule-ink-2);}
+  .champs h3{font-size:1.05rem;margin:0 0 4px;color:var(--on-ink);}
+  .champs .sous{font-size:14px;color:var(--on-ink-4);margin:0 0 24px;}
+  .champ{margin-bottom:22px;}
+  .champ:last-child{margin-bottom:0;}
+  .champ label{display:flex;justify-content:space-between;align-items:baseline;gap:14px;
+    font-size:14.5px;color:var(--on-ink-2);margin-bottom:9px;}
+  .champ .val{font-family:var(--mono);font-weight:600;font-size:15px;color:var(--lime);
+    white-space:nowrap;}
+  .champ .aide{font-size:13px;color:var(--on-ink-4);margin:7px 0 0;line-height:1.5;}
+  input[type=range]{width:100%;height:24px;accent-color:var(--sig-500);cursor:pointer;
+    background:transparent;}
+  input[type=range]:focus-visible{outline:2px solid var(--sig-400);outline-offset:4px;
+    border-radius:4px;}
+
+  .res{border-radius:var(--r-lg);padding:clamp(24px,2.8vw,34px);position:relative;overflow:hidden;
+    background:linear-gradient(155deg,var(--ink-700),var(--ink-900) 70%);
+    box-shadow:inset 0 0 0 1px var(--rule-ink);}
+  .res::before{content:"";position:absolute;inset:-50% -10% auto -10%;height:130%;
+    background:radial-gradient(50% 50% at 50% 26%,var(--sig-glow),transparent 66%);
+    opacity:.4;pointer-events:none;}
+  .res > *{position:relative;z-index:2;}
+  .res__chiffre{font-family:var(--disp);font-weight:800;letter-spacing:-.05em;line-height:.92;
+    font-size:clamp(2.6rem,6vw,4.2rem);color:var(--on-ink);}
+  .res__sous{font-size:15px;color:var(--on-ink-3);margin:10px 0 26px;}
+  .ligne{display:flex;justify-content:space-between;gap:16px;padding:12px 0;
+    border-top:1px solid var(--rule-ink-2);font-size:15px;color:var(--on-ink-3);}
+  .ligne b{font-family:var(--mono);font-weight:600;color:var(--on-ink);white-space:nowrap;}
+  .ligne.fort b{color:var(--lime);}
+  .verdict{margin-top:20px;padding-top:18px;border-top:2px solid var(--sig-500);
+    font-size:15.5px;line-height:1.6;color:var(--on-ink-2);}
+  .verdict b{color:var(--on-ink);}
+  .verdict.negatif{border-top-color:var(--amber);}
+
+  .hyp{margin-top:clamp(26px,3vw,38px);font-size:13.5px;line-height:1.65;
+    color:var(--on-ink-4);max-width:76ch;}
+  .hyp b{color:var(--on-ink-3);}
+
+  /* ------------------------------------------------------------ FORMULAIRE */
+  .form{border-radius:var(--r-lg);padding:clamp(24px,3vw,40px);background:var(--tint);
+    box-shadow:inset 0 0 0 1px var(--rule-ink-2);max-width:62ch;}
+  .form .duo{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  @media (max-width:620px){.form .duo{grid-template-columns:1fr;}}
+  .form label{display:block;font-size:14px;color:var(--on-ink-3);margin:0 0 7px;}
+  .form input,.form textarea,.form select{width:100%;font-family:var(--ui);font-size:15px;
+    color:var(--on-ink);background:var(--ink-950);border:1px solid var(--rule-ink-2);
+    border-radius:var(--r-sm);padding:12px 14px;transition:border-color .3s var(--e);}
+  .form input:focus,.form textarea:focus,.form select:focus{outline:none;
+    border-color:var(--sig-500);}
+  .form input::placeholder,.form textarea::placeholder{color:var(--on-ink-4);}
+  .form .bloc{margin-bottom:16px;}
+  .form textarea{resize:vertical;min-height:96px;}
+  .form__pied{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:22px;}
+  .form__note{font-size:13px;color:var(--on-ink-4);margin-top:16px;line-height:1.6;}
+  .form__etat{font-size:14.5px;line-height:1.55;margin-top:14px;min-height:22px;}
+  .form__etat.ok{color:var(--lime);}
+  .form__etat.ko{color:var(--coral,#f0866f);}
+
+  .foot{background:var(--ink-950);padding:clamp(34px,4vw,52px) 0;
+    margin-top:clamp(50px,7vw,90px);}
+  .foot__in{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;
+    font-size:13.5px;color:var(--on-ink-4);}
+  .foot__in a{color:var(--on-ink-3);}
+  .foot__in a:hover{color:var(--sig-400);}
+</style>
+</head>
+<body>
+
+<div class="grain" aria-hidden="true"></div>
+
+<header class="nav" data-nav>
+  <div class="nav__in">
+    <a class="brand" href="index.html">Assistant<i>·</i>docs</a>
+    <a class="btn btn--sig nav__cta" href="#devis" data-magnetic="0.22"><span>Demander un devis</span>
+      <svg viewBox="0 0 24 24"><path d="M5 12h13"/><path d="m12 5 7 7-7 7"/></svg></a>
+  </div>
+</header>
+
+<main>
+
+<section class="tete">
+  <div class="shell">
+    <p class="eyebrow" data-reveal="fade"><a class="link" href="index.html">← Retour au site</a></p>
+    <h1 data-reveal="fade" data-split>Combien vous coûte la recherche d'information ?</h1>
+    <p class="lead" data-reveal="up" data-delay="140">
+      Je ne vais pas vous sortir un chiffre inventé. Mettez les vôtres, le calcul se fait devant
+      vous et toutes les hypothèses sont écrites en bas de page. Les valeurs de départ sont
+      volontairement prudentes — et si le résultat dit que ça ne vaut pas le coup chez vous,
+      il vous le dira aussi.
+    </p>
+  </div>
+</section>
+
+<!-- ====================== TEMPS INTERNE ====================== -->
+<section class="band band--tight">
+  <div class="shell">
+    <p class="eyebrow" data-reveal="fade">1 — Le temps de vos équipes</p>
+    <h2 class="h2" data-reveal="fade" data-split>Ce que vous payez déjà, sans le voir.</h2>
+
+    <div class="calc">
+      <div class="champs" data-reveal="up">
+        <h3>Vos chiffres</h3>
+        <p class="sous">Faites glisser. Tout se recalcule.</p>
+
+        <div class="champ">
+          <label for="c1">Questions internes ou clients par jour <span class="val" id="v1">12</span></label>
+          <input type="range" id="c1" min="2" max="60" value="12" step="1">
+          <p class="aide">« Quel est le tarif ? », « quelle procédure ? », « que dit le contrat ? » —
+            toutes celles dont la réponse est écrite quelque part.</p>
+        </div>
+
+        <div class="champ">
+          <label for="c2">Minutes pour retrouver la réponse <span class="val" id="v2">7</span></label>
+          <input type="range" id="c2" min="2" max="30" value="7" step="1">
+          <p class="aide">Comptez aussi l'interruption de la personne « qui sait ».</p>
+        </div>
+
+        <div class="champ">
+          <label for="c3">Coût horaire chargé de qui cherche <span class="val" id="v3">32 €</span></label>
+          <input type="range" id="c3" min="18" max="90" value="32" step="1">
+          <p class="aide">Salaire brut + charges, divisé par les heures travaillées.</p>
+        </div>
+
+        <div class="champ">
+          <label for="c4">Part des recherches que l'assistant évite <span class="val" id="v4">70 %</span></label>
+          <input type="range" id="c4" min="30" max="95" value="70" step="5">
+          <p class="aide">Il ne remplace pas tout. Les cas particuliers, les négociations et les
+            décisions restent humains.</p>
+        </div>
+      </div>
+
+      <div class="res" aria-live="polite" data-reveal="up" data-delay="120">
+        <div class="res__chiffre" id="rHeures">7 h 00</div>
+        <div class="res__sous">par semaine, passées à chercher</div>
+        <div class="ligne"><span>Sur une année (46 semaines travaillées)</span><b id="rAn">322 h</b></div>
+        <div class="ligne"><span>Ce que ces heures vous coûtent en salaire</span><b id="rCout">10 304 €</b></div>
+        <div class="ligne fort"><span>Temps rendu, valorisé au coût chargé</span><b id="rGain">7 213 €</b></div>
+        <div class="ligne"><span>Ce que l'assistant coûte la première année</span><b id="rPrix">4 648 €</b></div>
+        <div class="verdict" id="rVerdict"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================== RÉPONSES CLIENTS ====================== -->
+<section class="band band--tight" style="background:var(--ink-950);">
+  <div class="shell">
+    <p class="eyebrow" data-reveal="fade">2 — Les demandes de vos clients</p>
+    <h2 class="h2" data-reveal="fade" data-split>Le devis qui part chez le concurrent parce qu'il a répondu avant vous.</h2>
+    <p class="lead" style="max-width:64ch;margin-top:20px" data-reveal="up" data-delay="120">
+      Ce second calcul est <b>une estimation, pas une mesure</b> : personne ne sait exactement
+      combien d'affaires se perdent faute de réponse rapide. C'est vous qui fixez la part perdue —
+      mettez-la basse si vous préférez. Laissez le curseur à zéro et ce bloc n'entre pas dans le
+      total.
+    </p>
+
+    <div class="calc">
+      <div class="champs" data-reveal="up">
+        <h3>Vos demandes entrantes</h3>
+        <p class="sous">Uniquement celles où une réponse rapide change la décision.</p>
+
+        <div class="champ">
+          <label for="d1">Demandes clients par mois <span class="val" id="w1">40</span></label>
+          <input type="range" id="d1" min="0" max="300" value="40" step="5">
+        </div>
+
+        <div class="champ">
+          <label for="d2">Valeur moyenne d'une affaire signée <span class="val" id="w2">1 200 €</span></label>
+          <input type="range" id="d2" min="100" max="20000" value="1200" step="100">
+          <p class="aide">Marge, pas chiffre d'affaires, si vous voulez rester prudent.</p>
+        </div>
+
+        <div class="champ">
+          <label for="d3">Part de ces demandes qui se transforment <span class="val" id="w3">20 %</span></label>
+          <input type="range" id="d3" min="1" max="60" value="20" step="1">
+        </div>
+
+        <div class="champ">
+          <label for="d4">Part perdue faute de réponse assez rapide <span class="val" id="w4">5 %</span></label>
+          <input type="range" id="d4" min="0" max="20" value="5" step="1">
+          <p class="aide">À zéro, ce bloc est ignoré. C'est le curseur le plus discutable de la
+            page : mettez ce que vous croyez, pas ce qui m'arrange.</p>
+        </div>
+      </div>
+
+      <div class="res" aria-live="polite" data-reveal="up" data-delay="120">
+        <div class="res__chiffre" id="rPerdu">5 760 €</div>
+        <div class="res__sous">par an, en affaires qui partent ailleurs</div>
+        <div class="ligne"><span>Demandes traitées par an</span><b id="rDem">480</b></div>
+        <div class="ligne"><span>Affaires signées par an</span><b id="rSign">96</b></div>
+        <div class="ligne"><span>Affaires perdues faute de réactivité</span><b id="rPerte">4,8</b></div>
+        <div class="verdict" id="rVerdict2"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================== TOTAL ====================== -->
+<section class="band band--tight">
+  <div class="shell shell--tight">
+    <div class="res" style="text-align:center;padding:clamp(34px,5vw,60px)" data-reveal="scale">
+      <p class="eyebrow" style="justify-content:center;color:var(--lime)">Sur douze mois</p>
+      <div class="res__chiffre" id="rTotal" style="font-size:clamp(3rem,8vw,5.6rem);margin:12px 0 6px">12 973 €</div>
+      <div class="res__sous" id="rTotalSous">de temps rendu et d'affaires conservées, pour 4 288 € investis la première année</div>
+      <div class="verdict" id="rVerdictTotal" style="text-align:left;max-width:56ch;margin:22px auto 0"></div>
+      <div class="hero__cta" style="justify-content:center;margin-top:30px">
+        <a class="btn btn--sig" href="#devis" data-magnetic="0.25"><span>Demander un devis</span>
+          <svg viewBox="0 0 24 24"><path d="M5 12h13"/><path d="m12 5 7 7-7 7"/></svg></a>
+      </div>
+    </div>
+
+    <p class="hyp" data-reveal="up">
+      <b>Les hypothèses, en clair.</b> Année de 46 semaines travaillées et de 5 jours ouvrés.
+      Le coût horaire chargé est celui que vous entrez, appliqué à toutes les recherches.
+      Le coût retenu est volontairement le plus élevé : 2 500 € de mise en place, la maintenance
+      facultative à 149 € par mois, et environ 30 € par mois de frais techniques payés directement
+      à vos fournisseurs — soit 4 648 € la première année et 2 148 € les suivantes.
+      <b>Sans la maintenance, le calcul vous est encore plus favorable</b> ; je préfère la compter
+      pour ne pas vous vendre un chiffre embelli.
+      <b>Ce que vous récupérez, ce sont des heures, pas de la trésorerie</b> — elles se
+      réinvestissent là où votre équipe crée de la valeur, elles n'apparaissent pas sur votre
+      compte en banque. Les frais techniques, eux, restent visibles et plafonnables sur vos
+      propres comptes. Le second bloc est une estimation que vous pilotez entièrement.
+      Aucun de ces chiffres n'est une promesse contractuelle : ce sont vos hypothèses, calculées
+      devant vous.
+    </p>
+  </div>
+</section>
+
+<!-- ====================== DEVIS ====================== -->
+<section class="band" id="devis" style="background:var(--ink-950);">
+  <div class="shell">
+    <p class="eyebrow" data-reveal="fade">La suite</p>
+    <h2 class="h2" data-reveal="fade" data-split>Dites-moi juste où chercher.</h2>
+    <p class="lead" style="max-width:60ch;margin:20px 0 0" data-reveal="up" data-delay="120">
+      Vous n'avez pas besoin de bloquer un créneau. Laissez-moi votre entreprise et le type de
+      documents concernés : je vous réponds sous 48 h avec un avis honnête sur la faisabilité,
+      y compris quand la réponse est que ça ne vaut pas le coup chez vous.
+    </p>
+
+    <div class="form" style="margin-top:clamp(26px,3vw,40px)" data-reveal="up" data-delay="180">
+      <form id="devis-form" novalidate>
+        <div class="duo">
+          <div class="bloc">
+            <label for="f-nom">Prénom et nom *</label>
+            <input id="f-nom" name="nom" type="text" required autocomplete="name" placeholder="Camille Durand">
+          </div>
+          <div class="bloc">
+            <label for="f-entreprise">Entreprise *</label>
+            <input id="f-entreprise" name="entreprise" type="text" required autocomplete="organization" placeholder="Horizon Immobilier">
+          </div>
+        </div>
+        <div class="duo">
+          <div class="bloc">
+            <label for="f-email">Adresse électronique *</label>
+            <input id="f-email" name="email" type="email" required autocomplete="email" placeholder="camille@exemple.fr">
+          </div>
+          <div class="bloc">
+            <label for="f-site">Site, boutique ou intranet</label>
+            <input id="f-site" name="site" type="text" autocomplete="url" placeholder="exemple.fr">
+          </div>
+        </div>
+        <div class="bloc">
+          <label for="f-objet">Ce que vous voulez</label>
+          <select id="f-objet" name="objet">
+            <option>Un devis chiffré</option>
+            <option>Une démonstration sur nos propres documents</option>
+            <option>Juste un avis sur la faisabilité</option>
+          </select>
+        </div>
+        <div class="bloc">
+          <label for="f-msg">Ce que vos équipes cherchent le plus souvent</label>
+          <textarea id="f-msg" name="message" placeholder="Nos barèmes d'honoraires par zone, nos procédures internes… environ 30 PDF."></textarea>
+        </div>
+
+        <!-- anti-robot : un humain laisse ce champ vide -->
+        <input type="text" name="_gotcha" tabindex="-1" autocomplete="off"
+          style="position:absolute;left:-9999px;opacity:0" aria-hidden="true">
+
+        <div class="form__pied">
+          <button class="btn btn--sig" type="submit" data-magnetic="0.2"><span>Envoyer ma demande</span>
+            <svg viewBox="0 0 24 24"><path d="M5 12h13"/><path d="m12 5 7 7-7 7"/></svg></button>
+          <a class="link" href="https://calendar.app.google/fmK8RGhTGHzwuksp7">Ou choisir un créneau de 15 min</a>
+        </div>
+        <p class="form__etat" id="f-etat" role="status"></p>
+        <p class="form__note">Vos informations servent uniquement à répondre à votre demande.
+          Elles ne sont ni cédées ni utilisées à d'autres fins, et sont conservées trois ans au
+          plus après notre dernier échange. Voir les
+          <a href="mentions-legales.html">mentions légales</a>.</p>
+      </form>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="shell foot__in">
+    <div>Jonas Mionnet — assistants documentaires pour PME — France</div>
+    <div>
+      <a href="mailto:jonas@jonasmionnet.com">jonas@jonasmionnet.com</a> ·
+      <a href="index.html">Accueil</a> ·
+      <a href="mentions-legales.html">Mentions légales</a>
+    </div>
+  </div>
+</footer>
+
+<script src="lenis.min.js"></script>
+<script src="motion.js"></script>
+<script src="formulaire.js"></script>
+<script>
+/* ===================== SIMULATEUR ===================== */
+(function () {
+  "use strict";
+  /* Hypothèse volontairement HAUTE : mise en place, maintenance facultative prise,
+     et frais techniques payés par le client à ses fournisseurs. Sans la maintenance,
+     le coût est plus bas — le calcul reste donc prudent. */
+  var SEMAINES = 46, JOURS = 5, MISSION = 2500, MAINT = 149, TECH = 30;
+  var AN1 = MISSION + (MAINT + TECH) * 12, ANN = (MAINT + TECH) * 12;
+  var e = function (id) { return document.getElementById(id); };
+
+  function nb(n, dec) {
+    return n.toLocaleString("fr-FR", { minimumFractionDigits: dec || 0,
+      maximumFractionDigits: dec || 0 });
+  }
+  function eur(n) { return nb(Math.round(n)) + " €"; }
+  function heures(h) {
+    var hh = Math.floor(h), mm = Math.round((h - hh) * 60);
+    if (mm === 60) { hh += 1; mm = 0; }
+    return hh + " h " + (mm < 10 ? "0" : "") + mm;
+  }
+
+  var champs = ["c1", "c2", "c3", "c4", "d1", "d2", "d3", "d4"].map(e);
+
+  function calculer() {
+    var q = +e("c1").value, min = +e("c2").value, taux = +e("c3").value,
+        part = +e("c4").value / 100;
+    var dem = +e("d1").value, val = +e("d2").value,
+        conv = +e("d3").value / 100, perdu = +e("d4").value / 100;
+
+    e("v1").textContent = q;
+    e("v2").textContent = min;
+    e("v3").textContent = taux + " €";
+    e("v4").textContent = Math.round(part * 100) + " %";
+    e("w1").textContent = dem;
+    e("w2").textContent = nb(val) + " €";
+    e("w3").textContent = Math.round(conv * 100) + " %";
+    e("w4").textContent = Math.round(perdu * 100) + " %";
+
+    /* --- bloc 1 : temps interne --- */
+    var hSem = q * JOURS * min / 60;
+    var hAn = hSem * SEMAINES;
+    var coutAn = hAn * taux;
+    var gain = coutAn * part;
+
+    e("rHeures").textContent = heures(hSem);
+    e("rAn").textContent = nb(Math.round(hAn)) + " h";
+    e("rCout").textContent = eur(coutAn);
+    e("rGain").textContent = eur(gain);
+    e("rPrix").textContent = eur(AN1);
+
+    var v1 = e("rVerdict");
+    if (gain > AN1) {
+      var mois = AN1 / (gain / 12);
+      v1.className = "verdict";
+      v1.innerHTML = "Remboursé en <b>" + (mois < 1 ? "moins d'un mois" : Math.ceil(mois) + " mois")
+        + "</b>, puis <b>" + eur(gain - ANN) + "</b> de temps rendu chaque année.";
+    } else {
+      v1.className = "verdict negatif";
+      v1.innerHTML = "À ce niveau d'usage, l'assistant ne se rembourse pas sur le seul temps "
+        + "interne la première année. <b>Autant vous le dire ici qu'à l'appel.</b>";
+    }
+
+    /* --- bloc 2 : demandes clients --- */
+    var demAn = dem * 12;
+    var signees = demAn * conv;
+    var pertes = signees * perdu;
+    var manque = pertes * val;
+
+    e("rDem").textContent = nb(demAn);
+    e("rSign").textContent = nb(Math.round(signees));
+    e("rPerte").textContent = nb(pertes, pertes < 10 ? 1 : 0);
+    e("rPerdu").textContent = eur(manque);
+
+    var v2 = e("rVerdict2");
+    if (perdu === 0 || dem === 0) {
+      v2.className = "verdict";
+      v2.innerHTML = "Curseur à zéro : ce bloc n'entre pas dans le total. "
+        + "<b>C'est l'hypothèse par défaut la plus prudente.</b>";
+    } else {
+      v2.className = "verdict";
+      v2.innerHTML = "Soit <b>" + nb(pertes, pertes < 10 ? 1 : 0) + " affaire"
+        + (pertes >= 2 ? "s" : "") + "</b> par an. Une seule récupérée "
+        + (val >= AN1 ? "paie déjà l'assistant." : "couvre "
+          + Math.round(val / AN1 * 100) + " % de la première année.");
+    }
+
+    /* --- total --- */
+    var total = gain + manque;
+    e("rTotal").textContent = eur(total);
+    e("rTotalSous").textContent = "de temps rendu et d'affaires conservées, pour "
+      + eur(AN1) + " investis la première année";
+
+    var vt = e("rVerdictTotal");
+    /* garde-fou : si l'estimation « affaires perdues » écrase tout le reste,
+       on le dit — un chiffre invraisemblable décrédibilise la page entière. */
+    if (manque > gain * 4 && manque > 0) {
+      vt.className = "verdict negatif";
+      vt.innerHTML = "<b>Attention : le second bloc pilote à lui seul ce total.</b> "
+        + "Il repose sur une estimation que vous avez fixée, pas sur une mesure. "
+        + "Baissez la part perdue faute de réactivité jusqu'à un chiffre que vous "
+        + "seriez prêt à défendre devant votre comptable — le premier bloc, lui, "
+        + "repose sur des heures réellement travaillées.";
+      return;
+    }
+    if (total > AN1) {
+      var moisT = AN1 / (total / 12);
+      vt.className = "verdict";
+      vt.innerHTML = "Sur vos hypothèses, l'assistant est remboursé en <b>"
+        + (moisT < 1 ? "moins d'un mois" : Math.ceil(moisT) + " mois") + "</b>, "
+        + "puis vous laisse <b>" + eur(total - ANN) + "</b> par an. "
+        + "Ces chiffres sont les vôtres, pas les miens : refaites-les à la baisse, "
+        + "l'ordre de grandeur tient encore.";
+    } else {
+      vt.className = "verdict negatif";
+      vt.innerHTML = "Sur vos hypothèses, <b>ça ne se rembourse pas la première année</b>. "
+        + "Soit votre volume de questions est trop faible, soit les réponses sont déjà "
+        + "faciles à trouver chez vous. Dans les deux cas, gardez votre argent — "
+        + "écrivez-moi quand même si vous voulez en discuter.";
+    }
+  }
+
+  champs.forEach(function (c) { c.addEventListener("input", calculer); });
+  calculer();
+})();
+</script>
+</body>
+</html>

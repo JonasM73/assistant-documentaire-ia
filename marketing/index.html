@@ -3,12 +3,36 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Vos équipes perdent des heures à chercher dans les PDF. Un assistant IA répond à leur place, à partir de vos documents : 4 secondes, source citée, 0 invention. Livré en 5 jours.">
-<meta property="og:title" content="Assistant IA sur vos documents — la réponse en 4 secondes, source citée">
-<meta property="og:description" content="Vos équipes perdent des heures à chercher dans les PDF. Réponse en 4 secondes, source citée, 0 invention. Démo en 2 minutes.">
+<meta name="description" content="Un assistant qui répond aux questions de vos équipes à partir de vos propres documents, en citant ses sources. Quand l'information n'y est pas, il le dit. Livré en 5 jours ouvrables, 2 500 €.">
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://jonasmionnet.com/">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:site_name" content="Assistant·docs — Jonas Mionnet">
+<meta property="og:title" content="Vos équipes cherchent dans 40 fichiers. L'assistant, lui, a déjà lu.">
+<meta property="og:description" content="Un assistant qui répond à partir de vos propres documents, en citant ses sources. Quand l'information n'y est pas, il le dit. Livré en 5 jours ouvrables, 2 500 €.">
+<meta property="og:image" content="https://jonasmionnet.com/partage.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Assistant documentaire pour PME — réponse sourcée à partir de vos documents.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Vos équipes cherchent dans 40 fichiers. L'assistant, lui, a déjà lu.">
+<meta name="twitter:description" content="Un assistant qui répond à partir de vos propres documents, en citant ses sources. Livré en 5 jours ouvrables, 2 500 €.">
+<meta name="twitter:image" content="https://jonasmionnet.com/partage.png">
+<link rel="canonical" href="https://jonasmionnet.com/">
 <meta name="theme-color" content="#070D0B">
-<title>Assistant IA sur vos documents — la réponse en 4 secondes, source citée</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='13' fill='%23070D0B'/%3E%3Cpath d='M18 20h20M18 30h28M18 40h16' stroke='%23F2F5F3' stroke-width='5' stroke-linecap='round'/%3E%3Ccircle cx='42' cy='42' r='9' fill='none' stroke='%234ADE80' stroke-width='4.5'/%3E%3Cpath d='M49 49l6 6' stroke='%234ADE80' stroke-width='4.5' stroke-linecap='round'/%3E%3C/svg%3E">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"ProfessionalService",
+"name":"Jonas Mionnet — assistants documentaires",
+"description":"Conception et exploitation d'assistants documentaires pour PME : l'assistant répond aux questions des équipes à partir des documents de l'entreprise, en citant ses sources.",
+"url":"https://jonasmionnet.com/","email":"jonas@jonasmionnet.com",
+"areaServed":{"@type":"Country","name":"France"},
+"founder":{"@type":"Person","name":"Jonas Mionnet","url":"https://www.linkedin.com/in/jonas-mionnet-5339012a0"},
+"offers":{"@type":"Offer","name":"Mise en place d'un assistant documentaire",
+"price":"2500","priceCurrency":"EUR",
+"description":"Conception, ingestion des documents, recette de livraison d'au moins 20 questions, prise en main, déploiement sur les comptes du client. Maintenance facultative 149 € par mois."}}
+</script>
+<title>Assistant IA sur vos documents — Jonas Mionnet</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;450;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&display=swap" rel="stylesheet">
@@ -282,7 +306,43 @@
     transition:filter .7s var(--e),transform 1.1s var(--e);}
   .step:hover .step__media img{filter:grayscale(0);transform:scale(1.05);}
 
+  /* -------------------------------------------------------- FORMULAIRE -- */
+  .form{border-radius:var(--r-lg);padding:clamp(24px,3vw,40px);background:var(--tint);
+    box-shadow:inset 0 0 0 1px var(--rule-ink-2);max-width:62ch;}
+  .form .duo{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  @media (max-width:620px){.form .duo{grid-template-columns:1fr;}}
+  .form label{display:block;font-size:14px;color:var(--on-ink-3);margin:0 0 7px;}
+  .form input,.form textarea,.form select{width:100%;font-family:var(--ui);font-size:15px;
+    color:var(--on-ink);background:var(--ink-950);border:1px solid var(--rule-ink-2);
+    border-radius:var(--r-sm);padding:12px 14px;transition:border-color .3s var(--e);}
+  .form input:focus,.form textarea:focus,.form select:focus{outline:none;border-color:var(--sig-500);}
+  .form input::placeholder,.form textarea::placeholder{color:var(--on-ink-4);}
+  .form .bloc{margin-bottom:16px;}
+  .form textarea{resize:vertical;min-height:96px;}
+  .form__pied{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:22px;}
+  .form__note{font-size:13px;color:var(--on-ink-4);margin-top:16px;line-height:1.6;}
+  .form__etat{font-size:14.5px;line-height:1.55;margin-top:14px;min-height:22px;}
+  .form__etat.ok{color:var(--lime);}
+  .form__etat.ko{color:var(--coral,#f0866f);}
+  .devis__grille{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.82fr);
+    gap:clamp(26px,4vw,56px);align-items:start;}
+  @media (max-width:940px){.devis__grille{grid-template-columns:1fr;}}
+
   /* ---------------------------------------------------------------- PRIX -- */
+  .tarifs{margin:30px auto 0;max-width:44rem;text-align:left;}
+  .tarif{display:flex;justify-content:space-between;align-items:baseline;gap:20px;
+    padding:16px 0;border-top:1px solid var(--rule-ink-2);}
+  .tarif:last-of-type{border-bottom:1px solid var(--rule-ink-2);}
+  .tarif__nom{font-size:16px;color:var(--on-ink);}
+  .tarif__nom small{display:block;margin-top:4px;font-size:13.5px;line-height:1.5;
+    color:var(--on-ink-4);}
+  .tarif__prix{font-family:var(--mono);font-weight:600;font-size:15px;color:var(--lime);
+    white-space:nowrap;}
+  .tarif--tech .tarif__prix{color:var(--on-ink-3);}
+  @media (max-width:560px){
+    .tarif{flex-direction:column;gap:6px;}
+    .tarif__prix{align-self:flex-start;}
+  }
   .prix{position:relative;overflow:hidden;border-radius:var(--r-xl);
     padding:clamp(40px,6vw,86px) clamp(24px,4vw,64px);text-align:center;
     background:linear-gradient(155deg,var(--ink-700),var(--ink-900) 66%);
@@ -408,9 +468,10 @@
       <a href="#demo">Démo</a>
       <a href="#offre">L'offre</a>
       <a href="#fonctionnement">Méthode</a>
+      <a href="#qui">Qui</a>
       <a href="#prix">Prix</a>
     </nav>
-    <a class="btn btn--sig nav__cta" href="#reserver" data-magnetic="0.22"><span>Réserver 15 min</span>
+    <a class="btn btn--sig nav__cta" href="#devis" data-magnetic="0.22"><span>Voir sur mes documents</span>
       <svg viewBox="0 0 24 24"><path d="M5 12h13"/><path d="m12 5 7 7-7 7"/></svg></a>
     <button class="burger" id="burger" type="button" aria-label="Ouvrir le menu" aria-expanded="false">
       <i></i><i></i>
@@ -422,9 +483,10 @@
   <a href="#demo">Démo</a>
   <a href="#offre">L'offre</a>
   <a href="#fonctionnement">Méthode</a>
+  <a href="#qui">Qui construit</a>
   <a href="#prix">Prix</a>
-  <a href="#reserver">Réserver 15 min</a>
-  <div class="menu__foot">jonas@jonasmionnet.com · France &amp; Québec</div>
+  <a href="#devis">Voir sur mes documents</a>
+  <div class="menu__foot">jonas@jonasmionnet.com · France</div>
 </div>
 
 <!-- =============================== HERO =============================== -->
@@ -438,12 +500,14 @@
     <div class="hero__grid">
       <div>
         <p class="eyebrow" data-reveal="fade">IA sur vos documents · pour PME</p>
-        <h1 data-reveal="fade" data-split>La réponse qu'on cherche dans <span class="mark sig">40 fichiers</span>, vos équipes l'obtiennent en 4 secondes.</h1>
+        <h1 data-reveal="fade" data-split>Vos équipes perdent des heures dans <span class="mark sig">40 fichiers</span>. L'assistant les leur rend.</h1>
         <p class="hero__lead" data-reveal="up" data-delay="180">
-          Un assistant IA qui répond à leur place, à partir de
-          <em>vos</em> documents — procédures, catalogues, contrats, FAQ. Réponse sourcée,
-          vérifiable en un clic ; si l'info n'y est pas, il le dit. Livré fonctionnel en 5 jours,
-          rien à installer de votre côté.
+          Il répond à leur place, en quelques secondes, à partir de <em>vos</em> procédures,
+          catalogues, contrats et barèmes. Chaque réponse cite le document dont elle est tirée ;
+          quand l'information n'y est pas, il le dit. Le temps que vos équipes passaient à
+          chercher, elles le passent à travailler — et vos clients n'attendent plus deux jours
+          une réponse qui tient en une ligne. Livré fonctionnel en 5 jours ouvrables, sur des
+          comptes que vous ouvrez à votre nom : je vous accompagne et je configure tout.
         </p>
         <div class="hero__cta" data-reveal="up" data-delay="280">
           <a class="btn btn--sig" href="#reserver" data-magnetic="0.25"><span>Voir le résultat sur vos documents</span>
@@ -454,26 +518,26 @@
         <div class="hero__pills" data-stagger="90" data-reveal="fade" data-delay="380">
           <span class="pill">Chaque réponse cite son document</span>
           <span class="pill">Si l'info n'y est pas, il le dit</span>
-          <span class="pill">Vos documents restent sur votre instance, pas chez moi</span>
+          <span class="pill">Sur vos propres comptes — vous gardez les clés</span>
         </div>
       </div>
 
       <div data-reveal="up" data-delay="420">
         <div class="peek">
           <div class="peek__q">
-            <span>Quelle est la garantie du compresseur d'une thermopompe BOR-TP24 ?</span>
+            <span>Un appartement part à 320 000 € à Orléans Centre, sous mandat exclusif. Quels honoraires ?</span>
           </div>
           <div class="peek__a">
-            <b>D'après la politique de garantie</b>, le compresseur est couvert par le fabricant
-            au-delà de la garantie générale de l'appareil. Le détail des durées et des exclusions
-            figure dans le document cité ci-dessous.
+            <b>L'agence d'Orléans Centre est en zone A.</b> Pour la tranche 250 001 à 400 000 €,
+            le barème applique 4,5 %. Le mandat exclusif ouvre droit à une remise de 0,5 point :
+            le taux retenu est donc de 4,0 %, soit 12 800 € d'honoraires.
           </div>
           <div class="peek__src">
-            <span class="peek__chip"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>politique-garantie.pdf</span>
-            <span class="peek__chip"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>catalogue-produits.pdf</span>
+            <span class="peek__chip"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>bareme-honoraires-2026.pdf · p. 1</span>
+            <span class="peek__chip"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>mandats-et-zones.pdf</span>
           </div>
-          <p class="peek__cap">Exemple de réponse<span class="peek__dots"><i></i><i></i><i></i></span><br>
-            démonstration Boréale Équipement — entreprise fictive</p>
+          <p class="peek__cap">Trois informations croisées dans deux tableaux<span class="peek__dots"><i></i><i></i><i></i></span><br>
+            démonstration Horizon Immobilier — réseau fictif</p>
         </div>
       </div>
     </div>
@@ -506,8 +570,8 @@
         </div>
       </div>
       <div>
-        <p class="eyebrow" data-reveal="fade">Ce que ça vous coûte aujourd'hui</p>
-        <h2 class="h2" data-reveal="fade" data-split>La réponse est déjà écrite. C'est la chercher qui coûte cher.</h2>
+        <p class="eyebrow" data-reveal="fade">Ce que vous récupérez</p>
+        <h2 class="h2" data-reveal="fade" data-split>La réponse existe déjà. Ce que vous récupérez, c'est le temps de la trouver.</h2>
         <ul class="prob__list" data-stagger="90">
           <li>La bonne réponse dort dans un PDF que <b>trois personnes</b> savent ouvrir.</li>
           <li>La même question revient chaque semaine et mobilise chaque fois
@@ -518,9 +582,10 @@
           <li>Le nouveau salarié n'ose pas poser la même question une troisième fois — alors
             <b>il devine</b>.</li>
         </ul>
-        <p class="cap" data-reveal="up" data-delay="160"><span><b>Faites le calcul :</b> 10 questions par jour
-          × 8 minutes de recherche, c'est plus de 6 heures par semaine. Refaites-le avec vos chiffres.
-          L'assistant : 4 secondes par question, ~0,005&nbsp;$ pièce.</span></p>
+        <p class="cap" data-reveal="up" data-delay="160"><span><b>10 questions par jour × 8 minutes
+          de recherche = plus de 6 heures par semaine</b>, soit près de 300 heures sur l'année. Ce sont
+          des heures déjà payées, qui ne produisent rien. <a href="simulation.html">Faites le calcul
+          avec vos chiffres →</a></span></p>
       </div>
     </div>
   </div>
@@ -531,20 +596,20 @@
   <div class="shell">
     <div class="kpis">
       <div class="kpi" data-reveal="up">
-        <div class="kpi__v"><span class="num" data-count="4">4</span><span class="kpi__u">secondes</span></div>
-        <span class="num-lbl">la réponse et sa source, au lieu de minutes de recherche</span>
+        <div class="kpi__v"><span class="num" data-count="20">20</span><span class="kpi__u">questions</span></div>
+        <span class="num-lbl">de contrôle passées sur vos documents avant la livraison</span>
       </div>
       <div class="kpi" data-reveal="up" data-delay="90">
         <div class="kpi__v"><span class="num" data-count="0">0</span></div>
-        <span class="num-lbl">réponse inventée — quand l'info manque, il le dit</span>
+        <span class="num-lbl">réponse inventée tolérée à la livraison : une seule est un défaut bloquant</span>
       </div>
       <div class="kpi" data-reveal="up" data-delay="180">
         <div class="kpi__v"><span class="num" data-count="5">5</span><span class="kpi__u">jours</span></div>
-        <span class="num-lbl">ouvrables entre vos fichiers et un assistant au travail</span>
+        <span class="num-lbl">ouvrables après réception des documents et ouverture des comptes</span>
       </div>
       <div class="kpi" data-reveal="up" data-delay="270">
-        <div class="kpi__v"><span class="num" data-count="300">300</span><span class="kpi__u">pages</span></div>
-        <span class="num-lbl">lues et interrogeables dès le premier jour</span>
+        <div class="kpi__v"><span class="num" data-count="400">400</span><span class="kpi__u">pages</span></div>
+        <span class="num-lbl">ou 40 fichiers, lus et interrogeables dès le premier jour</span>
       </div>
     </div>
   </div>
@@ -555,10 +620,10 @@
   <div class="shell">
     <div style="max-width:64ch;margin-bottom:clamp(34px,4.4vw,64px)">
       <p class="eyebrow" data-reveal="fade">La démo &amp; vos questions</p>
-      <h2 class="h2" data-reveal="fade" data-split>Voyez-le fonctionner — et posez-vous les bonnes questions.</h2>
+      <h2 class="h2" data-reveal="fade" data-split>Regardez-le travailler. Les réponses à vos questions sont juste à côté.</h2>
       <p class="lead" style="margin-top:22px" data-reveal="up" data-delay="140">
-        2 minutes de démonstration réelle à gauche, les réponses aux inquiétudes qu'on me pose
-        le plus souvent à droite.
+        Deux minutes de démonstration réelle à gauche. À droite, les questions qu'on me pose
+        à chaque appel — et mes réponses, sans langue de bois.
       </p>
     </div>
 
@@ -578,38 +643,50 @@
         <div class="try" data-reveal="up" data-delay="200">
           <p>Vous avez reçu un code d'accès lors de notre échange ?</p>
           <button class="btn btn--ghost" id="try-btn" type="button" data-magnetic="0.2">
-            <span>Essayer l'assistant en direct</span></button>
+            <span>J'ai un code de démonstration</span></button>
         </div>
       </div>
 
       <div class="faq" data-stagger="60">
         <details open>
           <summary><span>Où sont stockés nos documents ?</span><i class="faq__sign"></i></summary>
-          <div class="faq__body"><b>Chez vous.</b> Sur une instance ouverte à votre nom, avec votre moyen de paiement. Vos documents y sont stockés et indexés ; au moment de répondre, seuls les extraits pertinents sont envoyés au fournisseur du modèle de langage, qui, sur ses offres professionnelles, ne les utilise pas pour entraîner ses modèles. Après livraison, je n'en conserve aucune copie.</div>
+          <div class="faq__body"><b>Sur une instance dédiée à votre nom.</b> Vos documents et leur index y sont stockés, ouverte au nom de votre entreprise chez l'hébergeur, en région européenne — vous créez le compte, je vous guide et je configure l'instance avec vous. Le compte, le moyen de paiement et les accès vous appartiennent, je n'en conserve pas les identifiants principaux ; l'instance n'est partagée avec aucun autre client. Au moment de répondre, seuls les extraits pertinents sont transmis au fournisseur du modèle de langage, via votre propre clé, et il ne les utilise pas pour entraîner ses modèles sur ses offres professionnelles. Après la livraison, je ne conserve aucune copie de vos documents.</div>
         </details>
         <details>
           <summary><span>Et s'il invente une réponse ?</span><i class="faq__sign"></i></summary>
-          <div class="faq__body"><b>Il ne peut pas broder.</b> Il répond uniquement à partir de vos documents et chaque réponse cite son document d'origine, extraits consultables en un clic. Quand l'information n'y figure pas, il le dit plutôt que de deviner. Avant livraison, je passe un jeu de questions de contrôle sur vos propres documents et je vous remets le résultat chiffré.</div>
+          <div class="faq__body"><b>Je ne vous demande pas de me croire sur parole.</b> Il répond uniquement à partir de vos documents et chaque réponse cite son document d'origine, extraits consultables en un clic. Quand l'information n'y figure pas, il le dit plutôt que de deviner. Chaque livraison comprend une recette d'au moins 20 questions arrêtées avec vous <em>avant</em> le test, dont plusieurs dont la réponse ne se trouve pas dans vos documents ; réponses, refus et sources sont vérifiés un par un, et le procès-verbal complet vous est remis. Aucun système n'est infaillible — c'est précisément pour ça que la vérification est écrite au contrat plutôt que promise sur une page.</div>
         </details>
         <details>
           <summary><span>Pourquoi pas simplement ChatGPT ?</span><i class="faq__sign"></i></summary>
-          <div class="faq__body"><b>Ici, vos documents sont connus en permanence.</b> ChatGPT répond à partir du web, et il faut lui redonner vos fichiers à chaque conversation. L'assistant, lui, cite ses sources, refuse de répondre quand l'info n'y est pas — et vos équipes ne téléversent rien nulle part.</div>
+          <div class="faq__body"><b>Un outil généraliste peut lire des fichiers ponctuellement</b>, et il le fait de mieux en mieux. La différence n'est pas là. Ici, l'assistant est déployé pour votre entreprise, posé sur votre site ou dans votre usage interne, alimenté par un corpus que vous maîtrisez et que vous mettez à jour depuis une page de gestion. Chaque réponse cite sa source, il refuse quand l'information n'y est pas, et une recette écrite vérifie tout ça avant la livraison. Vos équipes n'ont rien à téléverser, ni à savoir quel fichier ouvrir.</div>
         </details>
         <details>
           <summary><span>Combien ça coûte par mois après la livraison ?</span><i class="faq__sign"></i></summary>
-          <div class="faq__body"><b>Environ 15 à 25 $ CAD par mois, plafonnable.</b> Deux abonnements, à votre nom et sous votre contrôle : l'hébergement (~10 à 20 $ CAD/mois) et l'usage du modèle (~2 à 7 $ CAD/mois pour ~500 questions, soit ~0,005 $ la question). L'indexation ne coûte rien — moins que ce que vous coûte une seule heure de recherche.</div>
+          <div class="faq__body"><b>Quelques dizaines d'euros par mois, payés directement par vous, à vos fournisseurs.</b> Deux lignes seulement : l'hébergement de votre instance, et l'usage du modèle de langage — facturé à la question posée, donc proportionnel à l'usage réel. Les deux comptes sont à votre nom : vous voyez la consommation en direct et vous pouvez fixer un plafond. Rien ne transite par moi et je ne prends aucune marge dessus. À cela s'ajoute, <b>seulement si vous le voulez</b>, la maintenance à 149 € par mois : elle est facultative, et se résilie quand vous voulez.</div>
         </details>
         <details>
           <summary><span>Nos documents changent souvent.</span><i class="faq__sign"></i></summary>
-          <div class="faq__body"><b>L'assistant suit, tout seul.</b> Vous ajoutez, remplacez ou retirez vos fichiers vous-même depuis une page de gestion protégée — mise à jour automatique, aucune commande technique. Et si vous préférez déléguer, c'est inclus dans le forfait maintenance.</div>
+          <div class="faq__body"><b>L'assistant suit, tout seul.</b> Vous ajoutez, remplacez ou retirez vos fichiers vous-même depuis une page de gestion protégée — mise à jour automatique, aucune commande technique. C'est prévu pour que vous n'ayez pas besoin de moi. Et si vous préférez déléguer, c'est compris dans la maintenance facultative.</div>
         </details>
         <details>
           <summary><span>Faut-il être technique de notre côté ?</span><i class="faq__sign"></i></summary>
-          <div class="faq__body"><b>Non — rien à installer, rien à apprendre.</b> Vous fournissez vos documents (PDF, Word, texte — tableaux compris), je livre un lien fonctionnel. Vos équipes posent leurs questions en langage normal.</div>
+          <div class="faq__body"><b>Non — rien à installer, rien à apprendre.</b> Vous fournissez vos documents en PDF, Word ou texte, y compris les tableaux contenus dans ces fichiers, barèmes et grilles tarifaires compris. Je livre un lien fonctionnel, vos équipes posent leurs questions en langage normal. Ce qui n'est pas couvert aujourd'hui, et je préfère le dire maintenant qu'à la livraison : les classeurs Excel, les boîtes mail et la connexion directe à SharePoint ou Drive. Si vos tarifs vivent dans un classeur, on l'exporte une fois en PDF et le compte est bon.</div>
         </details>
         <details>
-          <summary><span>Et le RGPD / la Loi 25 ? Et si on arrête ?</span><i class="faq__sign"></i></summary>
-          <div class="faq__body"><b>C'est cadré par écrit.</b> Une annexe de sous-traitance est jointe au devis quand des documents sont concernés : finalité, durée, mesures de sécurité. Et si vous arrêtez : vous supprimez l'instance, tout disparaît avec — documents, index, historique. Rien ailleurs.</div>
+          <summary><span>Et le RGPD ? Et si nous arrêtons ?</span><i class="faq__sign"></i></summary>
+          <div class="faq__body"><b>C'est cadré par écrit.</b> Une annexe conforme à l'article 28 du RGPD est jointe au devis : elle décrit ce que je fais de vos documents pendant la mission et la maintenance, la durée, et les mesures de sécurité. Si vous arrêtez la maintenance, l'assistant continue de fonctionner : il tourne sur vos comptes, pas sur les miens. Et si vous voulez tout arrêter, vous fermez l'instance — vos documents, l'index et l'historique disparaissent avec, sans que j'aie à faire quoi que ce soit.</div>
+        </details>
+        <details>
+          <summary><span>Et si <em>vous</em> vous arrêtez ?</span><i class="faq__sign"></i></summary>
+          <div class="faq__body"><b>Question légitime quand on travaille avec un indépendant</b> — je préfère y répondre avant qu'on me la pose, et c'est justement pour elle que tout est monté sur vos comptes. L'assistant ne dépend pas de mon infrastructure : si je disparais demain, il continue de tourner chez vous, avec vos documents, sous votre moyen de paiement. Vous conservez les comptes, les données et les accès techniques ; la documentation d'exploitation remise à la livraison permet à un autre prestataire d'administrer l'instance. Vous ne dépendez de moi que pour la maintenance — et elle est facultative.</div>
+        </details>
+        <details>
+          <summary><span>Peut-on voir ce que ça donne avant d'engager 2 500 € ?</span><i class="faq__sign"></i></summary>
+          <div class="faq__body"><b>C'est l'ordre normal, et il n'est pas négociable de mon côté.</b> Vous m'envoyez quelques documents représentatifs — pas les plus sensibles, ceux qui reviennent le plus. Je monte une démonstration dessus et je vous la montre <em>avant</em> de vous envoyer le moindre devis. C'est gratuit, ça ne vous engage à rien, et si le résultat ne vaut pas le coup chez vous, je vous le dirai à ce moment-là plutôt que de vous vendre quelque chose qui ne servira pas.</div>
+        </details>
+        <details>
+          <summary><span>Vous débutez ?</span><i class="faq__sign"></i></summary>
+          <div class="faq__body"><b>Oui, en tant qu'indépendant.</b> Le produit, lui, existe et fonctionne : vous pouvez l'essayer avant de signer, sur vos propres fichiers. C'est aussi pourquoi le tarif actuel est consenti aux premières entreprises contre un témoignage écrit. Je préfère le dire que le laisser découvrir.</div>
         </details>
       </div>
     </div>
@@ -631,14 +708,14 @@
     <div class="marquee__track">
       <figure class="sect-card"><img src="img/sector-cabinet.jpg" alt="Salle de réunion d'un cabinet" loading="lazy"><span class="scrim scrim--b"></span><figcaption><small>01</small>Cabinets comptables &amp; juridiques<span style="display:block;margin-top:6px;font:italic 400 12.5px/1.45 var(--ui);letter-spacing:0;text-transform:none;color:var(--on-ink-2);">« Quel taux s'applique à ce dossier ? »</span></figcaption></figure>
       <figure class="sect-card"><img src="img/sector-distrib.jpg" alt="Entrepôt de distribution" loading="lazy"><span class="scrim scrim--b"></span><figcaption><small>02</small>Distributeurs<span style="display:block;margin-top:6px;font:italic 400 12.5px/1.45 var(--ui);letter-spacing:0;text-transform:none;color:var(--on-ink-2);">« Quelle garantie sur cette réf ? »</span></figcaption></figure>
-      <figure class="sect-card"><img src="img/sector-clinique.jpg" alt="Salle d'attente claire" loading="lazy"><span class="scrim scrim--b"></span><figcaption><small>03</small>Cliniques<span style="display:block;margin-top:6px;font:italic 400 12.5px/1.45 var(--ui);letter-spacing:0;text-transform:none;color:var(--on-ink-2);">« Quel est le protocole pour ce cas ? »</span></figcaption></figure>
-      <figure class="sect-card"><img src="img/sector-franchise.jpg" alt="Immeubles vus depuis la rue" loading="lazy"><span class="scrim scrim--b"></span><figcaption><small>04</small>Franchises<span style="display:block;margin-top:6px;font:italic 400 12.5px/1.45 var(--ui);letter-spacing:0;text-transform:none;color:var(--on-ink-2);">« Que dit le manuel réseau ? »</span></figcaption></figure>
-      <figure class="sect-card"><img src="img/sector-ecom.jpg" alt="Bureau vu de haut avec ordinateurs" loading="lazy"><span class="scrim scrim--b"></span><figcaption><small>05</small>E-commerce<span style="display:block;margin-top:6px;font:italic 400 12.5px/1.45 var(--ui);letter-spacing:0;text-transform:none;color:var(--on-ink-2);">« Quel délai de retour ? »</span></figcaption></figure>
+      <figure class="sect-card"><img src="img/sector-clinique.jpg" alt="Salle d'attente claire" loading="lazy"><span class="scrim scrim--b"></span><figcaption><small>03</small>Cabinets et cliniques<span style="display:block;margin-top:6px;font:italic 400 12.5px/1.45 var(--ui);letter-spacing:0;text-transform:none;color:var(--on-ink-2);">« Que dit notre procédure d'accueil ? »</span></figcaption></figure>
+      <figure class="sect-card"><img src="img/sector-franchise.jpg" alt="Immeubles vus depuis la rue" loading="lazy"><span class="scrim scrim--b"></span><figcaption><small>04</small>Réseaux d'agences immobilières<span style="display:block;margin-top:6px;font:italic 400 12.5px/1.45 var(--ui);letter-spacing:0;text-transform:none;color:var(--on-ink-2);">« Quels honoraires pour cette tranche et cette zone ? »</span></figcaption></figure>
+      <figure class="sect-card"><img src="img/sector-ecom.jpg" alt="Bureau vu de haut avec ordinateurs" loading="lazy"><span class="scrim scrim--b"></span><figcaption><small>05</small>Franchises &amp; réseaux<span style="display:block;margin-top:6px;font:italic 400 12.5px/1.45 var(--ui);letter-spacing:0;text-transform:none;color:var(--on-ink-2);">« Que dit le manuel réseau ? »</span></figcaption></figure>
       <figure class="sect-card" aria-hidden="true"><img src="img/sector-cabinet.jpg" alt="" loading="lazy"><span class="scrim scrim--b"></span><figcaption><small>01</small>Cabinets comptables &amp; juridiques<span style="display:block;margin-top:6px;font:italic 400 12.5px/1.45 var(--ui);letter-spacing:0;text-transform:none;color:var(--on-ink-2);">« Quel taux s'applique à ce dossier ? »</span></figcaption></figure>
       <figure class="sect-card" aria-hidden="true"><img src="img/sector-distrib.jpg" alt="" loading="lazy"><span class="scrim scrim--b"></span><figcaption><small>02</small>Distributeurs<span style="display:block;margin-top:6px;font:italic 400 12.5px/1.45 var(--ui);letter-spacing:0;text-transform:none;color:var(--on-ink-2);">« Quelle garantie sur cette réf ? »</span></figcaption></figure>
-      <figure class="sect-card" aria-hidden="true"><img src="img/sector-clinique.jpg" alt="" loading="lazy"><span class="scrim scrim--b"></span><figcaption><small>03</small>Cliniques<span style="display:block;margin-top:6px;font:italic 400 12.5px/1.45 var(--ui);letter-spacing:0;text-transform:none;color:var(--on-ink-2);">« Quel est le protocole pour ce cas ? »</span></figcaption></figure>
-      <figure class="sect-card" aria-hidden="true"><img src="img/sector-franchise.jpg" alt="" loading="lazy"><span class="scrim scrim--b"></span><figcaption><small>04</small>Franchises<span style="display:block;margin-top:6px;font:italic 400 12.5px/1.45 var(--ui);letter-spacing:0;text-transform:none;color:var(--on-ink-2);">« Que dit le manuel réseau ? »</span></figcaption></figure>
-      <figure class="sect-card" aria-hidden="true"><img src="img/sector-ecom.jpg" alt="" loading="lazy"><span class="scrim scrim--b"></span><figcaption><small>05</small>E-commerce<span style="display:block;margin-top:6px;font:italic 400 12.5px/1.45 var(--ui);letter-spacing:0;text-transform:none;color:var(--on-ink-2);">« Quel délai de retour ? »</span></figcaption></figure>
+      <figure class="sect-card" aria-hidden="true"><img src="img/sector-clinique.jpg" alt="" loading="lazy"><span class="scrim scrim--b"></span><figcaption><small>03</small>Cabinets et cliniques<span style="display:block;margin-top:6px;font:italic 400 12.5px/1.45 var(--ui);letter-spacing:0;text-transform:none;color:var(--on-ink-2);">« Que dit notre procédure d'accueil ? »</span></figcaption></figure>
+      <figure class="sect-card" aria-hidden="true"><img src="img/sector-franchise.jpg" alt="" loading="lazy"><span class="scrim scrim--b"></span><figcaption><small>04</small>Réseaux d'agences immobilières<span style="display:block;margin-top:6px;font:italic 400 12.5px/1.45 var(--ui);letter-spacing:0;text-transform:none;color:var(--on-ink-2);">« Quels honoraires pour cette tranche et cette zone ? »</span></figcaption></figure>
+      <figure class="sect-card" aria-hidden="true"><img src="img/sector-ecom.jpg" alt="" loading="lazy"><span class="scrim scrim--b"></span><figcaption><small>05</small>Franchises &amp; réseaux<span style="display:block;margin-top:6px;font:italic 400 12.5px/1.45 var(--ui);letter-spacing:0;text-transform:none;color:var(--on-ink-2);">« Que dit le manuel réseau ? »</span></figcaption></figure>
     </div>
   </div>
 </section>
@@ -659,11 +736,12 @@
         <span class="panel__tag">Inclus dans la mission</span>
         <h3>Livré, installé, fonctionnel</h3>
         <ul>
-          <li>Vos PDF, Word et textes deviennent interrogeables dès le premier jour — volume convenu à l'avance.</li>
+          <li>Vos PDF, Word et textes deviennent interrogeables dès le premier jour — jusqu'à 40 fichiers ou 400&nbsp;pages dans la mission de lancement.</li>
           <li>Vos équipes ou vos clients posent leurs questions là où ils travaillent : widget sur votre site ou en interne, à vos couleurs.</li>
           <li>Des réponses qu'on peut croire : chaque réponse cite son document, vérifiable en un clic.</li>
-          <li>Tout tourne sur une instance à votre nom, mise en service comprise — rien ne dépend de mon infrastructure.</li>
+          <li>Tout tourne sur une instance dédiée, ouverte à votre nom en région européenne : vous créez les comptes, je vous accompagne et je configure l'ensemble pendant la mission, puis les accès, les factures et le contrôle restent les vôtres.</li>
           <li>Vos documents changent ? Vous les remplacez vous-même, l'assistant suit — sans dépendre de moi ni d'un prestataire.</li>
+          <li>Une recette d'au moins 20 questions passées sur vos propres documents, dont le procès-verbal vous est remis avant le règlement du solde.</li>
           <li>Un aller-retour d'ajustement après la livraison, pour coller à votre réalité.</li>
         </ul>
       </div>
@@ -672,8 +750,8 @@
         <span class="panel__tag">En option ou sur devis séparé</span>
         <h3 style="color:var(--on-paper-2)">Ce qui vient après, si vous le voulez</h3>
         <ul>
-          <li>Forfait maintenance mensuel (surveillance, réindexation, correctifs).</li>
-          <li>Tableau de bord d'usage : voyez ce qu'on vous demande vraiment — et le temps que l'assistant fait gagner.</li>
+          <li>Maintenance mensuelle (149 €) : surveillance, réindexation, corrections et mises à jour du socle. Facultative — l'assistant fonctionne sans.</li>
+          <li>Tableau de bord d'usage (490 €) : ce qu'on demande vraiment à l'assistant, les sujets qui reviennent, et surtout les questions restées sans réponse — c'est-à-dire les documents qui vous manquent encore.</li>
           <li>Intégrations à vos logiciels internes (intranet, CRM).</li>
           <li>OCR de PDF scannés · volumes massifs de documents.</li>
         </ul>
@@ -719,8 +797,10 @@
           <div>
             <div class="step__n">02</div>
             <h3>Construction sur vos documents</h3>
-            <p>Je monte l'assistant sur votre contenu réel. Vous recevez un lien fonctionnel,
-              pas des diapositives.</p>
+            <p>Vous ouvrez vos deux comptes techniques à votre nom, je vous accompagne pas à pas
+              et je configure l'ensemble — région européenne, plafond de dépense. Puis je monte
+              l'assistant sur votre contenu réel. Vous recevez un lien fonctionnel, pas des
+              diapositives.</p>
           </div>
           <div class="step__media"><img src="img/build.jpg" alt="Atelier de travail avec notes murales" loading="lazy"></div>
         </article>
@@ -729,11 +809,42 @@
           <div>
             <div class="step__n">03</div>
             <h3>Livraison et ajustement</h3>
-            <p>Vos équipes testent, je corrige un tour, l'assistant est à vous. Périmètre écrit
-              dans le devis — et le solde ne se paie qu'à la livraison.</p>
+            <p>Recette d'au moins 20 questions arrêtées avec vous, procès-verbal remis, vos équipes
+              testent, je corrige un tour. Si les critères convenus ne sont pas atteints, les
+              corrections sont faites sans supplément avant la facturation du solde.</p>
           </div>
           <div class="step__media"><img src="img/deliver.jpg" alt="Personne travaillant sur un ordinateur portable" loading="lazy"></div>
         </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ QUI CONSTRUIT ========================= -->
+<section class="band band--tight" id="qui">
+  <div class="shell">
+    <div class="prob__grid">
+      <div class="prob__figure">
+        <div class="prob__media" data-reveal="mask">
+          <img src="img/team.jpg" alt="Plan de travail avec un ordinateur portable et des documents" loading="lazy" width="1600" height="1100">
+        </div>
+      </div>
+      <div>
+        <p class="eyebrow" data-reveal="fade">Qui construit</p>
+        <h2 class="h2" data-reveal="fade" data-split>Vous parlez à la personne qui livre.</h2>
+        <p class="lead" style="margin-top:22px" data-reveal="up" data-delay="140">
+          Je m'appelle Jonas Mionnet. Je conçois, j'installe et je teste personnellement chaque
+          assistant — il n'y a ni agence, ni sous-traitant, ni service commercial entre vous et moi.
+          Le même interlocuteur du premier fichier reçu jusqu'à la livraison, puis ensuite.
+        </p>
+        <p class="lead" style="margin-top:14px" data-reveal="up" data-delay="220">
+          Je travaille en indépendant depuis la France et je n'ai volontairement qu'un petit nombre
+          de clients à la fois, parce que la recette de livraison prend du temps et que c'est elle
+          qui fait la différence.
+        </p>
+        <a class="link" style="margin-top:26px" href="https://www.linkedin.com/in/jonas-mionnet-5339012a0" data-reveal="up" data-delay="300">
+          Mon profil LinkedIn
+          <svg viewBox="0 0 24 24"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg></a>
       </div>
     </div>
   </div>
@@ -743,18 +854,125 @@
 <section class="band" id="prix" style="background:var(--ink-950);">
   <div class="shell shell--tight">
     <div class="prix" data-reveal="scale">
-      <p class="eyebrow" style="justify-content:center;color:var(--lime)">Tarif de lancement</p>
+      <p class="eyebrow" style="justify-content:center;color:var(--lime)">Tarif de lancement · publié, pas sur demande</p>
       <div class="prix__big">
-        <span data-count="500">500</span>&nbsp;€
-        <small>soit 800 $ CAD · première mission</small>
+        <span class="num" data-count="2500">2 500</span>&nbsp;€
+        <small>la mise en place, tout compris : conception, lecture de vos documents, interface à vos couleurs, recette de 20 questions, prise en main et un aller-retour d'ajustement. Jusqu'à 40 fichiers ou 400 pages, livré en 5 jours ouvrables à compter de la réception de vos documents et de l'ouverture des comptes.</small>
       </div>
-      <p class="prix__maint">+ forfait maintenance optionnel : 100 à 150 $ CAD / mois</p>
-      <p class="prix__note">Ensuite, 15 à 25 $ CAD par mois de fonctionnement — moins que ce que vous
-        coûte une seule heure de recherche. Tarif consenti aux premières PME en échange d'un témoignage :
-        il augmente dès les premières références. Acompte de 50 % pour démarrer, solde à la livraison —
-        vous ne payez la moitié qu'une fois l'assistant entre vos mains.</p>
-      <a class="btn btn--sig" href="#reserver" data-magnetic="0.25"><span>Réserver mon appel</span>
-        <svg viewBox="0 0 24 24"><path d="M5 12h13"/><path d="m12 5 7 7-7 7"/></svg></a>
+      <div class="tarifs">
+        <p style="font:var(--t-micro);letter-spacing:.19em;text-transform:uppercase;color:var(--on-ink-4);margin:0 0 6px">En option, si vous le voulez</p>
+        <div class="tarif">
+          <span class="tarif__nom">Option — tableau de bord d'usage
+            <small>Installé en même temps. Vous voyez ce qu'on demande vraiment à l'assistant, et
+              surtout les questions restées sans réponse : ce sont les documents qui vous
+              manquent.</small></span>
+          <span class="tarif__prix">+ 490 €</span>
+        </div>
+        <div class="tarif">
+          <span class="tarif__nom">Option — maintenance
+            <small>Surveillance, réindexation, corrections et mises à jour. Facultative : l'assistant
+              fonctionne sans. 30 jours de suivi après la livraison sont déjà compris dans la mise en
+              place ; la maintenance ne démarre ensuite que si vous la choisissez, jamais par
+              reconduction automatique.</small></span>
+          <span class="tarif__prix">149 € / mois</span>
+        </div>
+        <div class="tarif tarif--tech">
+          <span class="tarif__nom">Vos frais techniques
+            <small>L'hébergement et le modèle de langage tournent sur vos propres comptes, que
+              vous ouvrez et que je configure avec vous. Vos fournisseurs vous facturent directement, selon
+              votre usage réel. Vous pouvez plafonner la dépense, et je ne prends aucune marge
+              dessus.</small></span>
+          <span class="tarif__prix">quelques dizaines d'€ / mois</span>
+        </div>
+      </div>
+
+      <p class="prix__note" style="margin-top:26px">Acompte de 50 % pour démarrer, solde à la
+        livraison et après validation de la recette : vous ne payez la seconde moitié qu'une fois
+        l'assistant entre vos mains et vérifié. Le tarif de mise en place est consenti aux trois
+        premières entreprises en échange d'un témoignage écrit ; il passe ensuite à 3 500 €.
+        TVA non applicable, article 293 B du code général des impôts.</p>
+
+      <div class="hero__cta" style="justify-content:center">
+        <a class="btn btn--sig" href="#devis" data-magnetic="0.25"><span>Voir le résultat sur mes documents</span>
+          <svg viewBox="0 0 24 24"><path d="M5 12h13"/><path d="m12 5 7 7-7 7"/></svg></a>
+        <a class="link" href="simulation.html">Calculer ce que ça vous rapporte
+          <svg viewBox="0 0 24 24"><path d="M5 12h13"/><path d="m12 5 7 7-7 7"/></svg></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================== DEVIS ============================== -->
+<section class="band" id="devis">
+  <div class="shell">
+    <div class="devis__grille">
+      <div>
+        <p class="eyebrow" data-reveal="fade">La suite</p>
+        <h2 class="h2" data-reveal="fade" data-split>Voyons d'abord si vos documents s'y prêtent.</h2>
+        <p class="lead" style="margin-top:22px" data-reveal="up" data-delay="140">
+          Pas besoin de bloquer un créneau tout de suite. Laissez-moi votre entreprise et le type
+          de documents concernés : <b>je vous réponds sous 48 h</b> pour vous dire si vos documents
+          s'y prêtent, et pour caler une démonstration montée sur les vôtres. Le devis chiffré
+          arrive après cette démonstration — vous saurez ce que ça donne chez vous avant de voir
+          le moindre prix.
+        </p>
+        <div class="hero__pills" style="margin-top:26px" data-stagger="90" data-reveal="fade" data-delay="200">
+          <span class="pill">Réponse sous 48 h</span>
+          <span class="pill">Échange et démonstration gratuits</span>
+          <span class="pill">Le devis n'arrive qu'après la démonstration</span>
+        </div>
+      </div>
+
+      <div class="form" data-reveal="up" data-delay="120">
+        <form id="devis-form" novalidate>
+          <div class="duo">
+            <div class="bloc">
+              <label for="f-nom">Prénom et nom *</label>
+              <input id="f-nom" name="nom" type="text" required autocomplete="name" placeholder="Camille Durand">
+            </div>
+            <div class="bloc">
+              <label for="f-entreprise">Entreprise *</label>
+              <input id="f-entreprise" name="entreprise" type="text" required autocomplete="organization" placeholder="Horizon Immobilier">
+            </div>
+          </div>
+          <div class="duo">
+            <div class="bloc">
+              <label for="f-email">Adresse électronique *</label>
+              <input id="f-email" name="email" type="email" required autocomplete="email" placeholder="camille@exemple.fr">
+            </div>
+            <div class="bloc">
+              <label for="f-site">Site, boutique ou intranet</label>
+              <input id="f-site" name="site" type="text" autocomplete="url" placeholder="exemple.fr">
+            </div>
+          </div>
+          <div class="bloc">
+            <label for="f-objet">Ce que vous voulez</label>
+            <select id="f-objet" name="objet">
+              <option>Voir une démonstration sur nos propres documents</option>
+              <option>Savoir si nos documents s'y prêtent</option>
+              <option>Un devis, nous avons déjà vu la démonstration</option>
+            </select>
+          </div>
+          <div class="bloc">
+            <label for="f-msg">Ce que vos équipes cherchent le plus souvent</label>
+            <textarea id="f-msg" name="message" placeholder="Nos barèmes d'honoraires par zone, nos procédures internes… environ 30 PDF."></textarea>
+          </div>
+
+          <input type="text" name="_gotcha" tabindex="-1" autocomplete="off"
+            style="position:absolute;left:-9999px;opacity:0" aria-hidden="true">
+
+          <div class="form__pied">
+            <button class="btn btn--sig" type="submit" data-magnetic="0.2"><span>Envoyer ma demande</span>
+              <svg viewBox="0 0 24 24"><path d="M5 12h13"/><path d="m12 5 7 7-7 7"/></svg></button>
+            <a class="link" href="#reserver">Ou choisir un créneau</a>
+          </div>
+          <p class="form__etat" id="f-etat" role="status"></p>
+          <p class="form__note">Vos informations servent uniquement à répondre à votre demande.
+            Elles ne sont ni cédées ni utilisées à d'autres fins, et sont conservées trois ans au
+            plus après notre dernier échange. Voir les
+            <a href="mentions-legales.html">mentions légales</a>.</p>
+        </form>
+      </div>
     </div>
   </div>
 </section>
@@ -770,11 +988,16 @@
     <h2 class="h1" data-reveal="fade" data-split>15 minutes pour voir ce que ça donne sur vos documents.</h2>
     <p class="lead" data-reveal="up" data-delay="160">Avant tout devis, je vous montre le résultat
       sur vos propres fichiers. Vous ne signez rien sans avoir vu.</p>
+    <div class="hero__pills" style="justify-content:center;margin-top:26px" data-stagger="90" data-reveal="fade" data-delay="200">
+      <span class="pill">Réponse sous 48 h</span>
+      <span class="pill">Premier échange gratuit, sans engagement</span>
+      <span class="pill">Devis chiffré sous 48 h après l'appel</span>
+    </div>
     <div class="fin__cta" data-reveal="up" data-delay="240">
       <a class="btn btn--sig" href="https://calendar.app.google/fmK8RGhTGHzwuksp7" data-magnetic="0.25">
         <span>Choisir un créneau</span>
         <svg viewBox="0 0 24 24"><path d="M5 12h13"/><path d="m12 5 7 7-7 7"/></svg></a>
-      <a class="btn btn--ghost" href="#demo"><span>Ou revoir la démo</span></a>
+      <a class="btn btn--ghost" href="mailto:jonas@jonasmionnet.com?subject=Assistant%20documentaire%20%E2%80%94%20demande&amp;body=Bonjour%20Jonas%2C%0A%0AEntreprise%20%3A%0ACe%20qu%27on%20cherche%20le%20plus%20souvent%20%3A%0AType%20de%20documents%20(PDF%2C%20Word%2C%20nombre%20approximatif)%20%3A%0A%0AMerci."><span>Écrire, sans prendre rendez-vous</span></a>
     </div>
   </div>
 </section>
@@ -791,7 +1014,7 @@
         <span>Réserver 15 min</span></a>
     </div>
     <div class="foot__bot">
-      <div>Jonas Mionnet — Freelance IA &amp; automatisation — France &amp; Québec</div>
+      <div>Jonas Mionnet — assistants documentaires pour PME — France</div>
       <div class="foot__links">
         <a href="mailto:jonas@jonasmionnet.com">jonas@jonasmionnet.com</a>
         <a href="https://www.linkedin.com/in/jonas-mionnet-5339012a0">LinkedIn</a>
@@ -819,6 +1042,7 @@
 
 <script src="lenis.min.js"></script>
 <script src="motion.js"></script>
+<script src="formulaire.js"></script>
 <script>
 /* ---------------------------------------------------------------------------
    Menu plein écran (mobile)
