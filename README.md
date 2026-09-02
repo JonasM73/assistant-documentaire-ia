@@ -95,9 +95,9 @@ Toutes les pages partagent **un seul système de design**, « Encre & Signal » 
 | `web/da.css` | Jetons (encre, papier, signal, typographie, courbes), primitives d'animation, composants communs (boutons, filets, pastilles, médias). |
 | `web/motion.js` | Moteur d'animation maison, sans dépendance obligatoire : apparitions à l'entrée dans l'écran, titres découpés mot à mot, parallaxe, compteurs, micro-interactions, en-tête réactif. |
 | `web/lenis.min.js` | Défilement inertiel (Lenis, MIT), servi en local — le site fonctionne à l'identique s'il est absent. |
-| `web/img/`, `marketing/img/` | Photographies servies en local : la démonstration fonctionne sans connexion. |
+| `web/img/` | Photographies servies en local : la démonstration fonctionne sans connexion. |
 
-`marketing/` est déployé séparément (hébergement statique) : `da.css`, `motion.js` et `lenis.min.js` y sont **copiés à l'identique**. Toute modification doit être répercutée dans les deux dossiers.
+Le site commercial vit dans un **dépôt séparé** (`../site-vitrine/`, déployé sur assistant-documentaire.com via Cloudflare Pages) : `da.css`, `motion.js` et `lenis.min.js` y sont **copiés à l'identique**. Toute modification doit être répercutée dans les deux dépôts.
 
 Deux exceptions assumées à la règle « aucun conteneur » : l'onglet **Statistiques** de l'administration pose ses blocs sur des cartes translucides (sans quoi on ne distingue plus un groupe de chiffres du suivant), et les **réponses du chatbot** sont dans des bulles blanches (sans quoi on ne voit plus où commence un tour de parole). Partout ailleurs, le contenu reste posé à nu sur le fond.
 

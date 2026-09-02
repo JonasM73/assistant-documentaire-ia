@@ -26,7 +26,7 @@ Les valeurs périmées à reconnaître immédiatement : 500 €, 800 $ CAD, 15-2
 - Tout **taux d'exactitude** (« 14/16 ») : publier la procédure de recette, pas le score.
 - **« Hébergement en Europe »** : à ne réintroduire qu'après vérification de la région du
   service Railway. Les emplacements concernés portent un commentaire HTML dans
-  `marketing/index.html`.
+  `index.html` du dépôt du site vitrine (dossier `../site-vitrine/`).
 - **« N'invente jamais »**, « zéro invention » comme garantie absolue : la formulation retenue
   est « il refuse quand l'information ne figure pas dans les documents », adossée à la recette.
 
@@ -34,8 +34,7 @@ Les valeurs périmées à reconnaître immédiatement : 500 €, 800 $ CAD, 15-2
 
 | Chemin | Rôle |
 |---|---|
-| `marketing/index.html` | Page vitrine déployée sur jonasmionnet.com (Cloudflare Worker). Autonome : un seul fichier, une police, aucune animation |
-| `marketing/mentions-legales.html` | Mentions légales, même charte, autonome |
+| `../site-vitrine/` (dépôt Git séparé) | Site commercial déployé sur assistant-documentaire.com via Cloudflare Pages. Plus dans ce dépôt depuis le 02/09/2026 |
 | `web/` | Vitrine fictive Boréale Équipement servie par l'instance FastAPI — **ce n'est pas le site commercial**, ne pas y propager les textes marketing |
 | `data/` | Documents de la démo Boréale (⚠️ entreprise québécoise, montants en dollars) |
 | `data-immobilier/` | Documents de la démo Horizon Immobilier — **c'est la vitrine publique** |
