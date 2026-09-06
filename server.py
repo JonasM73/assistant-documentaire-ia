@@ -7,9 +7,12 @@ Protections, configurables via .env :
   1. Authentification chat : mot de passe partagé (DEMO_PASSWORD) dans l'en-tête
      X-API-Password. Désactivée si DEMO_PASSWORD est vide (local/démo).
   2. Authentification admin : mot de passe séparé (ADMIN_PASSWORD) pour la
-     gestion des documents. Repli sur DEMO_PASSWORD s'il n'est pas défini.
+     gestion des documents. Si DEMO_PASSWORD est défini sans ADMIN_PASSWORD,
+     l'administration est DÉSACTIVÉE (jamais de repli sur le mot de passe du chat).
   3. CORS : seuls les domaines listés dans ALLOWED_ORIGINS peuvent appeler l'API.
   4. Limite de débit : RATE_LIMIT requêtes par minute et par IP sur /api/chat.
+     Derrière un proxy (Railway), l'IP réelle est lue dans X-Forwarded-For :
+     lancer uvicorn avec --proxy-headers --forwarded-allow-ips='*' (railway.json).
 
 Option tableau de bord (LOG_QUESTIONS) : journal des questions opt-in (JSONL :
 date, question, sources, refus — rien d'autre) et statistiques d'usage servies
@@ -75,17 +78,30 @@ FORMATS_LISIBLES = "PDF, Word, texte, Markdown"
 log = logging.getLogger("assistant")
 
 # --- Limiteur de débit par IP --------------------------------------------- #
-limiter = Limiter(key_func=get_remote_address)
+def _ip_client(request: Request) -> str:
+    """IP réelle du client : premier X-Forwarded-For derrière un proxy (Railway),
+    sinon l'adresse de la connexion. Sans cela, toutes les requêtes partagent
+    l'IP du proxy et la limite devient globale."""
+    xff = request.headers.get("x-forwarded-for", "")
+    if xff:
+        return xff.split(",")[0].strip()
+    return get_remote_address(request)
+
+
+limiter = Limiter(key_func=_ip_client)
 
 app = FastAPI(title="Assistant documentaire — démo")
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 # --- CORS : liste blanche de domaines ------------------------------------- #
+# L'API s'authentifie par en-tête (X-API-Password), jamais par cookie : pas de
+# credentials CORS. (Un "*" avec allow_credentials=True serait de toute façon refusé
+# par les navigateurs.)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=ALLOWED_ORIGINS,
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )
@@ -160,11 +176,14 @@ def verifier_mot_de_passe(x_api_password: str | None = Header(default=None)):
 # --- Authentification admin (ADMIN_PASSWORD) ------------------------------ #
 def verifier_admin(x_api_password: str | None = Header(default=None)):
     """Protège les routes admin avec ADMIN_PASSWORD (distinct du mot de passe du
-    chat). Repli sur DEMO_PASSWORD si ADMIN_PASSWORD n'est pas défini."""
-    attendu = ADMIN_PASSWORD or DEMO_PASSWORD
-    if not attendu:
-        return
-    if x_api_password != attendu:
+    chat). Si le chat est protégé mais qu'ADMIN_PASSWORD manque, l'administration
+    est fermée : le mot de passe du chat ne donne jamais l'accès admin."""
+    if not ADMIN_PASSWORD:
+        if DEMO_PASSWORD:
+            raise HTTPException(status_code=403, detail="Administration désactivée : "
+                                "définissez ADMIN_PASSWORD sur le serveur.")
+        return  # ni chat ni admin protégés : usage local
+    if x_api_password != ADMIN_PASSWORD:
         raise HTTPException(status_code=401, detail="Accès admin refusé.")
 
 
@@ -205,7 +224,7 @@ def health():
             "embeddings": rag_core.resolve_embedding_provider(),
             "llm": rag_core.resolve_llm_provider(),
             "auth": "activée" if DEMO_PASSWORD else "désactivée",
-            "admin": "séparé" if ADMIN_PASSWORD else ("repli chat" if DEMO_PASSWORD else "désactivé"),
+            "admin": "séparé" if ADMIN_PASSWORD else ("FERMÉ (ADMIN_PASSWORD manquant)" if DEMO_PASSWORD else "ouvert (usage local)"),
             "rate_limit": RATE_LIMIT,
             "journal": "actif" if journal.actif() else "désactivé"}
 

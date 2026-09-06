@@ -27,4 +27,3 @@ python-dotenv==1.2.2
 python-multipart==0.0.32
 
 # Interface Streamlit (optionnelle en production, utile en local)
-streamlit==1.60.0

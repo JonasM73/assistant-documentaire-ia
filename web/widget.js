@@ -640,7 +640,7 @@
       mode: "floating",
       apiBase: "",
       assistantName: "Assistant documentaire",
-      clientName: "Boréale Équipement",
+      clientName: "l'entreprise",
       examples: DEFAULT_EXAMPLES,
       target: null
     }, options || {});

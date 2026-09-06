@@ -1,8 +1,8 @@
 """
 ingest_ameliore.py — Ingestion structurée pour documents tabulaires.
 
-Remplace le découpage par paquets de 900 caractères (qui a donné 5/16 au test
-des 20 questions) par une extraction géométrique des tableaux via pdfplumber :
+Remplace le découpage par paquets de 900 caractères (insuffisant sur les
+tableaux multi-colonnes) par une extraction géométrique des tableaux via pdfplumber :
 chaque LIGNE de tableau devient une fiche autonome, où chaque valeur est
 étiquetée par son en-tête de colonne. La récupération retrouve alors la bonne
 fiche au lieu de colonnes éparpillées.

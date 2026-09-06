@@ -1,6 +1,6 @@
 # Démo verticale — immobilier (« Horizon Immobilier »)
 
-Deuxième cas de démonstration du projet, à côté de Boréale Équipement. Cible : les
+Cas de démonstration public du projet (l'ancien jeu Boréale, québécois, n'est plus montré). Cible : les
 **réseaux d'agences immobilières** (voir `MAILS/MAIL 2 immobilier réseaux.txt`).
 
 Horizon Immobilier est un **réseau fictif** : 6 agences en Centre-Val de Loire,
@@ -28,9 +28,9 @@ python ingest.py
 python -m uvicorn server:app --reload
 ```
 
-L'index Chroma étant partagé, **relancer `ingest.py` avec `DATA_DIR=data`** pour
-revenir à la démo Boréale. Pour garder les deux index en parallèle, pointer aussi
-`CHROMA_DIR` sur un dossier dédié (ex. `chroma_db_immo`).
+L'index Chroma étant partagé, relancer `ingest.py` après tout changement de `DATA_DIR`.
+Pour garder deux index en parallèle, pointer aussi `CHROMA_DIR` sur un dossier dédié
+(ex. `chroma_db_immo`).
 
 ## Questions de contrôle
 
@@ -47,11 +47,11 @@ la main dans les PDF (ne jamais régénérer les `attendu` en interrogeant le mo
 ```bash
 set DATA_DIR=data-immobilier
 python ingest.py
-python tests/evaluer.py --questions tests/questions_controle_immobilier.json
+python tests/evaluer.py --modeles claude-haiku-4-5 --client "Horizon Immobilier" --rapport tests/recette-horizon.md
 ```
 
-> `evaluer.py` lit `tests/questions_controle.json` en dur : ajouter l'option
-> `--questions` ou dupliquer le fichier avant de lancer.
+> Le jeu Horizon est celui lu par défaut par `evaluer.py` ; `--seuil 0.9` porte le
+> seuil d'exactitude convenu sur le procès-verbal.
 
 Le chiffre à retenir de ce test, c'est **zéro hallucination** : une seule est un
 défaut bloquant, pas une statistique.

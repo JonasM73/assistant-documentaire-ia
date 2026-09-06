@@ -2,17 +2,18 @@
 
 Assistant qui répond aux questions **à partir des documents d'une entreprise**, avec la **source citée** à chaque réponse. C'est le cas de démonstration à montrer en partage d'écran pendant la prospection.
 
-La démo est pré-remplie avec une PME fictive (**Boréale Équipement**, distributeur CVC/plomberie) et ses documents : manuel employé, catalogue produits, politique de garantie, procédures internes, FAQ. Pour une démo client, on remplace le dossier `data/` par leurs documents et on relance l'ingestion — rien d'autre à changer.
+Deux jeux de démonstration sont dans le dépôt : `data-immobilier/` (**Horizon Immobilier**, réseau d'agences fictif, France — **c'est la vitrine publique**, voir `DEMO-IMMOBILIER.md`) et `data/` (Boréale Équipement, ancien jeu québécois en dollars, **plus montré nulle part** ; à remplacer par un jeu français ou à supprimer). Pour une démo client, on pointe `DATA_DIR` sur leurs documents et on relance l'ingestion — rien d'autre à changer.
+
+Le déploiement de référence est **Railway** (`railway.json` : commande de démarrage, sonde `/api/health`, en-têtes de proxy). Les procédures client sont dans `docs/` : ouverture des comptes, déploiement, exploitation, sauvegarde.
 
 ## Stack
 
 - **Chroma** — base vectorielle locale et persistante (aucun service cloud à configurer).
 - **fastembed** — embeddings multilingues **locaux** par défaut (aucune clé, rien ne sort de l'instance). Bascule sur OpenAI avec `EMBEDDING_PROVIDER=openai`.
 - **Claude** ou **OpenAI** pour la génération (`LLM_PROVIDER`). Auto : Claude si seule la clé Anthropic est présente.
-- **FastAPI** — serveur de démonstration : API `/api/*`, widget de chat embarquable, espace d'administration.
-- **Streamlit** (`app.py`) — interface d'appoint pour tester en local.
+- **FastAPI** — serveur : API `/api/*`, widget de chat embarquable, espace d'administration.
 
-Architecture RAG classique (chargement → découpage → embeddings → récupération → génération sourcée), enrichie de deux correctifs mesurés sur le test des 20 questions : extraction **géométrique des tableaux** (`core/ingest_ameliore.py`) et **récupération hybride** mot-clé + vectoriel (`core/recherche_hybride.py`).
+Architecture RAG classique (chargement → découpage → embeddings → récupération → génération sourcée), enrichie de deux correctifs : extraction **géométrique des tableaux** (`core/ingest_ameliore.py`) et **récupération hybride** mot-clé + vectoriel (`core/recherche_hybride.py`).
 
 Aucune base de données : le journal des questions est un simple fichier **JSONL en ajout seul**.
 
@@ -27,17 +28,15 @@ pip install -r requirements.txt
 cp .env.example .env       # puis éditez .env et collez votre ANTHROPIC_API_KEY
                            # le .env est chargé automatiquement, rien d'autre à faire
 
-# 3. Indexer les documents
+# 3. Indexer les documents (DATA_DIR=data-immobilier pour la démo Horizon)
 python ingest.py
 
 # 4. Lancer le serveur web
 python -m uvicorn server:app --reload
 ```
 
-- `http://localhost:8000` — site de démonstration avec l'assistant en bulle, intégré ou plein écran.
-- `http://localhost:8000/gestion.html` — espace d'administration : documents et statistiques d'usage.
-
-Pour l'interface Streamlit d'appoint : `streamlit run app.py` (port 8501).
+- `http://localhost:8000` — site de démonstration avec l'assistant en bulle, intégré ou plein écran (protégé par `DEMO_PASSWORD` s'il est défini).
+- `http://localhost:8000/gestion.html` — espace d'administration : documents et statistiques d'usage (`ADMIN_PASSWORD`).
 
 ## Tester sans clé API
 
@@ -46,7 +45,7 @@ pip install -r requirements-dev.txt
 python -m pytest
 ```
 
-**90 tests, aucun appel réseau, aucune clé, quelques secondes.** La suite injecte un embedding déterministe et un double du cœur RAG : elle ne consomme aucun crédit d'API.
+**Aucun appel réseau, aucune clé, quelques secondes.** La suite injecte un embedding déterministe et un double du cœur RAG : elle ne consomme aucun crédit d'API.
 
 | Fichier | Ce qu'il couvre |
 |---|---|
@@ -76,15 +75,21 @@ Les tests travaillent **exclusivement dans des dossiers temporaires** : ni `chro
 | `EMBEDDING_PROVIDER` | auto | `local` (défaut, sans clé) ou `openai` |
 | `TOP_K` | `8` | Nombre d'extraits récupérés par question |
 | `CHUNK_SIZE` | `900` | Taille des chunks (caractères) |
-| `CLIENT_NAME` | `Boréale Équipement` | Nom affiché dans l'UI |
-| `DATA_DIR` | `data` | Dossier des documents |
+| `ANTHROPIC_MODEL` (ou `CLAUDE_MODEL`) | `claude-haiku-4-5` | Modèle Claude utilisé — celui de l'offre |
+| `CHUNK_OVERLAP` | `150` | Recouvrement entre chunks (caractères) |
+| `CLIENT_NAME` | `l'entreprise` | Nom du client dans l'invite système |
+| `ASSISTANT_NAME` / `ASSISTANT_CONTACT` | `Assistant documentaire` / `le service concerné` | Nom de l'assistant, service vers lequel il renvoie en cas de refus |
+| `DATA_DIR` | `data` | Dossier des documents (sur Railway : `/data/documents`, volume persistant) |
+| `CHROMA_DIR` | `chroma_db` | Dossier de l'index (sur Railway : `/data/chroma_db`) |
+| `COLLECTION_NAME` | `documents_client` | Nom de la collection Chroma |
+| `EMBED_BATCH` / `ADD_BATCH` | `8` / `16` | Tailles de lots à l'ingestion (baisser si mémoire limitée) |
 | `MAX_UPLOAD_MB` | `20` | Taille maximale d'un document téléversé |
-| `DEMO_PASSWORD` | — | Mot de passe du chat (vide = pas d'authentification) |
-| `ADMIN_PASSWORD` | — | Mot de passe de l'administration (repli sur `DEMO_PASSWORD`) |
-| `ALLOWED_ORIGINS` | `*` | Domaines autorisés à appeler l'API (CORS) |
-| `RATE_LIMIT` | `30/minute` | Limite de débit par IP sur `/api/chat` |
+| `DEMO_PASSWORD` | — | Mot de passe du chat (vide = pas d'authentification, usage local) |
+| `ADMIN_PASSWORD` | — | Mot de passe de l'administration. **Obligatoire dès que `DEMO_PASSWORD` est défini** : sans lui, l'administration est fermée (aucun repli sur le mot de passe du chat) |
+| `ALLOWED_ORIGINS` | `*` | Domaines autorisés à appeler l'API (CORS). En production : le domaine du client, jamais `*` |
+| `RATE_LIMIT` | `30/minute` | Limite de débit par IP sur `/api/chat` (IP lue dans `X-Forwarded-For` derrière Railway) |
 | `LOG_QUESTIONS` | `0` | Journal des questions (opt-in strict) |
-| `LOG_DIR` | `logs` | Dossier du fichier `questions.jsonl` |
+| `LOG_DIR` | `logs` | Dossier du fichier `questions.jsonl` (sur Railway : `/data/logs`) |
 
 ## Interfaces
 
@@ -95,7 +100,7 @@ Toutes les pages partagent **un seul système de design**, « Encre & Signal » 
 | `web/da.css` | Jetons (encre, papier, signal, typographie, courbes), primitives d'animation, composants communs (boutons, filets, pastilles, médias). |
 | `web/motion.js` | Moteur d'animation maison, sans dépendance obligatoire : apparitions à l'entrée dans l'écran, titres découpés mot à mot, parallaxe, compteurs, micro-interactions, en-tête réactif. |
 | `web/lenis.min.js` | Défilement inertiel (Lenis, MIT), servi en local — le site fonctionne à l'identique s'il est absent. |
-| `web/img/` | Photographies servies en local : la démonstration fonctionne sans connexion. |
+| `web/img/` | Photographies servies en local (les polices, elles, viennent de Google Fonts). |
 
 Le site commercial vit dans un **dépôt séparé** (`../site-vitrine/`, déployé sur assistant-documentaire.com via Cloudflare Pages) : `da.css`, `motion.js` et `lenis.min.js` y sont **copiés à l'identique**. Toute modification doit être répercutée dans les deux dépôts.
 
@@ -116,12 +121,11 @@ Le thème clair ne redéfinit que des **valeurs de jetons**, jamais des règles 
 
 Le contenu reste lisible sans JavaScript : les états masqués sont conditionnés à une classe posée par `motion.js`, et un filet de sécurité révèle tout au bout de 3 secondes. `prefers-reduced-motion` neutralise l'ensemble des animations.
 
-`app.py` (Streamlit) est volontairement **hors** de ce système : c'est un banc d'essai local, pas une surface montrée à un client. Ne jamais le filmer ni le montrer en appel — c'est le widget qui se lit comme un produit.
-
 ## Limites (à dire au client, c'est une démo)
 
 - Pas de gestion multi-utilisateurs : un mot de passe partagé pour le chat, un pour l'administration.
 - Documents scannés non gérés (pas d'OCR) — l'assistant le dit explicitement au téléversement.
 - Pas de mise à jour incrémentale par `ingest.py` : il réindexe tout le corpus. (Le téléversement depuis `gestion.html`, lui, est bien incrémental.)
+- Formats : `.pdf`, `.docx`, `.md`, `.txt`. Ni `.doc` ancien format, ni Excel, ni boîtes mail, ni SharePoint/Drive — à dire avant le devis.
 
 Ces limites correspondent exactement au **hors-scope** de l'offre de lancement. Les lever se fait sur devis séparé.

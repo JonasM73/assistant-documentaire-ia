@@ -15,6 +15,14 @@ chroma_db/
 # NB : ne pas ignorer le dossier des PDF de démo Boréale s'ils sont ailleurs.
 /data/uploads/
 
+# Journal des questions (option tableau de bord) : données d'usage, jamais dans le dépôt.
+# Chez un client, LOG_DIR pointe vers le volume persistant.
+logs/
+!logs/questions.jsonl   # jeu SYNTHÉTIQUE de démonstration du tableau de bord (tests/genere_journal_demo.py)
+
+# Caches
+.pytest_cache/
+
 # Fichiers système
 .DS_Store
 Thumbs.db

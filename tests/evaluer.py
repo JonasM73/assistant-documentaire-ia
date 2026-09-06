@@ -1,5 +1,5 @@
 """
-evaluer.py — Passe les 20 questions de contrôle sur le pipeline RAG et note.
+evaluer.py — Passe un jeu de questions de contrôle sur le pipeline RAG et note.
 
 Sort trois nombres par modèle :
     - réponses exactes   : la valeur attendue apparaît dans la réponse
@@ -14,16 +14,14 @@ Le même index vectoriel sert à tous les modèles : la récupération est ident
 seule la génération change. C'est ce qui rend la comparaison Sonnet / Haiku honnête.
 
 Prérequis :
-    - Mettre les 3 PDF de contrôle dans un dossier, ex. data_controle/
-    - Indexer ce dossier :  set DATA_DIR=data_controle  puis  python ingest.py
-      (ou pointer CHROMA_DIR sur un index dédié)
+    - Indexer le dossier de documents du test : set DATA_DIR=data-immobilier
+      puis python ingest.py (ou pointer CHROMA_DIR sur un index dédié)
     - Une clé ANTHROPIC_API_KEY dans .env
 
-Usage :
-    python evaluer.py
-    python evaluer.py --modeles claude-haiku-4-5 claude-sonnet-4-6
-    python evaluer.py --verbeux
-    python evaluer.py --modeles claude-haiku-4-5 --out resultats_haiku.json
+Usage (recette Horizon Immobilier, jeu par défaut) :
+    python tests/evaluer.py --modeles claude-haiku-4-5 --client "Horizon Immobilier" --rapport tests/recette-horizon.md
+    python tests/evaluer.py --questions autre_jeu.json --verbeux
+    python tests/evaluer.py --seuil 0.9   # seuil d'exactitude convenu au devis (part des factuelles exactes)
 """
 
 
@@ -161,10 +159,13 @@ def main():
                     default=["claude-haiku-4-5", "claude-sonnet-4-6"],
                     help="modèles Anthropic à comparer")
     ap.add_argument("--questions",
-                    default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "questions_controle.json"))
+                    default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "questions_controle_immobilier.json"))
+    ap.add_argument("--seuil", type=float, default=None, metavar="0.9",
+                    help="seuil d'exactitude convenu au devis : part minimale de réponses exactes "
+                         "parmi les questions qui ont une réponse (ex. 0.9). Porté sur le PV.")
     ap.add_argument("--verbeux", action="store_true")
     ap.add_argument("--out",
-                    default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "resultats_controle.json"))
+                    default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "resultats_evaluation.json"))
     ap.add_argument("--rapport", metavar="FICHIER.md",
                     help="écrit en plus un procès-verbal de recette lisible, "
                          "au format remis au client")
@@ -246,11 +247,24 @@ def ecrire_rapport(chemin, resultats, questions, args):
     L.append(f"| Refus corrects sur les questions sans réponse | "
              f"{c['refus_ok']} / {r['refus_possibles']} |")
     L.append(f"| **Réponses inventées** | **{halluc}** |")
+    seuil = getattr(args, "seuil", None)
+    seuil_ok = None
+    if seuil is not None and r['exactes_possibles']:
+        part = c['exacte'] / r['exactes_possibles']
+        seuil_ok = part >= seuil
+        L.append(f"| Seuil d'exactitude convenu au devis | {seuil:.0%} — atteint : "
+                 f"{'oui' if seuil_ok else 'NON'} ({part:.0%}) |")
     L.append("")
-    if halluc == 0:
+    if halluc == 0 and seuil_ok is False:
+        L.append(f"> ⚠️ **Aucune réponse inventée, mais le seuil d'exactitude convenu "
+                 f"({seuil:.0%}) n'est pas atteint. La recette n'est pas validée.** "
+                 "Conformément au devis, les corrections sont réalisées sans supplément "
+                 "(dix jours ouvrables, deux cycles au plus) avant facturation du solde.")
+    elif halluc == 0:
         L.append("> Aucune réponse inventée sur ce jeu de contrôle. Chaque réponse fournie "
                  "s'appuie sur un extrait de vos documents, et l'assistant a refusé de "
-                 "répondre à chacune des questions dont la réponse ne s'y trouve pas.")
+                 "répondre à chacune des questions dont la réponse ne s'y trouve pas."
+                 + (" Le seuil d'exactitude convenu est atteint : la recette est validée." if seuil_ok else ""))
     else:
         L.append(f"> ⚠️ **{halluc} réponse(s) inventée(s). La recette n'est pas validée.** "
                  "Conformément au devis, les corrections sont réalisées sans supplément "
@@ -286,13 +300,23 @@ def ecrire_rapport(chemin, resultats, questions, args):
         "chaque réponse s'appuie sur un extrait du document source, ouvrable en un clic ;",
         "l'assistant refuse explicitement quand l'information n'existe pas dans les documents ;",
         "aucun engagement (prix, délai, garantie) n'est énoncé sans appui documentaire ;",
-        "les sources citées correspondent bien au document dont la réponse est tirée.",
+        "les sources citées correspondent bien au document dont la réponse est tirée ;",
+        "le seuil d'exactitude convenu au devis est atteint.",
     ]:
         L.append(f"- {ligne}")
     L.append("")
+    L.append("## Décision")
+    L.append("")
+    L.append("- [ ] Recette validée — mise en production, solde exigible.")
+    L.append("- [ ] Recette non validée — corrections sans supplément sous dix jours ouvrables "
+             "(deux cycles au plus), puis nouveau passage du même jeu de questions.")
+    L.append("")
+    L.append("Le client — nom, signature, date : ______________________    "
+             "Jonas Mionnet — date : ______________________")
+    L.append("")
     L.append("---")
     L.append("")
-    L.append("Jonas Mionnet — assistants documentaires pour PME · jonas@jonasmionnet.com")
+    L.append("Jonas Mionnet — assistants documentaires pour PME · jonas@jonasmionnet.com · assistant-documentaire.com")
 
     with open(chemin, "w", encoding="utf-8") as f:
         f.write("\n".join(L) + "\n")

@@ -1,7 +1,7 @@
 """
 recherche_hybride.py — Récupération hybride : mot-clé exact + vectoriel.
 
-Problème résolu (test des 20 questions bloqué à 6/16) : la recherche vectorielle
+Problème résolu (constaté sur le jeu de contrôle) : la recherche vectorielle
 seule ne distingue pas « S001 » de « S007 ». Les fiches sont sémantiquement
 jumelles — seul le numéro change — et l'embedding ne pèse presque pas ce numéro.
 La bonne fiche ne remonte donc pas dans le top-K, et l'assistant refuse à tort.

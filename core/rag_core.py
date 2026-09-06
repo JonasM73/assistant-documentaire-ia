@@ -6,8 +6,8 @@ stockage vectoriel (Chroma, local, persistant) -> récupération -> génération
 d'une réponse sourcée par un LLM.
 
 Fournisseurs supportés :
-- Embeddings  : OpenAI (défaut) — nécessite OPENAI_API_KEY.
-- Génération  : OpenAI (défaut) ou Anthropic Claude (LLM_PROVIDER=anthropic).
+- Embeddings  : fastembed local (défaut, aucune clé) ou OpenAI (EMBEDDING_PROVIDER=openai).
+- Génération  : Anthropic Claude (défaut dès qu'ANTHROPIC_API_KEY est présente) ou OpenAI.
 
 Rien ici n'est spécifique à une PME : on pointe DATA_DIR sur les documents du
 client et le reste fonctionne à l'identique.
@@ -57,10 +57,10 @@ CONTACT_INFO = os.environ.get(
 
 EMBEDDING_MODEL = os.environ.get("EMBEDDING_MODEL", "text-embedding-3-small")
 OPENAI_MODEL = os.environ.get("OPENAI_MODEL", "gpt-4o-mini")
-# Modèle Claude : honore CLAUDE_MODEL ou ANTHROPIC_MODEL, sinon défaut sûr.
+# Modèle Claude : honore ANTHROPIC_MODEL ou CLAUDE_MODEL, sinon le modèle de l'offre.
 ANTHROPIC_MODEL = (os.environ.get("ANTHROPIC_MODEL")
                    or os.environ.get("CLAUDE_MODEL")
-                   or "claude-3-5-sonnet-latest")
+                   or "claude-haiku-4-5")
 
 
 def resolve_embedding_provider() -> str:
