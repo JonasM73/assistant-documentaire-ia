@@ -1,829 +1,837 @@
 <!DOCTYPE html>
-<html lang="fr" data-skin="boreale" data-theme="clair">
+<html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="color-scheme" content="light">
-<meta name="theme-color" content="#F7F5EF">
-<title>Boréale Équipement — Distributeur CVC &amp; plomberie</title>
+<title>Horizon Immobilier — l'assistant qui répond à partir des documents du réseau</title>
+<meta name="description" content="Démonstration : un assistant qui répond aux questions des équipes à partir des six documents du réseau Horizon Immobilier, en citant le document source. Réseau fictif créé pour la démonstration.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0C1613">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='13' fill='%230C1613'/%3E%3Cpath d='M12 34 32 17l20 17' fill='none' stroke='%23F4F7F5' stroke-width='4.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M19 33v14h26V33' fill='none' stroke='%23F4F7F5' stroke-width='4.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='32' cy='40' r='5' fill='none' stroke='%2310B981' stroke-width='4'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;450;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/da.css">
+<link rel="stylesheet" href="da.css">
 <style>
   /* =========================================================================
-     Boréale Équipement — vitrine de démonstration, thème CLAIR.
-     Le papier porte la page ; la photographie et la couleur de signal (cobalt
-     & ambre) font tout le contraste. Aucune couleur en dur ici : uniquement
-     les rôles définis dans /da.css.
+     Vitrine de démonstration — réseau (fictif) Horizon Immobilier.
+     Le vocabulaire commun — jetons de couleur, boutons, révélations — vit dans
+     da.css. Cette feuille ne décrit QUE la composition propre à cette page et
+     ne pose aucune couleur en dur : uniquement des jetons.
      ========================================================================= */
-  html.gated,html.gated body{overflow:hidden;}
 
-  /* ------------------------------------------------------------ BANDEAU --- */
-  .util{background:var(--ink-950);font-size:12.5px;color:var(--on-ink-3);}
-  .util__in{display:flex;align-items:center;gap:22px;height:38px;
-    max-width:var(--maxw);margin:0 auto;padding:0 var(--gut);}
-  .util__in .sp{flex:1;}
-  .util a{transition:color .3s var(--e);}
-  .util a:hover{color:var(--sig-600);}
-  .util b{color:var(--on-ink);font-weight:600;}
-  .util .geo{display:inline-flex;align-items:center;gap:8px;}
-  .util .geo i{width:6px;height:6px;border-radius:50%;background:var(--sig-500);flex:none;
-    box-shadow:0 0 0 3px var(--sig-glow);}
+  html{scroll-behavior:smooth;}
+  html.js{scroll-behavior:auto;}          /* le défilement doux est repris par Lenis */
+  body{background:var(--ink-900);}
 
-  /* ------------------------------------------------------------- ENTÊTE --- */
-  .top{position:sticky;top:0;z-index:200;background:rgba(255,255,255,.72);
-    -webkit-backdrop-filter:blur(20px) saturate(1.6);backdrop-filter:blur(20px) saturate(1.6);
-    transition:box-shadow .5s var(--e),background .5s var(--e);}
-  .top::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;
-    background:linear-gradient(90deg,transparent,var(--rule-ink) 12%,var(--rule-ink) 88%,transparent);}
-  .top.is-stuck{background:rgba(255,255,255,.9);box-shadow:var(--sh-1);}
-  .top__in{display:flex;align-items:center;gap:22px;height:clamp(64px,6.6vw,80px);
-    max-width:var(--maxw);margin:0 auto;padding:0 var(--gut);}
-  .logo{font-family:var(--disp);font-weight:800;font-size:20px;letter-spacing:-.04em;
-    white-space:nowrap;color:var(--on-ink);}
-  .logo em{font-style:normal;color:var(--sig-600);}
-  .search{flex:1;max-width:520px;display:flex;align-items:center;gap:11px;height:44px;
-    padding:0 16px;border-radius:999px;background:var(--tint);
-    box-shadow:inset 0 0 0 1px var(--rule-ink);
-    transition:box-shadow .35s var(--e),background .35s var(--e);}
-  .search:focus-within{background:var(--white);
-    box-shadow:inset 0 0 0 1.5px var(--sig-500),0 0 0 4px var(--sig-glow);}
-  .search input{flex:1;border:none;background:transparent;outline:none;
-    font-family:var(--ui);font-size:14px;color:var(--on-ink);}
-  .search input::placeholder{color:var(--on-ink-4);}
-  .search svg{width:17px;height:17px;stroke:var(--on-ink-3);fill:none;stroke-width:2;
-    stroke-linecap:round;flex:none;}
-  .hact{display:flex;align-items:center;gap:8px;margin-left:auto;}
-  .hact a{display:flex;flex-direction:column;align-items:center;gap:5px;padding:8px 12px;
-    border-radius:14px;font:var(--t-micro);letter-spacing:.13em;text-transform:uppercase;
-    color:var(--on-ink-3);position:relative;transition:color .3s var(--e),background .3s var(--e);}
-  .hact a:hover{color:var(--on-ink);background:var(--tint);}
-  .hact svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.7;
-    stroke-linecap:round;stroke-linejoin:round;}
-  .hact .badge{position:absolute;top:2px;right:6px;min-width:17px;height:17px;padding:0 4px;
-    border-radius:999px;background:var(--lime);color:var(--on-lime);
-    font:700 10px/17px var(--mono);text-align:center;}
+  /* Ancrage : les sections visées par la navigation ne doivent pas passer
+     sous la barre collante. */
+  section[id]{scroll-margin-top:96px;}
 
-  /* ------------------------------------------------------- NAV CATÉGORIES - */
-  .cats{background:var(--ink-950);position:relative;z-index:150;}
-  .cats__in{display:flex;align-items:center;gap:4px;height:50px;overflow-x:auto;
-    max-width:var(--maxw);margin:0 auto;padding:0 var(--gut);scrollbar-width:none;}
-  .cats__in::-webkit-scrollbar{display:none;}
-  .cats a{position:relative;padding:8px 15px;border-radius:999px;white-space:nowrap;
-    font-family:var(--disp);font-weight:600;font-size:13.5px;letter-spacing:-.018em;
-    color:var(--on-ink-2);transition:color .3s var(--e),background .3s var(--e);}
-  .cats a:hover{color:var(--sig-600);background:var(--white);}
-  .cats .promo{margin-left:auto;display:inline-flex;align-items:center;gap:9px;
-    white-space:nowrap;font:var(--t-micro);letter-spacing:.14em;text-transform:uppercase;
-    color:var(--on-ink-2);padding-left:18px;}
-  .cats .promo i{width:6px;height:6px;border-radius:50%;background:var(--sig-500);flex:none;
-    animation:bp 2.4s var(--e) infinite;}
-  @keyframes bp{0%,100%{opacity:1;}50%{opacity:.25;}}
+  /* Focus : visible partout, pas seulement sur les boutons de da.css. */
+  a:focus-visible,button:focus-visible,input:focus-visible{
+    outline:2px solid var(--sig-400);outline-offset:3px;border-radius:var(--r-xs);}
 
-  /* --------------------------------------------------------------- HÉRO --- */
-  /* La photo reste entière à droite ; un lavis de papier la recouvre à gauche
-     pour que le titre reste en encre, lisible et net. */
-  .hero{position:relative;min-height:clamp(560px,82svh,880px);display:flex;align-items:flex-end;
-    overflow:hidden;padding:clamp(80px,10vw,130px) 0 clamp(36px,5vw,72px);
-    background:var(--ink-900);}
-  .hero__bg{position:absolute;inset:-12% 0;z-index:0;}
-  .hero__bg img{width:100%;height:100%;object-fit:cover;
-    filter:saturate(.82) contrast(1.02) brightness(1.06);}
-  .hero__veil{position:absolute;inset:0;z-index:1;pointer-events:none;
+  /* ------------------------------------------------------------------ NAV --- */
+  .nav{position:fixed;top:0;left:0;right:0;z-index:300;
+    transition:transform .6s var(--e),background .6s var(--e),backdrop-filter .6s var(--e);}
+  .nav.is-stuck{background:rgba(12,22,19,.78);              /* repli */
+    background:color-mix(in srgb,var(--ink-900) 78%,transparent);
+    -webkit-backdrop-filter:blur(18px) saturate(1.5);backdrop-filter:blur(18px) saturate(1.5);
+    box-shadow:0 1px 0 var(--rule-ink-2);}
+  .nav.is-hidden{transform:translateY(-102%);}
+  .nav__in{display:flex;align-items:center;gap:26px;height:clamp(64px,7vw,84px);
+    max-width:var(--maxw);margin:0 auto;padding-left:var(--gut);padding-right:var(--gut);}
+  .brand{display:flex;align-items:center;gap:10px;font-family:var(--disp);font-weight:800;
+    font-size:17px;letter-spacing:-.035em;color:var(--on-ink);}
+  .brand svg{width:22px;height:22px;flex:none;stroke:var(--sig-400);fill:none;
+    stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round;}
+  .brand em{font-style:normal;font-weight:500;color:var(--on-ink-3);letter-spacing:-.01em;}
+  .nav__links{display:flex;gap:28px;margin-left:auto;}
+  .nav__links a{position:relative;font-size:14px;font-weight:500;color:var(--on-ink-2);
+    padding:6px 0;transition:color .3s var(--e);}
+  .nav__links a::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;
+    background:var(--sig-400);transform:scaleX(0);transform-origin:right;
+    transition:transform .45s var(--e);}
+  .nav__links a:hover{color:var(--on-ink);}
+  .nav__links a:hover::after{transform:scaleX(1);transform-origin:left;}
+  .nav__cta{margin-left:6px;padding:12px 22px;font-size:14px;}
+  .burger{display:none;margin-left:auto;width:44px;height:44px;border:none;background:none;
+    cursor:pointer;position:relative;}
+  .burger i{position:absolute;left:11px;right:11px;height:1.5px;background:var(--on-ink);
+    transition:transform .5s var(--e);}
+  .burger i:nth-child(1){top:18px;} .burger i:nth-child(2){top:25px;}
+  .nav.is-open .burger i:nth-child(1){transform:translateY(3.5px) rotate(45deg);}
+  .nav.is-open .burger i:nth-child(2){transform:translateY(-3.5px) rotate(-45deg);}
+
+  .menu{position:fixed;inset:0;z-index:290;background:var(--ink-950);
+    display:flex;flex-direction:column;justify-content:center;gap:4px;padding:0 var(--gut);
+    clip-path:inset(0 0 100% 0);visibility:hidden;
+    transition:clip-path .8s var(--e),visibility 0s linear .8s;}
+  .menu.is-open{clip-path:inset(0 0 0 0);visibility:visible;transition:clip-path .8s var(--e);}
+  .menu a{font-family:var(--disp);font-weight:800;font-size:clamp(2rem,9vw,3.2rem);
+    letter-spacing:-.05em;color:var(--on-ink);padding:8px 0;opacity:0;transform:translateY(28px);
+    transition:opacity .6s var(--e),transform .7s var(--e);}
+  .menu.is-open a{opacity:1;transform:none;}
+  .menu.is-open a:nth-child(1){transition-delay:.14s;}
+  .menu.is-open a:nth-child(2){transition-delay:.2s;}
+  .menu.is-open a:nth-child(3){transition-delay:.26s;}
+  .menu.is-open a:nth-child(4){transition-delay:.32s;}
+  .menu a:hover{color:var(--sig-400);}
+  .menu__foot{margin-top:40px;font:var(--t-micro);letter-spacing:.16em;text-transform:uppercase;
+    color:var(--on-ink-4);}
+
+  /* ----------------------------------------------------------------- HERO --- */
+  .hero{position:relative;overflow:hidden;
+    padding:clamp(122px,15vw,190px) 0 clamp(56px,7vw,96px);}
+  /* Décor : aucune photographie. Une lumière, un plan tramé, un filet. */
+  .hero__aura{position:absolute;inset:-20% -10% 0 -10%;z-index:0;pointer-events:none;
     background:
-      linear-gradient(96deg,
-        var(--ink-900) 10%,
-        rgba(247,245,239,.94) 34%,
-        rgba(247,245,239,.55) 56%,
-        rgba(247,245,239,.06) 78%,
-        transparent 92%),
-      linear-gradient(0deg,var(--ink-900) 1%,rgba(247,245,239,.6) 16%,transparent 46%),
-      radial-gradient(60% 50% at 88% 4%,var(--sig-glow),transparent 64%);}
-  .hero__in{position:relative;z-index:2;width:100%;}
-  .hero__grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,.75fr);
-    gap:clamp(26px,4vw,60px);align-items:end;}
-  .hero h1{font-size:clamp(2.5rem,6.4vw,6.2rem);line-height:.9;letter-spacing:-.05em;
-    margin:0 0 24px;max-width:14ch;color:var(--on-ink);}
-  .hero__lead{color:var(--on-ink-2);font-size:clamp(1rem,1.18vw,1.2rem);line-height:1.6;
-    max-width:46ch;margin-bottom:32px;}
+      radial-gradient(58% 46% at 76% 6%,var(--sig-glow),transparent 62%),
+      radial-gradient(48% 40% at 10% 84%,var(--tint-2),transparent 66%);
+    opacity:.85;}
+  .hero__plan{position:absolute;inset:-8% -4% -14% -4%;z-index:0;pointer-events:none;
+    color:var(--on-ink);opacity:.13;
+    -webkit-mask-image:radial-gradient(72% 62% at 62% 38%,#000 12%,transparent 76%);
+    mask-image:radial-gradient(72% 62% at 62% 38%,#000 12%,transparent 76%);}
+  .hero__plan svg{width:100%;height:100%;}
+  .hero__in{position:relative;z-index:2;}
+  .hero__grid{display:grid;grid-template-columns:minmax(0,1.06fr) minmax(0,.94fr);
+    gap:clamp(34px,5vw,72px);align-items:center;}
+  .hero h1{font-size:clamp(2.35rem,5.6vw,5.1rem);line-height:.94;letter-spacing:-.05em;
+    margin:0 0 26px;max-width:15ch;}
+  .hero h1 .thin{font-weight:500;color:var(--on-ink-2);}
+  .hero__lead{max-width:48ch;color:var(--on-ink-2);font-size:clamp(1rem,1.2vw,1.2rem);
+    line-height:1.62;margin-bottom:34px;}
+  .hero__lead em{font-family:var(--serif);font-style:italic;color:var(--on-ink);font-size:1.06em;}
   .hero__cta{display:flex;gap:14px;flex-wrap:wrap;align-items:center;}
 
-  /* Carte des aubaines : une ardoise de verre blanc posée sur la photo. */
-  .promo-card{position:relative;border-radius:var(--r-lg);padding:26px 26px 20px;
+  /* Le compte du corpus : des faits, pas une performance. */
+  .facts{display:flex;flex-wrap:wrap;gap:clamp(26px,4vw,58px);margin-top:clamp(44px,5vw,68px);
+    padding-top:clamp(26px,3vw,38px);border-top:1px solid var(--rule-ink-2);}
+  .facts div{min-width:110px;}
+  .facts .num{font-size:clamp(2rem,3.4vw,3.1rem);}
+  .facts .num-lbl{margin-top:10px;}
+
+  /* ------------------------------------------------- APERÇU DE RÉPONSE --- */
+  .peek{position:relative;border-radius:var(--r-lg);padding:24px;
     background:var(--glass);
-    -webkit-backdrop-filter:blur(22px) saturate(1.4);backdrop-filter:blur(22px) saturate(1.4);
+    -webkit-backdrop-filter:blur(20px) saturate(1.3);backdrop-filter:blur(20px) saturate(1.3);
     box-shadow:inset 0 0 0 1px var(--glass-ring),var(--sh-3);}
-  .promo-card h3{font-size:14px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;
-    font-family:var(--mono);color:var(--sig-600);margin-bottom:20px;}
-  .promo-row{display:flex;align-items:baseline;justify-content:space-between;gap:18px;
-    padding:15px 0;border-bottom:1px solid var(--rule-ink-2);
-    transition:padding-left .35s var(--e);}
-  .promo-row:last-of-type{border-bottom:none;}
-  .promo-row:hover{padding-left:8px;}
-  .promo-row span{font-size:13.5px;color:var(--on-ink-2);}
-  .promo-row b{font-family:var(--disp);font-weight:800;font-size:19px;letter-spacing:-.035em;
-    color:var(--on-ink);white-space:nowrap;}
-  /* `promo-note` et pas `foot` : `.foot` est le pied de page du site, et sa
-     couleur de fond débordait dans la carte. */
-  .promo-card .promo-note{margin-top:16px;padding-top:14px;border-top:1px solid var(--rule-ink);
-    font:var(--t-micro);letter-spacing:.15em;text-transform:uppercase;color:var(--on-ink-4);}
+  .peek + .peek{margin-top:16px;}
+  .peek__q{display:flex;gap:12px;align-items:flex-start;margin-bottom:18px;}
+  .peek__q b{flex:none;width:26px;height:26px;border-radius:50%;background:var(--tint-2);
+    display:grid;place-items:center;font:var(--t-micro);color:var(--on-ink-3);}
+  .peek__q span{font-size:15px;line-height:1.5;color:var(--on-ink);font-weight:500;}
+  .peek__a{font-size:15px;line-height:1.62;color:var(--on-ink-2);
+    padding-left:38px;border-left:1px solid var(--rule-ink);margin-left:12px;}
+  .peek__a strong{color:var(--on-ink);font-weight:600;}
+  .peek__src{display:inline-flex;align-items:center;gap:9px;margin-top:16px;padding:7px 13px;
+    border-radius:999px;background:var(--tint);box-shadow:inset 0 0 0 1px var(--rule-ink);
+    font:var(--t-micro);letter-spacing:.12em;text-transform:uppercase;color:var(--on-ink-2);}
+  .peek__src svg{width:12px;height:12px;stroke:var(--sig-400);fill:none;stroke-width:2.4;
+    stroke-linecap:round;stroke-linejoin:round;flex:none;}
+  .peek--refus .peek__a{border-left-color:var(--tint-3);}
+  .peek__tag{display:block;font:var(--t-micro);letter-spacing:.2em;text-transform:uppercase;
+    color:var(--on-ink-4);margin-bottom:16px;}
 
-  /* -------------------------------------------------------------- TRUST --- */
-  .trust{background:var(--ink-950);}
-  .trust__in{display:grid;grid-template-columns:repeat(4,1fr);
-    max-width:var(--maxw);margin:0 auto;padding:0 var(--gut);}
-  .trust__it{position:relative;display:flex;gap:16px;align-items:flex-start;
-    padding:30px clamp(14px,2vw,28px) 30px 0;}
-  .trust__it + .trust__it{padding-left:clamp(14px,2vw,28px);}
-  .trust__it + .trust__it::before{content:"";position:absolute;left:0;top:26px;bottom:26px;
-    width:1px;background:linear-gradient(180deg,transparent,var(--rule-ink) 26%,var(--rule-ink) 74%,transparent);}
-  .trust__it svg{width:24px;height:24px;stroke:var(--sig-600);fill:none;stroke-width:1.5;
-    stroke-linecap:round;stroke-linejoin:round;flex:none;margin-top:2px;}
-  .trust__it b{display:block;font-family:var(--disp);font-weight:800;font-size:17px;
-    letter-spacing:-.03em;color:var(--on-ink);}
-  /* `b + span` et non `span` : le compteur vit DANS le <b>, et une règle trop
-     large le repassait en micro-label sur sa propre ligne. */
-  .trust__it b + span{display:block;font:var(--t-micro);letter-spacing:.15em;
-    text-transform:uppercase;color:var(--on-ink-4);margin-top:6px;}
+  /* -------------------------------------------------------- BANDEAU DOC --- */
+  .strip{padding:clamp(18px,2.4vw,26px) 0;border-top:1px solid var(--rule-ink-2);
+    border-bottom:1px solid var(--rule-ink-2);background:var(--ink-850);}
+  .strip__item{display:inline-flex;align-items:center;gap:12px;padding:0 clamp(20px,2.6vw,40px);
+    font:var(--t-micro);letter-spacing:.16em;text-transform:uppercase;color:var(--on-ink-3);
+    white-space:nowrap;}
+  .strip__item i{width:5px;height:5px;border-radius:50%;background:var(--sig-400);flex:none;
+    font-style:normal;}
 
-  /* ------------------------------------------------------------- TITRES --- */
-  .sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:26px;
-    flex-wrap:wrap;margin-bottom:clamp(26px,3.4vw,48px);}
-  .sec-head h2{font-size:clamp(1.8rem,3.6vw,3.2rem);color:var(--on-ink);}
+  /* ------------------------------------------------------------- CHAT --- */
+  .chat{position:relative;}
+  .chat__grid{display:grid;grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);
+    gap:clamp(32px,4.4vw,66px);align-items:start;}
+  .chat__aside{position:sticky;top:104px;}
+  .chat__rules{list-style:none;margin:30px 0 0;padding:0;display:grid;gap:16px;}
+  .chat__rules li{display:flex;gap:14px;align-items:flex-start;font-size:15px;line-height:1.56;
+    color:var(--on-ink-2);}
+  .chat__rules svg{width:18px;height:18px;flex:none;margin-top:2px;stroke:var(--sig-400);
+    fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;}
+  .chat__rules b{color:var(--on-ink);font-weight:600;}
 
-  /* --------------------------------------------------------- CATÉGORIES --- */
-  .cat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(14px,1.6vw,22px);}
-  .cat{position:relative;display:block;aspect-ratio:3/4;border-radius:var(--r-md);
-    overflow:hidden;background:var(--ink-700);box-shadow:var(--sh-1);
-    transition:box-shadow .5s var(--e),transform .5s var(--e-soft);}
-  .cat:hover{transform:translateY(-4px);box-shadow:var(--sh-2);}
-  .cat img{width:100%;height:100%;object-fit:cover;
-    transition:transform 1.1s var(--e),filter .7s var(--e);}
-  .cat:hover img{transform:scale(1.07);}
-  .cat__veil{position:absolute;inset:0;z-index:2;
-    background:linear-gradient(180deg,rgba(4,9,7,.06) 18%,rgba(4,9,7,.58) 58%,rgba(4,9,7,.9));}
-  .cat__txt{position:absolute;left:0;right:0;bottom:0;z-index:3;padding:22px;}
-  .cat__txt small{display:block;font:var(--t-micro);letter-spacing:.19em;text-transform:uppercase;
-    color:var(--sig-200);margin-bottom:9px;}
-  .cat__txt b{display:block;font-family:var(--disp);font-weight:800;font-size:clamp(1rem,1.4vw,1.28rem);
-    letter-spacing:-.03em;color:var(--on-media);}
-  .cat__txt p{font-size:12.5px;color:var(--on-media-2);margin-top:6px;line-height:1.45;}
-  .cat__go{position:absolute;top:18px;right:18px;z-index:3;width:36px;height:36px;
-    border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.18);
-    -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
-    opacity:0;transform:translateY(-6px);transition:opacity .4s var(--e),transform .4s var(--e),background .4s var(--e);}
-  .cat:hover .cat__go{opacity:1;transform:none;background:var(--sig-500);}
-  .cat__go svg{width:15px;height:15px;stroke:#fff;fill:none;stroke-width:2.2;
+  /* Exemples cliquables : ils remplissent le champ de l'assistant. */
+  .tries{margin-top:34px;}
+  .tries__ttl{font:var(--t-micro);letter-spacing:.2em;text-transform:uppercase;
+    color:var(--on-ink-4);margin-bottom:14px;}
+  .try{display:block;width:100%;text-align:left;margin-bottom:9px;padding:13px 16px;
+    border:none;border-radius:var(--r-sm);background:var(--tint);
+    box-shadow:inset 0 0 0 1px var(--rule-ink);color:var(--on-ink-2);
+    font-size:14.5px;line-height:1.45;cursor:pointer;
+    transition:background .35s var(--e),color .3s var(--e),transform .35s var(--e-soft);}
+  .try:hover{background:var(--tint-2);color:var(--on-ink);transform:translateX(4px);}
+  .try em{font-style:normal;color:var(--sig-400);font-weight:600;}
+
+  /* Cadre du chat : une surface haute qui contient la porte puis le panneau. */
+  .chatbox{position:relative;border-radius:var(--r-xl);padding:clamp(16px,1.6vw,22px);
+    background:var(--tint);box-shadow:inset 0 0 0 1px var(--rule-ink),var(--sh-3);}
+  .chatbox::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+    background:radial-gradient(90% 60% at 50% 0%,var(--sig-glow),transparent 60%);opacity:.28;}
+  .chatbox > *{position:relative;}
+
+  /* Porte d'accès. */
+  .gate{display:grid;place-items:center;min-height:min(600px,72svh);
+    padding:clamp(28px,4vw,52px) clamp(20px,3vw,40px);text-align:center;}
+  .gate__lock{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;
+    background:var(--tint-2);box-shadow:inset 0 0 0 1px var(--rule-ink);margin:0 auto 22px;}
+  .gate__lock svg{width:20px;height:20px;stroke:var(--sig-400);fill:none;stroke-width:2;
     stroke-linecap:round;stroke-linejoin:round;}
+  .gate h3{font-size:clamp(1.3rem,2vw,1.7rem);margin-bottom:12px;}
+  .gate p{font-size:14.5px;line-height:1.6;color:var(--on-ink-3);max-width:40ch;margin:0 auto;}
+  .gate form{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;
+    margin:28px auto 0;max-width:440px;}
+  .gate label{display:block;width:100%;font:var(--t-micro);letter-spacing:.18em;
+    text-transform:uppercase;color:var(--on-ink-4);margin-bottom:4px;text-align:left;}
+  .gate input{flex:1 1 210px;min-width:0;padding:15px 18px;border:none;border-radius:999px;
+    background:var(--ink-800);color:var(--on-ink);font:450 15px/1.4 var(--ui);
+    box-shadow:inset 0 0 0 1px var(--rule-ink);transition:box-shadow .3s var(--e);}
+  .gate input::placeholder{color:var(--on-ink-4);}
+  .gate input:hover{box-shadow:inset 0 0 0 1px var(--tint-3);}
+  .gate__msg{margin-top:16px;min-height:1.4em;font-size:14px;color:var(--on-ink-3);}
+  .gate__msg[data-etat="erreur"]{color:var(--coral);}
+  .gate__msg[data-etat="ok"]{color:var(--sig-300);}
 
-  /* ------------------------------------------------------------ PRODUITS -- */
-  .prod-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(14px,1.6vw,22px);}
-  .prod{position:relative;display:flex;flex-direction:column;border-radius:var(--r-md);
-    overflow:hidden;background:var(--white);box-shadow:var(--sh-1);
-    transition:box-shadow .5s var(--e),transform .5s var(--e-soft);}
-  .prod:hover{transform:translateY(-5px);box-shadow:var(--sh-2);}
-  .prod__thumb{position:relative;aspect-ratio:4/3;display:grid;place-items:center;overflow:hidden;}
-  .prod__thumb::after{content:"";position:absolute;inset:0;background-image:var(--grain);
-    opacity:.09;mix-blend-mode:overlay;pointer-events:none;}
-  .prod__thumb svg{width:46%;height:46%;stroke:rgba(255,255,255,.94);fill:none;stroke-width:1.1;
-    stroke-linecap:round;stroke-linejoin:round;
-    transition:transform .8s var(--e);filter:drop-shadow(0 10px 22px rgba(0,0,0,.3));}
-  .prod:hover .prod__thumb svg{transform:scale(1.08) rotate(-2deg);}
-  .prod__sku{position:absolute;top:12px;left:12px;z-index:3;
-    font:var(--t-micro);letter-spacing:.14em;color:rgba(255,255,255,.95);
-    background:rgba(4,9,7,.3);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
-    padding:5px 9px;border-radius:7px;}
-  .prod__body{display:flex;flex-direction:column;flex:1;padding:18px;}
-  .prod__body h3{font-size:15px;line-height:1.28;letter-spacing:-.025em;margin-bottom:8px;
-    color:var(--on-ink);min-height:2.6em;}
-  .prod__spec{font-family:var(--mono);font-size:11px;color:var(--on-ink-3);
-    letter-spacing:.02em;line-height:1.6;flex:1;margin-bottom:18px;}
-  .prod__foot{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;
-    padding-top:15px;border-top:1px solid var(--rule-ink-2);}
-  .prod__price{font-family:var(--disp);font-weight:800;font-size:22px;letter-spacing:-.04em;
-    color:var(--on-ink);line-height:1;}
-  .prod__price small{display:block;font:var(--t-micro);letter-spacing:.15em;text-transform:uppercase;
-    color:var(--on-ink-4);margin-top:7px;}
-  .prod__add{flex:none;width:42px;height:42px;border-radius:50%;border:none;cursor:pointer;
-    display:grid;place-items:center;background:var(--tint);color:var(--on-ink);
-    box-shadow:inset 0 0 0 1px var(--rule-ink);
-    transition:background .35s var(--e),color .35s var(--e),transform .35s var(--e-soft),box-shadow .35s var(--e);}
-  .prod__add svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2.2;
-    stroke-linecap:round;}
-  .prod__add:hover{background:var(--sig-500);color:var(--on-sig);transform:scale(1.1) rotate(90deg);
-    box-shadow:0 12px 26px -12px var(--sig-glow);}
-  .prod__add:focus-visible{outline:2px solid var(--sig-500);outline-offset:3px;}
+  /* Le panneau du widget occupe la boîte ; sur petit écran, il se plie. */
+  .chat__cible .da-panel.da-inline{height:min(600px,74svh);border-radius:var(--r-lg);}
+  .chat__note{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;
+    justify-content:space-between;margin-top:16px;padding:0 6px;
+    font-size:13px;line-height:1.5;color:var(--on-ink-4);}
+  .chat__note b{color:var(--on-ink-3);font-weight:600;}
+  .reset{border:none;background:none;padding:0;cursor:pointer;font:inherit;
+    color:var(--on-ink-3);text-decoration:underline;text-underline-offset:3px;
+    transition:color .3s var(--e);}
+  .reset:hover{color:var(--sig-400);}
 
-  /* ------------------------------------------------------------ COMPTOIR -- */
-  .comptoir{position:relative;overflow:hidden;}
-  .comptoir__grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
-    gap:clamp(24px,3.4vw,56px);align-items:center;}
-  .comptoir__media{position:relative;aspect-ratio:1/1;border-radius:var(--r-lg);overflow:hidden;
-    background:var(--ink-700);box-shadow:var(--sh-2);}
-  .comptoir__media img{width:100%;height:100%;object-fit:cover;}
-  .comptoir__small{position:absolute;right:-8%;bottom:-8%;width:46%;aspect-ratio:1/1;
-    border-radius:var(--r-md);overflow:hidden;background:var(--ink-700);
-    box-shadow:var(--sh-3),0 0 0 8px var(--ink-900);}
-  .comptoir__small img{width:100%;height:100%;object-fit:cover;}
-  .comptoir h2{color:var(--on-ink);}
-  .comptoir ul{list-style:none;margin:30px 0 0;padding:0;}
-  .comptoir li{position:relative;padding:17px 0 17px 40px;border-top:1px solid var(--rule-ink-2);
-    font-size:15.5px;color:var(--on-ink-2);}
-  .comptoir li::before{content:"";position:absolute;left:2px;top:24px;width:14px;height:7px;
-    border-left:2px solid var(--sig-500);border-bottom:2px solid var(--sig-500);
-    transform:rotate(-45deg);}
-  .comptoir li b{color:var(--on-ink);font-weight:600;}
+  /* -------------------------------------------------------- DOCUMENTS --- */
+  /* Le surlignage `.mark` est peint en z-index:-1 : il lui faut un contexte
+     d'empilement local, sinon il disparaît derrière le fond de la bande. */
+  #documents .shell{position:relative;z-index:1;}
 
-  /* -------------------------------------------------------------- BANDE --- */
-  /* Bande chiffrée : la photo reste, mais lavée au papier — elle donne le
-     climat, elle ne mange pas les chiffres. */
-  .band-stats{position:relative;overflow:hidden;background:var(--ink-950);}
-  .band-stats__bg{position:absolute;inset:-14% 0;z-index:0;opacity:.24;}
-  .band-stats__bg img{width:100%;height:100%;object-fit:cover;filter:grayscale(.45) contrast(.95);}
-  .band-stats__veil{position:absolute;inset:0;z-index:1;
-    background:linear-gradient(180deg,var(--ink-950),rgba(236,232,223,.78) 42%,var(--ink-950)),
-      radial-gradient(60% 70% at 18% 40%,var(--sig-glow),transparent 64%);}
-  .band-stats__in{position:relative;z-index:2;}
-  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(18px,2vw,32px);}
-  .stat{position:relative;padding-right:clamp(14px,2vw,26px);}
-  .stat + .stat{padding-left:clamp(14px,2vw,26px);}
-  .stat + .stat::before{content:"";position:absolute;left:0;top:4px;bottom:4px;width:1px;
-    background:linear-gradient(180deg,transparent,var(--rule-ink) 24%,var(--rule-ink) 76%,transparent);}
-  .stat .v{display:flex;align-items:baseline;gap:6px;}
-  .stat .v b{font-family:var(--disp);font-weight:800;font-size:clamp(2.4rem,5vw,4.4rem);
-    letter-spacing:-.055em;line-height:.88;color:var(--sig-600);font-variant-numeric:tabular-nums;}
-  .stat .v i{font-style:normal;font-family:var(--disp);font-weight:700;
-    font-size:clamp(1rem,1.6vw,1.5rem);color:var(--on-ink-2);letter-spacing:-.03em;}
+  .docs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:clamp(14px,1.6vw,22px);margin-top:clamp(38px,4vw,58px);}
+  .doc{display:flex;flex-direction:column;gap:14px;padding:clamp(22px,2.2vw,30px);
+    min-height:230px;}
+  .doc__no{font:var(--t-micro);letter-spacing:.2em;color:var(--sig-600);}
+  .doc h3{font-size:1.2rem;letter-spacing:-.03em;line-height:1.1;}
+  .doc p{font-size:14.5px;line-height:1.58;color:var(--on-paper-2);}
+  .doc__file{margin-top:auto;padding-top:16px;border-top:1px solid var(--rule-paper-2);
+    font:400 12px/1.4 var(--mono);color:var(--on-paper-3);word-break:break-word;}
+  .docs__foot{margin-top:clamp(30px,3.4vw,44px);font-size:14.5px;line-height:1.6;
+    color:var(--on-paper-2);max-width:72ch;}
 
-  /* --------------------------------------------------------- TÉMOIGNAGES -- */
-  .tgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(14px,1.8vw,26px);}
-  .tcard{position:relative;border-radius:var(--r-md);padding:clamp(22px,2.4vw,32px);
-    background:var(--white);box-shadow:var(--sh-1);
-    transition:box-shadow .5s var(--e),transform .5s var(--e-soft);}
-  .tcard:hover{transform:translateY(-4px);box-shadow:var(--sh-2);}
-  .tcard .stars{color:var(--lime);font-size:15px;letter-spacing:3px;margin-bottom:16px;
-    text-shadow:0 1px 0 rgba(0,0,0,.06);}
-  .tcard p{font-family:var(--serif);font-style:italic;font-size:clamp(1rem,1.24vw,1.18rem);
-    line-height:1.6;color:var(--on-ink);margin-bottom:24px;}
-  .tcard .who{display:flex;align-items:center;gap:13px;padding-top:18px;
-    border-top:1px solid var(--rule-ink-2);}
-  .tcard .av{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;flex:none;
-    background:linear-gradient(140deg,var(--sig-500),var(--sig-700));color:#fff;
-    font-family:var(--disp);font-weight:800;font-size:14px;letter-spacing:-.02em;
-    box-shadow:0 10px 22px -12px var(--sig-glow);}
-  .tcard .who b{display:block;font-family:var(--disp);font-weight:700;font-size:14px;
-    letter-spacing:-.02em;color:var(--on-ink);}
-  .tcard .who span{display:block;font:var(--t-micro);letter-spacing:.13em;text-transform:uppercase;
-    color:var(--on-ink-4);margin-top:4px;}
+  /* ----------------------------------------------------------- LIMITES --- */
+  .lim{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:clamp(20px,3vw,48px);margin-top:clamp(38px,4vw,56px);}
+  .lim__col{padding:clamp(24px,2.6vw,36px);border-radius:var(--r-lg);
+    background:var(--tint);box-shadow:inset 0 0 0 1px var(--rule-ink);}
+  .lim__col--no{background:transparent;box-shadow:inset 0 0 0 1px var(--rule-ink-2);}
+  .lim h3{font-size:1.15rem;margin-bottom:22px;display:flex;align-items:center;gap:11px;}
+  .lim h3 svg{width:19px;height:19px;fill:none;stroke-width:2.2;stroke-linecap:round;
+    stroke-linejoin:round;flex:none;}
+  .lim__col--yes h3 svg{stroke:var(--sig-400);}
+  .lim__col--no h3 svg{stroke:var(--on-ink-4);}
+  .lim ul{list-style:none;margin:0;padding:0;display:grid;gap:15px;}
+  .lim li{font-size:15px;line-height:1.56;color:var(--on-ink-2);padding-left:20px;
+    position:relative;}
+  .lim li::before{content:"";position:absolute;left:0;top:.62em;width:8px;height:1.5px;
+    background:var(--on-ink-4);}
+  .lim__col--yes li::before{background:var(--sig-400);}
 
-  /* --------------------------------------------------------- ASSISTANCE --- */
-  .assist{position:relative;overflow:hidden;background:var(--ink-850);}
-  .assist__bg{position:absolute;inset:-12% 0;z-index:0;opacity:.14;
-    -webkit-mask-image:radial-gradient(90% 80% at 80% 50%, #000 8%, transparent 72%);
-    mask-image:radial-gradient(90% 80% at 80% 50%, #000 8%, transparent 72%);}
-  .assist__bg img{width:100%;height:100%;object-fit:cover;filter:grayscale(1) contrast(1.1);}
-  .assist::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
-    background:radial-gradient(70% 70% at 10% 16%,var(--sig-glow),transparent 62%);opacity:.22;}
-  .assist__in{position:relative;z-index:2;}
-  .assist__head{max-width:62ch;margin-bottom:clamp(24px,3vw,40px);}
-  .assist h2{color:var(--on-ink);}
-  #inline-host{min-height:0;}
-  #inline-host:empty::after{content:"Astuce démo : la pastille « Affichage » en bas à gauche permet d'afficher l'assistant ici, en bulle, ou en plein écran.";
-    display:block;padding:34px 0;font-family:var(--serif);font-style:italic;
-    font-size:16px;color:var(--on-ink-3);max-width:56ch;}
+  /* -------------------------------------------------------------- PIED --- */
+  .foot{background:var(--ink-950);padding:clamp(58px,7vw,96px) 0 clamp(34px,4vw,48px);}
+  .foot__top{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);
+    gap:clamp(28px,4vw,64px);align-items:end;}
+  .foot__claim{font-family:var(--disp);font-weight:800;letter-spacing:-.045em;line-height:1;
+    font-size:clamp(1.6rem,3.4vw,2.9rem);color:var(--on-ink);max-width:16ch;}
+  .fictif{margin-top:clamp(40px,4.6vw,64px);padding:22px 24px;border-radius:var(--r-md);
+    background:var(--tint);box-shadow:inset 0 0 0 1px var(--rule-ink);
+    display:flex;gap:16px;align-items:flex-start;}
+  .fictif svg{width:20px;height:20px;flex:none;margin-top:2px;stroke:var(--amber);fill:none;
+    stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round;}
+  .fictif p{font-size:14.5px;line-height:1.62;color:var(--on-ink-2);max-width:88ch;}
+  .fictif b{color:var(--on-ink);font-weight:600;}
+  .foot__bar{display:flex;flex-wrap:wrap;gap:12px 26px;justify-content:space-between;
+    align-items:center;margin-top:clamp(30px,3.4vw,44px);padding-top:24px;
+    border-top:1px solid var(--rule-ink-2);
+    font:var(--t-micro);letter-spacing:.16em;text-transform:uppercase;color:var(--on-ink-4);}
+  .foot__bar a{color:var(--on-ink-2);transition:color .3s var(--e);}
+  .foot__bar a:hover{color:var(--sig-400);}
 
-  /* ------------------------------------------------------------- FOOTER --- */
-  .foot{background:var(--ink-950);padding:clamp(46px,6vw,86px) 0 clamp(26px,3vw,38px);}
-  .foot__cols{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;
-    gap:clamp(24px,3vw,44px);padding-bottom:clamp(30px,4vw,50px);}
-  .foot__cols p{color:var(--on-ink-3);font-size:14px;line-height:1.6;max-width:34ch;margin-top:14px;}
-  .foot__cols h4{font:var(--t-micro);letter-spacing:.19em;text-transform:uppercase;
-    color:var(--on-ink-4);margin-bottom:18px;font-family:var(--mono);}
-  .foot__cols ul{list-style:none;margin:0;padding:0;}
-  .foot__cols li{margin-bottom:11px;}
-  .foot__cols li a{font-size:14px;color:var(--on-ink-2);transition:color .3s var(--e),padding-left .3s var(--e);
-    display:inline-block;}
-  .foot__cols li a:hover{color:var(--sig-600);padding-left:6px;}
-  .foot__legal{padding-top:24px;border-top:1px solid var(--rule-ink-2);
-    font-size:12.5px;color:var(--on-ink-4);line-height:1.6;}
+  /* Message affiché quand le JavaScript ne s'exécute pas. */
+  .nojs{margin-top:20px;padding:20px 24px;border-radius:var(--r-md);
+    background:var(--tint);box-shadow:inset 0 0 0 1px var(--rule-ink);
+    font-size:14.5px;line-height:1.6;color:var(--on-ink-2);}
 
-  /* --------------------------------------------------- CONTRÔLE DE DÉMO --- */
-  #demo-ctrl{position:fixed;left:20px;bottom:20px;z-index:2147482000;
-    display:flex;align-items:center;gap:10px;padding:7px 9px 7px 16px;border-radius:999px;
-    background:rgba(255,255,255,.86);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
-    box-shadow:inset 0 0 0 1px var(--rule-ink),var(--sh-2);
-    font-family:var(--disp);}
-  #demo-ctrl .lbl{font:var(--t-micro);letter-spacing:.17em;text-transform:uppercase;
-    color:var(--on-ink-4);}
-  #demo-ctrl .grp{display:flex;gap:2px;padding:3px;border-radius:999px;background:var(--tint);}
-  #demo-ctrl button{border:none;background:transparent;color:var(--on-ink-2);cursor:pointer;
-    font-family:var(--disp);font-weight:600;font-size:12px;letter-spacing:-.01em;
-    padding:7px 13px;border-radius:999px;transition:background .35s var(--e),color .35s var(--e);}
-  #demo-ctrl button:hover{color:var(--on-ink);}
-  #demo-ctrl button.active{background:var(--sig-500);color:var(--on-sig);}
-  #demo-ctrl button:focus-visible{outline:2px solid var(--sig-500);outline-offset:2px;}
-
-  /* ------------------------------------------------------ PORTE D'ENTRÉE -- */
-  /* Elle appartient à l'ASSISTANT, pas à la boutique : elle garde donc la
-     couleur de signal émeraude du produit, jamais le cobalt de Boréale.
-     Composition en deux volets : le formulaire sur le papier, la photo à côté. */
-  #auth-gate{position:fixed;inset:0;z-index:2147483600;display:grid;
-    grid-template-columns:minmax(0,1.02fr) minmax(0,.98fr);background:var(--ink-900);
-    --sig-500:#10B981;--sig-600:#0B7A58;--sig-700:#075E44;--sig-400:#0B7A58;
-    --sig-glow:rgba(16,185,129,.34);--on-sig:#04140E;--lime:#C6F24E;--on-lime:#16210A;}
-  #auth-gate.is-out{animation:gate-out .8s var(--e) forwards;}
-  @keyframes gate-out{to{opacity:0;transform:scale(1.02);visibility:hidden;}}
-  #auth-gate .panneau{position:relative;display:flex;align-items:center;
-    padding:clamp(28px,5vw,80px);overflow:hidden;}
-  #auth-gate .panneau::before{content:"";position:absolute;inset:0;pointer-events:none;
-    background:radial-gradient(70% 60% at 12% 8%,var(--sig-glow),transparent 62%);opacity:.6;}
-  #auth-gate .panneau::after{content:"";position:absolute;inset:0;pointer-events:none;
-    background-image:var(--grain);opacity:.04;mix-blend-mode:multiply;}
-  #auth-gate .box{position:relative;z-index:2;width:min(440px,100%);
-    animation:gate-in .9s var(--e) both;}
-  @keyframes gate-in{from{opacity:0;transform:translateY(26px);}to{opacity:1;transform:none;}}
-  #auth-gate .glyph{width:52px;height:52px;border-radius:17px;display:grid;place-items:center;
-    margin-bottom:26px;background:linear-gradient(140deg,var(--sig-600),var(--sig-500));
-    box-shadow:0 18px 36px -16px var(--sig-glow),inset 0 1px 0 rgba(255,255,255,.35);}
-  #auth-gate .glyph svg{width:23px;height:23px;stroke:#fff;fill:none;stroke-width:1.9;
-    stroke-linecap:round;stroke-linejoin:round;}
-  #auth-gate h2{font-size:clamp(2rem,4.4vw,3.1rem);line-height:.96;letter-spacing:-.05em;
-    margin-bottom:16px;color:var(--on-ink);}
-  #auth-gate p{color:var(--on-ink-2);font-size:15px;line-height:1.62;margin-bottom:34px;
-    max-width:42ch;}
-  #auth-gate input{width:100%;padding:14px 2px;border:none;background:transparent;
-    border-bottom:1.5px solid var(--rule-ink);color:var(--on-ink);
-    font-family:var(--ui);font-size:19px;letter-spacing:-.02em;outline:none;
-    transition:border-color .35s var(--e);}
-  #auth-gate input::placeholder{color:var(--on-ink-4);font-size:17px;}
-  #auth-gate input:focus{border-bottom-color:var(--sig-500);}
-  #auth-gate .err{color:var(--danger);font-size:13.5px;min-height:22px;margin:14px 0 22px;}
-  #auth-gate .note{margin-top:30px;padding-top:22px;border-top:1px solid var(--rule-ink-2);
-    font:var(--t-micro);letter-spacing:.15em;text-transform:uppercase;color:var(--on-ink-4);
-    line-height:1.7;max-width:44ch;}
-  #auth-gate .volet{position:relative;overflow:hidden;background:var(--ink-700);}
-  #auth-gate .volet img{width:100%;height:100%;object-fit:cover;
-    transform:scale(1.05);animation:gate-zoom 20s var(--e) infinite alternate;}
-  @keyframes gate-zoom{to{transform:scale(1.15);}}
-  #auth-gate .volet::after{content:"";position:absolute;inset:0;
-    background:linear-gradient(90deg,var(--ink-900) 0%,rgba(247,245,239,.35) 22%,transparent 55%),
-      radial-gradient(70% 60% at 80% 90%,rgba(12,106,84,.35),transparent 62%);}
-
-  /* ---------------------------------------------------------- RESPONSIVE -- */
+  /* --------------------------------------------------------- RESPONSIVE --- */
   @media (max-width:1080px){
-    .cat-grid,.prod-grid{grid-template-columns:repeat(2,1fr);}
-    .hero__grid{grid-template-columns:1fr;gap:38px;}
-    .hero__veil{background:
-      linear-gradient(180deg,rgba(247,245,239,.9) 6%,rgba(247,245,239,.72) 40%,var(--ink-900) 86%),
-      radial-gradient(60% 40% at 84% 4%,var(--sig-glow),transparent 64%);}
-    .comptoir__grid{grid-template-columns:1fr;}
-    .comptoir__small{right:0;bottom:-6%;width:38%;}
-    .tgrid{grid-template-columns:1fr;}
+    .docs{grid-template-columns:repeat(2,minmax(0,1fr));}
   }
-  @media (max-width:900px){
-    #auth-gate{grid-template-columns:1fr;}
-    #auth-gate .volet{display:none;}
-    #auth-gate .panneau{justify-content:center;}
-  }
-  @media (max-width:860px){
-    .search{display:none;}
-    .trust__in{grid-template-columns:repeat(2,1fr);}
-    .trust__it:nth-child(3){padding-left:0;}
-    .trust__it:nth-child(3)::before{display:none;}
-    .stats{grid-template-columns:repeat(2,1fr);row-gap:34px;}
-    .stat:nth-child(3){padding-left:0;}
-    .stat:nth-child(3)::before{display:none;}
-    .foot__cols{grid-template-columns:1fr 1fr;}
+  @media (max-width:960px){
+    .nav__links,.nav__cta{display:none;}
+    .burger{display:block;}
+    .hero__grid{grid-template-columns:minmax(0,1fr);gap:38px;}
+    .hero h1{max-width:18ch;}
+    .chat__grid{grid-template-columns:minmax(0,1fr);}
+    .chat__aside{position:static;}
+    .lim{grid-template-columns:minmax(0,1fr);}
+    .foot__top{grid-template-columns:minmax(0,1fr);align-items:start;}
   }
   @media (max-width:640px){
-    /* La ligne d'infos ne doit jamais passer sur deux lignes : on sacrifie
-       l'adresse, on garde les deux liens utiles. */
-    .util .geo{display:none;}
-    .util__in{justify-content:flex-end;gap:18px;}
-    .hact a span:not(.badge){display:none;}
-    .hact a{padding:8px;}
-    /* Le sélecteur de démo se range AU-DESSUS du lanceur : côte à côte, ils se
-       chevauchent sur un téléphone. */
-    #demo-ctrl{left:12px;bottom:78px;padding:6px;}
-  }
-  @media (max-width:600px){
-    .prod-grid,.cat-grid{grid-template-columns:1fr;}
-    .stats{grid-template-columns:1fr;}
-    .stat{padding:0 0 22px;border-bottom:1px solid var(--rule-ink-2);}
-    .stat + .stat{padding-left:0;}
-    .stat + .stat::before{display:none;}
-    #demo-ctrl .lbl{display:none;}
+    .docs{grid-template-columns:minmax(0,1fr);}
+    .doc{min-height:0;}
+    .peek__a{padding-left:22px;margin-left:6px;}
+    .gate form{max-width:none;}
+    .gate input{flex:1 1 100%;}
+    .gate .btn{width:100%;}
+    .chat__cible .da-panel.da-inline{height:min(600px,78svh);}
+    .facts{gap:24px 34px;}
   }
 </style>
 </head>
 <body>
 
-<!-- =========================== PORTE D'ENTRÉE ========================== -->
-<div id="auth-gate">
-  <div class="panneau">
-    <div class="box">
-      <div class="glyph">
-        <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-      </div>
-      <p class="eyebrow">Démonstration protégée</p>
-      <h2>Accès<br>protégé</h2>
-      <p>Entrez le mot de passe pour accéder à l'assistant documentaire de cette démonstration.</p>
-      <input id="auth-pw" type="password" placeholder="Mot de passe" autocomplete="current-password">
-      <div id="auth-err" class="err"></div>
-      <button class="btn btn--sig" id="auth-btn" type="button"><span>Entrer</span>
-        <svg viewBox="0 0 24 24"><path d="M5 12h13"/><path d="m12 5 7 7-7 7"/></svg>
-      </button>
-      <p class="note">Derrière cette porte : une boutique fictive, un assistant réel,
-        des réponses tirées de vrais documents.</p>
-    </div>
-  </div>
-  <div class="volet"><img src="/img/hero-entrepot.jpg" alt=""></div>
+<div class="curtain" aria-hidden="true">
+  <div class="curtain__word">Horizon<b>·</b>Immobilier</div>
 </div>
-
 <div class="grain" aria-hidden="true"></div>
+<div data-progress aria-hidden="true"></div>
 
-<!-- ============================== BANDEAU ============================== -->
-<div class="util">
-  <div class="util__in">
-    <span class="geo"><i></i><span>Laval, QC — succursale ouverte lun-ven 6 h 30 – 17 h</span></span>
-    <span class="sp"></span>
-    <a href="#">Suivi de commande</a>
-    <a href="#"><b>Ouvrir un compte commercial</b></a>
-  </div>
-</div>
-
-<!-- =============================== ENTÊTE ============================== -->
-<header class="top" data-nav>
-  <div class="top__in">
-    <div class="logo">Boréale <em>Équipement</em></div>
-    <label class="search">
-      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
-      <input placeholder="Rechercher un produit, un SKU (ex. BOR-TP24)…" aria-label="Rechercher">
-    </label>
-    <nav class="hact">
-      <a href="#"><svg viewBox="0 0 24 24"><path d="M20 21a8 8 0 1 0-16 0"/><circle cx="12" cy="7" r="4"/></svg><span>Compte</span></a>
-      <a href="#"><svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></svg><span>Panier</span><span class="badge">3</span></a>
+<!-- ============================== NAVIGATION ============================== -->
+<header class="nav" data-nav>
+  <div class="nav__in">
+    <a class="brand" href="#top" aria-label="Horizon Immobilier, retour en haut de page">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11 12 4l9 7"/><path d="M6 10v9h12v-9"/><circle cx="12" cy="14" r="2.4"/></svg>
+      Horizon <em>Immobilier</em>
+    </a>
+    <nav class="nav__links" aria-label="Navigation principale">
+      <a href="#assistant">L'assistant</a>
+      <a href="#documents">Les documents</a>
+      <a href="#limites">Ce qu'il fait</a>
     </nav>
+    <a class="btn btn--sig nav__cta" href="#assistant" data-magnetic="0.22"><span>Poser une question</span>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13"/><path d="m12 5 7 7-7 7"/></svg></a>
+    <button class="burger" id="burger" type="button" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="menu">
+      <i></i><i></i>
+    </button>
   </div>
 </header>
 
-<nav class="cats">
-  <div class="cats__in">
-    <a href="#categories">Thermopompes</a><a href="#categories">Climatisation</a>
-    <a href="#categories">Chauffe-eau</a><a href="#categories">Plomberie</a>
-    <a href="#categories">Ventilation</a><a href="#produits">Pièces</a>
-    <span class="promo"><i></i>Livraison gratuite dès 5 000 $ net</span>
-  </div>
-</nav>
+<div class="menu" id="menu">
+  <a href="#assistant">L'assistant</a>
+  <a href="#documents">Les documents</a>
+  <a href="#limites">Ce qu'il fait</a>
+  <a href="#assistant">Poser une question</a>
+  <div class="menu__foot">Réseau fictif · démonstration</div>
+</div>
 
-<!-- ================================ HÉRO =============================== -->
-<section class="hero">
-  <div class="hero__bg" data-parallax="0.12">
-    <img src="/img/hero-entrepot.jpg" alt="" fetchpriority="high">
+<main>
+
+<!-- ================================= HERO ================================= -->
+<section class="hero" id="top">
+  <!-- Décor : lumière et plan tramé, aucune photographie. -->
+  <div class="hero__aura" aria-hidden="true"></div>
+  <div class="hero__plan" aria-hidden="true" data-parallax="0.08">
+    <svg viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice" role="presentation">
+      <defs>
+        <pattern id="trame" width="60" height="60" patternUnits="userSpaceOnUse">
+          <path d="M60 0H0v60" fill="none" stroke="currentColor" stroke-width="1"/>
+        </pattern>
+      </defs>
+      <rect width="1200" height="700" fill="url(#trame)"/>
+      <g fill="none" stroke="currentColor" stroke-width="2.4">
+        <path d="M180 470V250l180-120 180 120v220z"/>
+        <path d="M360 470V330h120v140"/>
+        <path d="M660 470V300h300v170z"/>
+        <path d="M760 470V370h100v100"/>
+        <path d="M120 470h960"/>
+      </g>
+    </svg>
   </div>
-  <div class="hero__veil"></div>
-  <div class="hero__in shell">
+
+  <div class="shell hero__in">
     <div class="hero__grid">
       <div>
-        <p class="eyebrow" data-reveal="fade">Prix entrepreneur</p>
-        <h1 data-reveal="fade" data-split>L'équipement de vos chantiers, <span class="mark">en stock</span>.</h1>
-        <p class="hero__lead" data-reveal="up" data-delay="180">
-          Thermopompes, chauffe-eau, plomberie et ventilation — aux prix entrepreneur.
-          Ramassage au comptoir en 2 h, livraison locale le lendemain.
+        <p class="eyebrow" data-reveal="fade">Démonstration · réseau fictif</p>
+        <h1 data-reveal="fade" data-split>Vos équipes n'ouvrent plus les PDF. Elles <span class="sig">posent la question</span>.</h1>
+        <p class="hero__lead" data-reveal="up" data-delay="140">
+          Horizon Immobilier est un réseau de six agences en Centre-Val de Loire. Son barème,
+          ses mandats, ses diagnostics et sa procédure interne tiennent dans six documents.
+          L'assistant les a lus : il répond, <em>et il cite le document source</em>.
         </p>
-        <div class="hero__cta" data-reveal="up" data-delay="270">
-          <a class="btn btn--sig" href="#produits" data-magnetic="0.24"><span>Voir le catalogue</span>
-            <svg viewBox="0 0 24 24"><path d="M5 12h13"/><path d="m12 5 7 7-7 7"/></svg></a>
-          <a class="btn btn--ghost" href="#" data-magnetic="0.18"><span>Ouvrir un compte</span></a>
+        <div class="hero__cta" data-reveal="up" data-delay="220">
+          <a class="btn btn--sig" href="#assistant" data-magnetic="0.25"><span>Poser une question</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13"/><path d="m12 5 7 7-7 7"/></svg></a>
+          <a class="btn btn--ghost" href="#documents" data-magnetic="0.18"><span>Voir les six documents</span></a>
         </div>
       </div>
 
-      <div class="promo-card" data-reveal="up" data-delay="360" data-spot>
-        <h3>Aubaines de la semaine</h3>
-        <div class="promo-row"><span>Thermopompe murale 24 000 BTU</span><b>1 890 $</b></div>
-        <div class="promo-row"><span>Chauffe-eau instantané au gaz</span><b>1 340 $</b></div>
-        <div class="promo-row"><span>Pompe de puisard 1/2 HP</span><b>189 $</b></div>
-        <div class="promo-note">Prix nets, valables en succursale · stock limité</div>
+      <div data-reveal="up" data-delay="180">
+        <!-- Deux aperçus : une réponse sourcée, puis un refus. La promesse est
+             montrée avant d'être écrite. -->
+        <div class="peek" data-spot>
+          <span class="peek__tag">Une réponse</span>
+          <div class="peek__q">
+            <b aria-hidden="true">?</b>
+            <span>Quels sont les honoraires pour la vente d'un bien à 300 000 € par l'agence de Blois ?</span>
+          </div>
+          <div class="peek__a">
+            L'agence de Blois relève de la <strong>zone B</strong>. Pour la tranche
+            250 001 à 400 000 €, le taux applicable est de <strong>4,2 %</strong>.
+            <span class="peek__src">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>
+              Barème des honoraires 2026 · page 1
+            </span>
+          </div>
+        </div>
+
+        <div class="peek peek--refus" data-spot>
+          <span class="peek__tag">Et quand l'information n'y est pas</span>
+          <div class="peek__q">
+            <b aria-hidden="true">?</b>
+            <span>Quels sont vos tarifs de syndic de copropriété ?</span>
+          </div>
+          <div class="peek__a">
+            Cette information ne figure pas dans les documents fournis : le réseau n'exerce
+            pas d'activité de syndic. <strong>Je préfère ne pas répondre</strong> plutôt que
+            de vous donner un chiffre.
+          </div>
+        </div>
       </div>
+    </div>
+
+    <div class="facts" data-reveal="up" data-delay="120">
+      <div><span class="num">6</span><span class="num-lbl">agences<br>Centre-Val de Loire</span></div>
+      <div><span class="num">6</span><span class="num-lbl">documents<br>chargés</span></div>
+      <div><span class="num">15</span><span class="num-lbl">pages<br>au total</span></div>
+      <div><span class="num">1</span><span class="num-lbl">source citée<br>à chaque réponse</span></div>
     </div>
   </div>
 </section>
 
-<!-- =============================== TRUST =============================== -->
-<div class="trust">
-  <div class="trust__in" data-stagger="80" data-reveal="fade">
-    <div class="trust__it">
-      <svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"/><path d="M16 8h4l3 3v5h-7z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
-      <div><b><span data-count="24">24</span> h</b><span>livraison · rayon de 60 km</span></div>
-    </div>
-    <div class="trust__it">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
-      <div><b><span data-count="2">2</span> h</b><span>ramassage au comptoir</span></div>
-    </div>
-    <div class="trust__it">
-      <svg viewBox="0 0 24 24"><path d="M12 2 4 6v6c0 5 3.4 8 8 10 4.6-2 8-5 8-10V6z"/><path d="m9 12 2 2 4-4"/></svg>
-      <div><b>Jusqu'à <span data-count="10">10</span> ans</b><span>garanties fabricant</span></div>
-    </div>
-    <div class="trust__it">
-      <svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
-      <div><b><span data-count="3200" data-suffix="+">3 200+</span></b><span>produits en inventaire</span></div>
+<!-- ========================= BANDEAU DES DOCUMENTS ======================== -->
+<div class="strip" aria-hidden="true">
+  <div class="marquee">
+    <div class="marquee__track">
+      <span class="strip__item"><i></i>Barème des honoraires 2026</span>
+      <span class="strip__item"><i></i>Guide des mandats</span>
+      <span class="strip__item"><i></i>Diagnostics obligatoires</span>
+      <span class="strip__item"><i></i>De la prise de mandat à l'acte</span>
+      <span class="strip__item"><i></i>FAQ clients</span>
+      <span class="strip__item"><i></i>Manuel interne des conseillers</span>
+      <span class="strip__item"><i></i>Barème des honoraires 2026</span>
+      <span class="strip__item"><i></i>Guide des mandats</span>
+      <span class="strip__item"><i></i>Diagnostics obligatoires</span>
+      <span class="strip__item"><i></i>De la prise de mandat à l'acte</span>
+      <span class="strip__item"><i></i>FAQ clients</span>
+      <span class="strip__item"><i></i>Manuel interne des conseillers</span>
     </div>
   </div>
 </div>
 
-<!-- ============================ CATÉGORIES ============================= -->
-<section class="band" id="categories">
+<!-- =============================== ASSISTANT ============================== -->
+<section class="band chat" id="assistant">
   <div class="shell">
-    <div class="sec-head">
-      <div>
-        <p class="eyebrow" data-reveal="fade">Nos rayons</p>
-        <h2 class="h2" data-reveal="fade" data-split>Tout ce qui fait tourner un chantier.</h2>
-      </div>
-      <a class="link" href="#produits" data-reveal="up" data-delay="120">Tout voir
-        <svg viewBox="0 0 24 24"><path d="M5 12h13"/><path d="m12 5 7 7-7 7"/></svg></a>
-    </div>
+    <div class="chat__grid">
 
-    <div class="cat-grid">
-      <a class="cat" href="#produits" data-reveal="up">
-        <img src="/img/technicien.jpg" alt="Technicien intervenant sur un appareil" loading="lazy">
-        <span class="cat__veil"></span>
-        <span class="cat__go"><svg viewBox="0 0 24 24"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg></span>
-        <span class="cat__txt"><small>01</small><b>Thermopompes</b><p>Murales et centrales, jusqu'à -25 °C</p></span>
-      </a>
-      <a class="cat" href="#produits" data-reveal="up" data-delay="90">
-        <img src="/img/atelier.jpg" alt="Mains travaillant sur un appareil ouvert" loading="lazy">
-        <span class="cat__veil"></span>
-        <span class="cat__go"><svg viewBox="0 0 24 24"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg></span>
-        <span class="cat__txt"><small>02</small><b>Chauffe-eau</b><p>Électriques, au gaz, instantanés</p></span>
-      </a>
-      <a class="cat" href="#produits" data-reveal="up" data-delay="180">
-        <img src="/img/soudure.jpg" alt="Soudure en atelier" loading="lazy">
-        <span class="cat__veil"></span>
-        <span class="cat__go"><svg viewBox="0 0 24 24"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg></span>
-        <span class="cat__txt"><small>03</small><b>Plomberie</b><p>PEX, valves, pompes, raccords</p></span>
-      </a>
-      <a class="cat" href="#produits" data-reveal="up" data-delay="270">
-        <img src="/img/moteur.jpg" alt="Entretien d'un équipement mécanique" loading="lazy">
-        <span class="cat__veil"></span>
-        <span class="cat__go"><svg viewBox="0 0 24 24"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg></span>
-        <span class="cat__txt"><small>04</small><b>Ventilation</b><p>VRC, hottes, échangeurs d'air</p></span>
-      </a>
+      <div class="chat__aside">
+        <p class="eyebrow" data-reveal="fade">Posez-lui une question</p>
+        <h2 class="h2" data-reveal="fade" data-split>Parlez-lui comme à un conseiller qui aurait tout relu.</h2>
+
+        <ul class="chat__rules" data-reveal="up" data-delay="140">
+          <li>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>
+            <span><b>Il cite le document source.</b> Chaque réponse indique le document et la
+            page où l'information a été trouvée, pour que vous puissiez la vérifier.</span>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z"/><path d="M12 8v5"/><path d="M12 16.5h.01"/></svg>
+            <span><b>Il refuse quand l'information ne figure pas dans les documents.</b>
+            Il le dit clairement, au lieu de combler le vide.</span>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <span><b>Il garde le fil.</b> Vous pouvez enchaîner : « et en location ? »,
+            « et pour Chartres ? ».</span>
+          </li>
+        </ul>
+
+        <div class="tries" data-reveal="up" data-delay="200">
+          <p class="tries__ttl">Trois questions pour commencer</p>
+          <button class="try" type="button" data-question="Un bien est vendu 70 000 € par l'agence de Vendôme. Quels honoraires ?">
+            <em>Barème —</em> Un bien est vendu 70 000 € par l'agence de Vendôme. Quels honoraires ?
+          </button>
+          <button class="try" type="button" data-question="Combien de temps le diagnostic de l'installation électrique est-il valable pour une location ?">
+            <em>Diagnostics —</em> Combien de temps le diagnostic de l'installation électrique est-il valable pour une location ?
+          </button>
+          <button class="try" type="button" data-question="Quels sont vos tarifs de syndic de copropriété ?">
+            <em>Hors périmètre —</em> Quels sont vos tarifs de syndic de copropriété ?
+          </button>
+        </div>
+      </div>
+
+      <div data-reveal="up" data-delay="120">
+        <div class="chatbox">
+          <!-- Porte d'accès : le code est conservé par le navigateur du visiteur. -->
+          <div class="gate" id="gate">
+            <div>
+              <div class="gate__lock" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><rect x="4" y="10.5" width="16" height="10.5" rx="2.4"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg>
+              </div>
+              <h3>L'assistant est protégé par un code</h3>
+              <p>Saisissez le code d'accès qui vous a été communiqué. Il reste dans
+                 votre navigateur ; vous ne le retaperez pas à la prochaine visite.</p>
+              <form id="gate-form" autocomplete="off" novalidate>
+                <label for="code-acces">Code d'accès</label>
+                <input id="code-acces" name="code-acces" type="password" inputmode="text"
+                       autocomplete="current-password" placeholder="Votre code" required>
+                <button class="btn btn--sig" type="submit" id="gate-go" data-magnetic="0.2">
+                  <span>Ouvrir l'assistant</span>
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13"/><path d="m12 5 7 7-7 7"/></svg>
+                </button>
+              </form>
+              <p class="gate__msg" id="gate-msg" role="status" aria-live="polite"></p>
+              <noscript>
+                <p class="nojs">L'assistant a besoin de JavaScript pour fonctionner.
+                   Le reste de la page — les documents chargés et le périmètre de
+                   l'assistant — reste consultable sans lui.</p>
+              </noscript>
+            </div>
+          </div>
+
+          <!-- Le widget vient s'installer ici une fois le code accepté. -->
+          <div class="chat__cible" id="chat-cible" hidden></div>
+        </div>
+
+        <p class="chat__note">
+          <span><b>Horizon Immobilier est un réseau fictif</b> — ses documents ont été écrits
+            pour cette démonstration.</span>
+          <button class="reset" type="button" id="chat-reset" hidden>Changer de code</button>
+        </p>
+      </div>
+
     </div>
   </div>
 </section>
 
-<!-- ============================= PRODUITS ============================== -->
-<section class="band" id="produits" style="padding-top:0;">
+<!-- =============================== DOCUMENTS ============================== -->
+<section class="band paper" id="documents">
   <div class="shell">
-    <div class="sec-head">
-      <div>
-        <p class="eyebrow" data-reveal="fade">Le plus demandé</p>
-        <h2 class="h2" data-reveal="fade" data-split>Produits populaires</h2>
-      </div>
-      <a class="link" href="#" data-reveal="up" data-delay="120">Voir le catalogue complet
-        <svg viewBox="0 0 24 24"><path d="M5 12h13"/><path d="m12 5 7 7-7 7"/></svg></a>
+    <p class="eyebrow" data-reveal="fade">Le corpus chargé</p>
+    <h2 class="h2" data-reveal="fade" data-split>Six documents, <span class="mark">rien d'autre</span>.</h2>
+
+    <div class="docs">
+      <article class="card doc" data-spot data-reveal="up">
+        <span class="doc__no">01</span>
+        <h3>Barème des honoraires 2026</h3>
+        <p>Transaction, location, gestion locative. Six tableaux, par zone et par tranche
+           de prix, avec les prestations facturées à l'unité.</p>
+        <span class="doc__file">01_bareme-honoraires-2026.pdf</span>
+      </article>
+
+      <article class="card doc" data-spot data-reveal="up" data-delay="80">
+        <span class="doc__no">02</span>
+        <h3>Guide des mandats</h3>
+        <p>Mandat simple, semi-exclusif, exclusif : durée, reconduction, engagements de
+           chaque partie et délais de rétractation à ne pas confondre.</p>
+        <span class="doc__file">02_guide-des-mandats.pdf</span>
+      </article>
+
+      <article class="card doc" data-spot data-reveal="up" data-delay="160">
+        <span class="doc__no">03</span>
+        <h3>Diagnostics obligatoires</h3>
+        <p>Durées de validité en vente et en location, audit énergétique, seuils du DPE
+           et interdictions de mise en location.</p>
+        <span class="doc__file">03_diagnostics-obligatoires.pdf</span>
+      </article>
+
+      <article class="card doc" data-spot data-reveal="up">
+        <span class="doc__no">04</span>
+        <h3>De la prise de mandat à l'acte</h3>
+        <p>La procédure interne en six étapes : estimation, publication de l'annonce,
+           visites, offre, compromis, obligations de vigilance.</p>
+        <span class="doc__file">04_procedure-de-la-prise-de-mandat-a-l-acte.pdf</span>
+      </article>
+
+      <article class="card doc" data-spot data-reveal="up" data-delay="80">
+        <span class="doc__no">05</span>
+        <h3>FAQ clients</h3>
+        <p>Les questions que posent les vendeurs, les acquéreurs et les locataires,
+           avec la réponse tenue par le réseau.</p>
+        <span class="doc__file">05_faq-clients.pdf</span>
+      </article>
+
+      <article class="card doc" data-spot data-reveal="up" data-delay="160">
+        <span class="doc__no">06</span>
+        <h3>Manuel interne des conseillers</h3>
+        <p>Rétrocession, primes, organisation des permanences, déontologie et
+           formation continue. Réservé aux équipes.</p>
+        <span class="doc__file">06_manuel-interne-des-conseillers.pdf</span>
+      </article>
     </div>
-    <div class="prod-grid" id="products"></div>
+
+    <p class="docs__foot" data-reveal="up">
+      Quinze pages en tout. L'assistant ne connaît que ce corpus : ajoutez un document,
+      il en tient compte ; retirez-le, il cesse de s'en servir. Sur un vrai réseau, ce sont
+      vos propres fichiers qui prennent cette place.
+    </p>
   </div>
 </section>
 
-<!-- ============================= COMPTOIR ============================== -->
-<section class="band comptoir" style="background:var(--ink-850);">
-  <div class="shell">
-    <div class="comptoir__grid">
-      <div style="position:relative">
-        <div class="comptoir__media" data-reveal="mask">
-          <img src="/img/palettes.jpg" alt="Entrepôt de distribution rempli de palettes" loading="lazy">
-        </div>
-        <div class="comptoir__small" data-reveal="mask" data-delay="220">
-          <img src="/img/comptoir.jpg" alt="Allées de stockage d'un entrepôt" loading="lazy">
-        </div>
+<!-- ================================ LIMITES =============================== -->
+<section class="band" id="limites">
+  <div class="shell shell--tight">
+    <p class="eyebrow" data-reveal="fade">Le périmètre, annoncé</p>
+    <h2 class="h2" data-reveal="fade" data-split>Ce qu'il sait faire, ce qu'il ne fait pas.</h2>
+
+    <div class="lim">
+      <div class="lim__col lim__col--yes" data-reveal="up">
+        <h3><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg> Ce qu'il sait faire</h3>
+        <ul>
+          <li>Retrouver une valeur dans un tableau à plusieurs entrées : la zone de l'agence,
+              la tranche de prix, le type de bien.</li>
+          <li>Distinguer deux règles voisines — la validité d'un diagnostic n'est pas la même
+              en vente et en location.</li>
+          <li>Croiser deux documents lorsque la réponse n'est écrite en entier dans aucun
+              des deux.</li>
+          <li>Indiquer le document et la page d'où vient la réponse.</li>
+          <li>Enchaîner les questions en gardant le contexte de la précédente.</li>
+        </ul>
       </div>
-      <div>
-        <p class="eyebrow" data-reveal="fade">Notre promesse</p>
-        <h2 class="h2" data-reveal="fade" data-split>Sorti de l'entrepôt avant votre deuxième café.</h2>
-        <ul data-stagger="90">
-          <li>Commande passée avant 15 h : <b>ramassage au comptoir en 2 h</b>.</li>
-          <li>Livraison locale <b>le lendemain</b>, dans un rayon de 60 km.</li>
-          <li>Rupture de stock ? <b>Un équivalent vous est proposé tout de suite.</b></li>
-          <li>Prix entrepreneur affichés nets — <b>jamais de surprise en caisse</b>.</li>
+
+      <div class="lim__col lim__col--no" data-reveal="up" data-delay="120">
+        <h3><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8.5 12h7"/></svg> Ce qu'il ne fait pas</h3>
+        <ul>
+          <li>Il ne répond que sur les six documents chargés. En dehors, il refuse quand
+              l'information ne figure pas dans les documents.</li>
+          <li>Il n'a accès ni au logiciel de transaction, ni au fichier des biens, ni aux
+              dossiers clients.</li>
+          <li>Il ne donne pas de conseil juridique et ne remplace ni le notaire ni le
+              conseiller.</li>
+          <li>Il ne rédige pas les actes et ne signe rien.</li>
+          <li>Sur une question mal posée, il peut se tromper : la source citée est là pour
+              être ouverte au moindre doute.</li>
         </ul>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ============================== CHIFFRES ============================= -->
-<div class="band band--tight band-stats">
-  <div class="band-stats__bg" data-parallax="0.08">
-    <img src="/img/chantier.jpg" alt="" loading="lazy">
-  </div>
-  <div class="band-stats__veil"></div>
-  <div class="band-stats__in shell">
-    <div class="stats">
-      <div class="stat" data-reveal="up">
-        <div class="v"><b data-count="18">18</b><i>ans</i></div>
-        <span class="num-lbl">au service des entrepreneurs</span>
-      </div>
-      <div class="stat" data-reveal="up" data-delay="90">
-        <div class="v"><b data-count="4200">4 200</b></div>
-        <span class="num-lbl">comptes commerciaux actifs</span>
-      </div>
-      <div class="stat" data-reveal="up" data-delay="180">
-        <div class="v"><b data-count="2">2</b><i>h</i></div>
-        <span class="num-lbl">ramassage au comptoir</span>
-      </div>
-      <div class="stat" data-reveal="up" data-delay="270">
-        <div class="v"><b data-count="60">60</b><i>km</i></div>
-        <span class="num-lbl">livraison locale gratuite*</span>
-      </div>
-    </div>
-  </div>
-</div>
+</main>
 
-<!-- =========================== TÉMOIGNAGES ============================= -->
-<section class="band">
-  <div class="shell">
-    <div class="sec-head">
-      <div>
-        <p class="eyebrow" data-reveal="fade">Sur le terrain</p>
-        <h2 class="h2" data-reveal="fade" data-split>Ce que disent les entrepreneurs</h2>
-      </div>
-    </div>
-    <div class="tgrid" data-stagger="110" data-reveal="fade">
-      <div class="tcard" data-spot>
-        <div class="stars">★★★★★</div>
-        <p>« Le comptoir est prêt en deux heures, comme promis. Ça change tout quand on est sur un chantier. »</p>
-        <div class="who"><div class="av">MT</div><div><b>Martin T.</b><span>Plomberie Rive-Nord</span></div></div>
-      </div>
-      <div class="tcard" data-spot>
-        <div class="stars">★★★★★</div>
-        <p>« Prix entrepreneur clairs, jamais de surprise. L'ouverture de compte a pris deux jours. »</p>
-        <div class="who"><div class="av">SG</div><div><b>Sophie G.</b><span>Confort CVC inc.</span></div></div>
-      </div>
-      <div class="tcard" data-spot>
-        <div class="stars">★★★★★</div>
-        <p>« Bon inventaire, et quand un produit manque ils proposent un équivalent tout de suite. »</p>
-        <div class="who"><div class="av">KL</div><div><b>Karl L.</b><span>Entretien KL</span></div></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============================ ASSISTANCE ============================= -->
-<section class="band assist" id="assistance">
-  <div class="assist__bg" data-parallax="0.06"><img src="/img/texture.jpg" alt="" loading="lazy"></div>
-  <div class="assist__in shell">
-    <div class="assist__head">
-      <p class="eyebrow" data-reveal="fade">Assistance</p>
-      <h2 class="h2" data-reveal="fade" data-split>Une question sur un produit, une garantie, un retour ?</h2>
-      <p class="lead" style="margin-top:20px" data-reveal="up" data-delay="140">
-        Notre assistant répond à partir de nos documents, source à l'appui.
-      </p>
-    </div>
-    <div id="inline-host"></div>
-  </div>
-</section>
-
-<!-- =============================== FOOTER ============================== -->
+<!-- ================================= PIED ================================= -->
 <footer class="foot">
   <div class="shell">
-    <div class="foot__cols">
-      <div>
-        <div class="logo">Boréale <em>Équipement</em></div>
-        <p>Distributeur d'équipement CVC et plomberie pour entrepreneurs. Laval, Québec.</p>
-        <p>450 555-0170 · service@boreale-equipement.ca</p>
+    <div class="foot__top">
+      <p class="foot__claim" data-reveal="fade" data-split>La réponse est déjà écrite quelque part.</p>
+      <div data-reveal="up" data-delay="120">
+        <p class="lead" style="margin-bottom:24px">Le même assistant peut être installé sur les
+          documents de votre entreprise, quels qu'ils soient.</p>
+        <a class="btn btn--paper" href="https://assistant-documentaire.com" rel="noopener" data-magnetic="0.2">
+          <span>assistant-documentaire.com</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
       </div>
-      <div><h4>Produits</h4><ul>
-        <li><a href="#categories">Thermopompes</a></li><li><a href="#categories">Chauffe-eau</a></li>
-        <li><a href="#categories">Plomberie</a></li><li><a href="#categories">Ventilation</a></li></ul></div>
-      <div><h4>Compte</h4><ul>
-        <li><a href="#">Ouvrir un compte</a></li><li><a href="#">Mes commandes</a></li>
-        <li><a href="#">Prix entrepreneur</a></li><li><a href="#">Facturation</a></li>
-        <li><a href="/gestion.html">Gérer les documents</a></li></ul></div>
-      <div><h4>Aide</h4><ul>
-        <li><a href="#">Livraison</a></li><li><a href="#">Garanties &amp; retours</a></li>
-        <li><a href="#">FAQ</a></li><li><a href="#assistance">Nous joindre</a></li></ul></div>
     </div>
-    <div class="foot__legal">Maquette de démonstration — le site et l'entreprise sont fictifs.
-      L'assistant, lui, est réel et répond sur de vrais documents.</div>
+
+    <div class="fictif">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 9v4"/><path d="M12 16.5h.01"/><path d="M10.3 3.9 2.5 17.4A2 2 0 0 0 4.2 20.4h15.6a2 2 0 0 0 1.7-3l-7.8-13.5a2 2 0 0 0-3.4 0z"/></svg>
+      <p><b>Horizon Immobilier est un réseau d'agences fictif.</b> Ses six documents — barème,
+        mandats, diagnostics, procédure, FAQ, manuel interne — ont été écrits pour cette
+        démonstration : aucun n'appartient à une entreprise réelle, et aucune agence de ce nom
+        n'existe. Le cadre réglementaire cité (mandats, diagnostics, honoraires de location)
+        est en revanche réel, vérifié en août 2026.</p>
+    </div>
+
+    <div class="foot__bar">
+      <span>Démonstration · Horizon Immobilier (fictif)</span>
+      <span><a href="https://assistant-documentaire.com" rel="noopener">Assistant documentaire — France</a></span>
+    </div>
   </div>
 </footer>
 
-<!-- ========================= CONTRÔLE DE DÉMO ========================== -->
-<div id="demo-ctrl">
-  <span class="lbl">Affichage</span>
-  <div class="grp" id="switch">
-    <button data-mode="floating" class="active" type="button">Bulle</button>
-    <button data-mode="inline" type="button">Intégré</button>
-    <button data-mode="fullscreen" type="button">Plein écran</button>
-  </div>
-</div>
-
-<script src="/lenis.min.js"></script>
-<script src="/motion.js"></script>
-<script src="/widget.js"></script>
+<script src="lenis.min.js"></script>
+<script src="motion.js"></script>
+<script src="widget.js"></script>
 <script>
-  // Produits (issus du catalogue) — vignettes colorées par catégorie
-  const PRODUCTS = [
-    { n:"Thermopompe murale 24 000 BTU", sku:"BOR-TP24", s:"SEER2 20,5 · -25 °C · R-32", p:"1 890", c:"#1c4e80", ic:'<rect x="2" y="4" width="20" height="12" rx="2"/><path d="M6 20h.01M10 20h.01M14 20h.01M18 20h.01"/>' },
-    { n:"Chauffe-eau instantané au gaz", sku:"BOR-CEI", s:"9,8 GPM · 11 000–199 000 BTU/h", p:"1 340", c:"#b06a12", ic:'<path d="M12 2v6M12 22a6 6 0 0 0 6-6c0-4-6-10-6-10S6 12 6 16a6 6 0 0 0 6 6z"/>' },
-    { n:"Ventilateur récupérateur (VRC)", sku:"BOR-VRC200", s:"200 PCM · récupération 78 %", p:"1 120", c:"#2a7d6b", ic:'<circle cx="12" cy="12" r="3"/><path d="M12 4v3M12 17v3M4 12h3M17 12h3"/>' },
-    { n:"Pompe de puisard 1/2 HP fonte", sku:"BOR-POMPE05", s:"3 600 GPH · flotteur inclus", p:"189", c:"#4a5568", ic:'<path d="M4 4h4v8a4 4 0 0 0 8 0V4h4"/><path d="M12 12v8"/>' },
-    { n:"Thermopompe centrale 3 tonnes", sku:"BOR-TP36", s:"SEER2 16,0 · compat. fournaise", p:"3 250", c:"#1c4e80", ic:'<rect x="2" y="4" width="20" height="12" rx="2"/><path d="M6 20h12"/>' },
-    { n:"Chauffe-eau électrique 50 gal", sku:"BOR-CE50", s:"Double élément 4500 W · gar. 8 ans", p:"620", c:"#b06a12", ic:'<rect x="7" y="2" width="10" height="20" rx="5"/>' },
-    { n:"Tuyau PEX-a 3/4 po (100 m)", sku:"BOR-PEX34", s:"Certifié NSF · max 93 °C", p:"210", c:"#4a5568", ic:'<path d="M4 8c8 0 8 8 16 8M4 16c8 0 8-8 16-8"/>' },
-    { n:"Hotte de cuisine 30 po", sku:"BOR-HOTTE30", s:"600 PCM · évacuation ext.", p:"340", c:"#2a7d6b", ic:'<path d="M3 7h18l-2 5H5z"/><path d="M7 12v5M17 12v5"/>' },
-  ];
-  const plusSvg = '<svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>';
-  document.getElementById("products").innerHTML = PRODUCTS.map((p, i) => `
-    <article class="prod" data-reveal="up" data-delay="${(i % 4) * 80}" data-spot>
-      <div class="prod__thumb" style="background:
-          radial-gradient(120% 100% at 22% 6%, ${p.c}, transparent 64%),
-          radial-gradient(90% 90% at 92% 96%, ${p.c}88, transparent 62%),
-          linear-gradient(150deg, ${p.c}dd, ${p.c}66 118%);">
-        <span class="prod__sku">${p.sku}</span>
-        <svg viewBox="0 0 24 24">${p.ic}</svg>
-      </div>
-      <div class="prod__body">
-        <h3>${p.n}</h3>
-        <p class="prod__spec">${p.s}</p>
-        <div class="prod__foot">
-          <div class="prod__price">${p.p} $<small>prix net</small></div>
-          <button class="prod__add" type="button" title="Ajouter au panier"
-            aria-label="Ajouter ${p.n} au panier">${plusSvg}</button>
-        </div>
-      </div>
-    </article>`).join("");
+/* ---------------------------------------------------------------------------
+   Menu plein écran (petits écrans)
+   --------------------------------------------------------------------------- */
+(function () {
+  var burger = document.getElementById("burger"),
+      menu   = document.getElementById("menu"),
+      nav    = document.querySelector("[data-nav]");
+  if (!burger || !menu || !nav) return;
 
-  // Widget + sélecteur de modes
-  const buttons = document.querySelectorAll("#switch button");
-  const host = document.getElementById("inline-host");
-  /* Le défilement inertiel a la main sur la page : passer par lui, sinon
-     `scrollIntoView` est immédiatement rattrapé et le mode « Intégré » ne
-     descend jamais jusqu'à l'assistant. */
-  function amener(cible){
-    if (window.Motion && window.Motion.versElement) window.Motion.versElement(cible, 90);
-    else cible.scrollIntoView({ behavior: "smooth", block: "center" });
-  }
-  function setMode(mode){
-    DocAssistant.unmountAll();
-    host.innerHTML = "";
-    if(mode === "inline"){ DocAssistant.mount({ mode:"inline", target: host }); amener(host); }
-    else if(mode === "fullscreen"){ DocAssistant.mount({ mode:"fullscreen" }); }
-    else { DocAssistant.mount({ mode:"floating" }); }
-    buttons.forEach(b => b.classList.toggle("active", b.dataset.mode === mode));
-  }
-  buttons.forEach(b => b.addEventListener("click", () => setMode(b.dataset.mode)));
-  /* Trois issues distinctes : bon mot de passe, mauvais mot de passe, serveur
-     injoignable. Les confondre affichait « Mot de passe incorrect » alors que
-     le serveur était simplement arrêté. */
-  async function verifyPassword(pw){
-    try { const r = await fetch('/api/verify', { headers: { 'X-API-Password': pw } });
-          return r.status === 200 ? 'ok' : 'refuse'; }
-    catch(e){ return 'reseau'; }
-  }
-  function lire(cle){ try { return localStorage.getItem(cle) || ''; } catch(e){ return ''; } }
-  function ecrire(cle, v){ try { localStorage.setItem(cle, v); } catch(e){} }
-
-  /* La porte se retire en fondu plutôt que d'un coup ; le défilement reste
-     bloqué tant qu'elle est là. */
-  function ouvrirLaPorte(gate){
-    document.documentElement.classList.remove('gated');
+  function fermer() {
+    menu.classList.remove("is-open");
+    nav.classList.remove("is-open");
+    burger.setAttribute("aria-expanded", "false");
     if (window.Motion) window.Motion.start();
-    gate.classList.add('is-out');
-    setTimeout(() => gate.remove(), 800);
+  }
+  burger.addEventListener("click", function () {
+    var ouvert = menu.classList.toggle("is-open");
+    nav.classList.toggle("is-open", ouvert);
+    burger.setAttribute("aria-expanded", ouvert ? "true" : "false");
+    if (window.Motion) { ouvert ? window.Motion.stop() : window.Motion.start(); }
+  });
+  menu.addEventListener("click", function (e) { if (e.target.tagName === "A") fermer(); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") fermer(); });
+})();
+
+/* ---------------------------------------------------------------------------
+   Porte d'accès et assistant en ligne.
+
+   Le widget lit lui-même le code dans localStorage["da_api_password"] à chaque
+   requête : le rôle de cette page est de le vérifier une fois, de l'y écrire,
+   puis de monter l'assistant dans la section prévue.
+   --------------------------------------------------------------------------- */
+(function () {
+  var CLE = "da_api_password";
+
+  var gate   = document.getElementById("gate"),
+      form   = document.getElementById("gate-form"),
+      champ  = document.getElementById("code-acces"),
+      bouton = document.getElementById("gate-go"),
+      msg    = document.getElementById("gate-msg"),
+      cible  = document.getElementById("chat-cible"),
+      reset  = document.getElementById("chat-reset");
+
+  if (!gate || !form || !champ || !cible) return;
+
+  var monte = false;          // l'assistant est-il déjà en place ?
+  var enAttente = null;       // question cliquée avant l'ouverture de l'assistant
+
+  /* --- stockage : toujours enveloppé, la navigation privée le refuse ------ */
+  function lireCode() {
+    try { return localStorage.getItem(CLE) || ""; } catch (e) { return ""; }
+  }
+  function ecrireCode(v) {
+    try { localStorage.setItem(CLE, v); return true; } catch (e) { return false; }
+  }
+  function effacerCode() {
+    try { localStorage.removeItem(CLE); } catch (e) { /* rien à faire */ }
   }
 
-  async function ensureAuth(){
-    const gate = document.getElementById('auth-gate');
-    const input = document.getElementById('auth-pw');
-    const err = document.getElementById('auth-err');
-    const btn = document.getElementById('auth-btn');
-    document.documentElement.classList.add('gated');
-    if (window.Motion) window.Motion.stop();
-    const stored = lire('da_api_password');
-    if (stored && await verifyPassword(stored) === 'ok') { ouvrirLaPorte(gate); return; }
-    await new Promise(resolve => {
-      async function attempt(){
-        const pw = (input.value||'').trim();
-        if(!pw){ err.textContent = 'Entrez un mot de passe.'; return; }
-        btn.disabled = true; err.textContent = 'Vérification…';
-        const issue = await verifyPassword(pw);
-        if (issue === 'ok') { ecrire('da_api_password', pw); ouvrirLaPorte(gate); resolve(); return; }
-        btn.disabled = false;
-        err.textContent = issue === 'reseau'
-          ? "Serveur injoignable. Vérifiez qu'il est démarré, puis réessayez."
-          : 'Mot de passe incorrect.';
-        input.select();
-      }
-      btn.onclick = attempt;
-      input.addEventListener('keydown', e => { if(e.key==='Enter') attempt(); });
-      input.focus();
-    });
+  function etat(texte, type) {
+    if (!msg) return;
+    msg.textContent = texte || "";
+    if (type) { msg.setAttribute("data-etat", type); }
+    else { msg.removeAttribute("data-etat"); }
   }
-  ensureAuth().then(() => setMode("floating"));
+
+  /* --- vérification du code auprès de l'instance -------------------------- */
+  function verifier(code) {
+    return fetch("/api/verify", { headers: { "X-API-Password": code } })
+      .then(function (r) { return r.status === 200; });
+  }
+
+  /* --- montage de l'assistant -------------------------------------------- */
+  function monterAssistant() {
+    if (monte || !window.DocAssistant) return;
+    gate.hidden = true;
+    cible.hidden = false;
+    window.DocAssistant.mount({
+      mode: "inline",
+      apiBase: "",
+      assistantName: "Assistant Horizon",
+      clientName: "Horizon Immobilier",
+      examples: [
+        "Un bien est vendu 70 000 € par l'agence de Vendôme. Quels honoraires ?",
+        "Combien de temps le diagnostic de l'installation électrique est-il valable pour une location ?",
+        "Un propriétaire a signé le mandat chez lui. Peut-il revenir dessus et sous quel délai ?",
+        "Quels sont vos tarifs de syndic de copropriété ?"
+      ],
+      target: cible
+    });
+    monte = true;
+    if (reset) reset.hidden = false;
+    if (enAttente) { var q = enAttente; enAttente = null; poser(q); }
+  }
+
+  /* --- retour à la porte d'accès ----------------------------------------- */
+  function redemanderCode(message) {
+    effacerCode();
+    if (window.DocAssistant) window.DocAssistant.unmountAll();
+    monte = false;
+    cible.innerHTML = "";
+    cible.hidden = true;
+    gate.hidden = false;
+    if (reset) reset.hidden = true;
+    champ.value = "";
+    etat(message || "", message ? "erreur" : null);
+    champ.focus();
+  }
+
+  /* --- envoi d'une question depuis un exemple de la page ----------------- */
+  function poser(question) {
+    var zone = cible.querySelector("textarea");
+    if (!zone) return;
+    zone.value = question;
+    zone.dispatchEvent(new Event("input", { bubbles: true }));
+    var envoyer = cible.querySelector(".da-send");
+    if (envoyer) { envoyer.click(); } else { zone.focus(); }
+  }
+
+  /* --- soumission du code ------------------------------------------------ */
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var code = (champ.value || "").trim();
+    if (!code) { etat("Entrez le code d'accès.", "erreur"); champ.focus(); return; }
+
+    bouton.disabled = true;
+    etat("Vérification en cours…");
+
+    verifier(code).then(function (ok) {
+      bouton.disabled = false;
+      if (!ok) { etat("Ce code n'est pas reconnu.", "erreur"); champ.select(); return; }
+      if (!ecrireCode(code)) {
+        etat("Votre navigateur bloque le stockage local : l'assistant ne peut pas " +
+             "conserver le code. Désactivez la navigation privée, puis réessayez.", "erreur");
+        return;
+      }
+      etat("");
+      monterAssistant();
+    }).catch(function () {
+      bouton.disabled = false;
+      etat("L'assistant est injoignable pour le moment. Réessayez dans un instant.", "erreur");
+    });
+  });
+
+  /* --- lien discret « changer de code » ---------------------------------- */
+  if (reset) {
+    reset.addEventListener("click", function () { redemanderCode(""); });
+  }
+
+  /* --- exemples cliquables de la page ------------------------------------ */
+  Array.prototype.forEach.call(document.querySelectorAll(".try"), function (b) {
+    b.addEventListener("click", function () {
+      var question = b.getAttribute("data-question");
+      if (monte) { poser(question); return; }
+      enAttente = question;                       // posée dès que le code est accepté
+      etat("Entrez le code d'accès : la question part ensuite toute seule.");
+      champ.focus();
+    });
+  });
+
+  /* --- au chargement : un code déjà enregistré ouvre directement ---------- */
+  (function ouvrirSiCodeConnu() {
+    var code = lireCode();
+    if (!code) return;
+    etat("Ouverture de l'assistant…");
+    verifier(code).then(function (ok) {
+      if (ok) { etat(""); monterAssistant(); }
+      else { redemanderCode("Le code enregistré n'est plus valable. Saisissez-en un nouveau."); }
+    }).catch(function () {
+      etat("L'assistant est injoignable pour le moment. Réessayez dans un instant.", "erreur");
+    });
+  })();
+})();
 </script>
 </body>
 </html>

@@ -505,10 +505,10 @@ CONTEXTUALIZE_PROMPT = (
     "réécrite, sans préambule ni guillemets.\n\n"
     "Exemple :\n"
     "Historique :\n"
-    "Utilisateur : Quel est le prix du chauffe-eau instantané au gaz BOR-CEI ?\n"
-    "Assistant : Il est à 1 340 $ net.\n"
-    "Dernière question : et sa garantie ?\n"
-    "Réécriture : Quelle est la garantie du chauffe-eau instantané au gaz BOR-CEI ?"
+    "Utilisateur : Quel est le taux d'honoraires pour une vente en mandat exclusif ?\n"
+    "Assistant : Il est de 4,5 % du prix de vente, honoraires à la charge du vendeur.\n"
+    "Dernière question : et en mandat simple ?\n"
+    "Réécriture : Quel est le taux d'honoraires pour une vente en mandat simple ?"
 )
 
 

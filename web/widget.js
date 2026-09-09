@@ -354,11 +354,13 @@
   const ICON_SEND = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg>';
   const ICON_FILE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>';
 
+  /* Exemples neutres : ils s'affichent tant que l'intégration ne fournit pas
+     d'`examples` propres au client. Aucune référence à un secteur, aucun prix. */
   const DEFAULT_EXAMPLES = [
-    "Combien de semaines de vacances après 5 ans d'ancienneté ?",
-    "La garantie du compresseur d'une thermopompe BOR-TP24 est de combien ?",
-    "Quel est le prix net d'un chauffe-eau instantané au gaz ?",
-    "Comment retourner un produit acheté il y a 45 jours ?"
+    "Quelle est la procédure à suivre dans ce cas ?",
+    "Que dit le document sur les délais ?",
+    "Quelles pièces dois-je fournir ?",
+    "Où trouver la version à jour de ce document ?"
   ];
 
   /* Messages d'erreur : toujours une phrase en français qui dit quoi faire. */

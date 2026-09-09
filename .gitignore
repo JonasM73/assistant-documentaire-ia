@@ -5,24 +5,36 @@
 
 # Environnement Python
 venv/
+.venv/
 __pycache__/
 *.pyc
 
 # Index vectoriel : données, pas du code. Vit sur le volume persistant (Railway).
 chroma_db/
 
-# Documents uploadés par les clients via /admin.html (sur le volume, potentiellement confidentiels).
-# NB : ne pas ignorer le dossier des PDF de démo Boréale s'ils sont ailleurs.
+# Documents téléversés par les clients via la page de gestion
+# (sur le volume, potentiellement confidentiels).
 /data/uploads/
 
 # Journal des questions (option tableau de bord) : données d'usage, jamais dans le dépôt.
 # Chez un client, LOG_DIR pointe vers le volume persistant.
-logs/
-!logs/questions.jsonl   # jeu SYNTHÉTIQUE de démonstration du tableau de bord (tests/genere_journal_demo.py)
+#
+# ATTENTION : une négation « !logs/questions.jsonl » ne fonctionnerait PAS ici — git ne
+# réinclut pas un fichier situé sous un répertoire exclu. On exclut donc le contenu du
+# dossier, pas le dossier, ce qui permet de réinclure le jeu de démonstration.
+logs/*
+!logs/.gitkeep
+!logs/questions.jsonl
+
+# Résultats de recette : le procès-verbal est versionné (c'est une preuve datée),
+# le JSON brut ne l'est pas (il contient le texte intégral des réponses).
+tests/resultats_evaluation.json
 
 # Caches
 .pytest_cache/
+.ruff_cache/
 
 # Fichiers système
 .DS_Store
 Thumbs.db
+desktop.ini
