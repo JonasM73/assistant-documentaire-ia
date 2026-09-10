@@ -10,9 +10,17 @@ Protections, configurables via .env :
      gestion des documents. Si DEMO_PASSWORD est défini sans ADMIN_PASSWORD,
      l'administration est DÉSACTIVÉE (jamais de repli sur le mot de passe du chat).
   3. CORS : seuls les domaines listés dans ALLOWED_ORIGINS peuvent appeler l'API.
-  4. Limite de débit : RATE_LIMIT requêtes par minute et par IP sur /api/chat.
-     Derrière un proxy (Railway), l'IP réelle est lue dans X-Forwarded-For :
-     lancer uvicorn avec --proxy-headers --forwarded-allow-ips='*' (railway.json).
+     La valeur "*" est refusée au démarrage : une variable oubliée ne doit pas
+     ouvrir l'assistant d'un client à n'importe quel site.
+  4. Limite de débit : RATE_LIMIT requêtes par minute et par IP sur /api/chat,
+     ADMIN_RATE_LIMIT sur /api/admin/*. Derrière un proxy (Railway), l'IP réelle
+     est lue dans X-Forwarded-For en remontant de TRUSTED_PROXIES crans depuis la
+     fin : le début de cet en-tête est écrit par l'appelant, donc falsifiable.
+     Lancer uvicorn avec --proxy-headers --forwarded-allow-ips='*' (railway.json).
+  5. Verrou anti-force brute : au-delà de ECHECS_MAX mots de passe faux dans la
+     fenêtre, l'IP est refusée, sur le chat comme sur l'administration.
+  6. La documentation interactive (/docs, /redoc, /openapi.json) est fermée :
+     elle décrivait publiquement toutes les routes d'administration.
 
 Option tableau de bord (LOG_QUESTIONS) : journal des questions opt-in (JSONL :
 date, question, sources, refus — rien d'autre) et statistiques d'usage servies
@@ -26,6 +34,7 @@ puis ouvrir http://localhost:8000
 import os
 import re
 import glob
+import hmac
 import logging
 import sys
 import time
@@ -62,10 +71,43 @@ WEB_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "web")
 # --- Configuration lue depuis .env ---------------------------------------- #
 DEMO_PASSWORD = os.environ.get("DEMO_PASSWORD", "").strip()
 ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "").strip()
-# Domaines autorisés à appeler l'API depuis un navigateur, séparés par des virgules.
-ALLOWED_ORIGINS = [o.strip() for o in os.environ.get(
-    "ALLOWED_ORIGINS", "*").split(",") if o.strip()]
 RATE_LIMIT = os.environ.get("RATE_LIMIT", "30/minute").strip()
+ADMIN_RATE_LIMIT = os.environ.get("ADMIN_RATE_LIMIT", "60/minute").strip()
+# Nombre de proxys de confiance devant le service (Railway en place un).
+try:
+    TRUSTED_PROXIES = max(0, int(os.environ.get("TRUSTED_PROXIES", "1")))
+except ValueError:
+    TRUSTED_PROXIES = 1
+# Verrou anti-force brute : essais tolérés par IP, et durée de la fenêtre.
+ECHECS_MAX = 5
+ECHECS_FENETRE = 300.0
+
+
+def _origines_autorisees() -> list[str]:
+    """Domaines autorisés à appeler l'API depuis un navigateur.
+
+    Deux refus explicites plutôt qu'une ouverture silencieuse : « * » laisserait
+    n'importe quel site interroger l'assistant du client avec le navigateur d'un
+    visiteur, et une liste vide ne servirait à rien. Variable absente : on se
+    limite à la machine locale, ce qui suffit au développement."""
+    brut = os.environ.get("ALLOWED_ORIGINS")
+    if brut is None:
+        return ["http://localhost:8000", "http://127.0.0.1:8000"]
+    origines = [o.strip() for o in brut.split(",") if o.strip()]
+    if "*" in origines:
+        raise RuntimeError(
+            "ALLOWED_ORIGINS=* est refusé : n'importe quel site pourrait alors "
+            "interroger cet assistant depuis le navigateur d'un visiteur. "
+            "Indiquez les domaines du client, séparés par des virgules "
+            "(ex. ALLOWED_ORIGINS=https://client.fr,https://www.client.fr).")
+    if not origines:
+        raise RuntimeError(
+            "ALLOWED_ORIGINS est vide : indiquez au moins un domaine, "
+            "ou retirez la variable pour n'autoriser que la machine locale.")
+    return origines
+
+
+ALLOWED_ORIGINS = _origines_autorisees()
 
 ALLOWED_EXT = {".pdf", ".md", ".txt", ".docx"}
 try:
@@ -79,20 +121,57 @@ log = logging.getLogger("assistant")
 
 # --- Limiteur de débit par IP --------------------------------------------- #
 def _ip_client(request: Request) -> str:
-    """IP réelle du client : premier X-Forwarded-For derrière un proxy (Railway),
-    sinon l'adresse de la connexion. Sans cela, toutes les requêtes partagent
-    l'IP du proxy et la limite devient globale."""
-    xff = request.headers.get("x-forwarded-for", "")
-    if xff:
-        return xff.split(",")[0].strip()
-    return get_remote_address(request)
+    """IP réelle du client, sans laquelle toutes les requêtes partagent l'IP du
+    proxy et la limite de débit devient globale.
+
+    X-Forwarded-For se lit par la FIN : chaque proxy traversé ajoute l'adresse
+    qu'il a vue, alors que le début de l'en-tête est écrit par l'appelant lui-
+    même. Prendre le premier élément revenait à laisser n'importe qui changer
+    d'identité à chaque requête et contourner la limite avec un simple en-tête.
+    On remonte donc d'autant de crans qu'il y a de proxys de confiance
+    (TRUSTED_PROXIES) — mal réglé, ce nombre rend la limite trop stricte, jamais
+    contournable."""
+    directe = get_remote_address(request)
+    if TRUSTED_PROXIES <= 0:
+        return directe
+    chaine = [p.strip() for p in
+              request.headers.get("x-forwarded-for", "").split(",") if p.strip()]
+    if not chaine:
+        return directe
+    return chaine[max(0, len(chaine) - TRUSTED_PROXIES)]
 
 
 limiter = Limiter(key_func=_ip_client)
 
-app = FastAPI(title="Assistant documentaire — démo")
+# La documentation interactive publierait la liste complète des routes, dont
+# celles qui gèrent les documents du client : elle reste fermée.
+app = FastAPI(title="Assistant documentaire", docs_url=None, redoc_url=None,
+              openapi_url=None)
 app.state.limiter = limiter
-app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+
+def _erreur_debit(request: Request, exc: RateLimitExceeded):
+    """Même corps JSON que les autres erreurs, et une phrase en français."""
+    return _erreur("Trop de requêtes en peu de temps. Patientez une minute.", 429)
+
+
+app.add_exception_handler(RateLimitExceeded, _erreur_debit)
+
+
+@app.middleware("http")
+async def _entetes_securite(request: Request, call_next):
+    """En-têtes de sécurité sur toutes les réponses. `setdefault` : une route qui
+    a déjà posé l'en-tête garde sa valeur."""
+    reponse = await call_next(request)
+    reponse.headers.setdefault("X-Content-Type-Options", "nosniff")
+    reponse.headers.setdefault("X-Frame-Options", "DENY")
+    reponse.headers.setdefault("Referrer-Policy", "no-referrer")
+    reponse.headers.setdefault("X-Robots-Tag", "noindex, nofollow")
+    if request.url.path.startswith("/api/"):
+        reponse.headers.setdefault("Cache-Control", "no-store")
+    if request.headers.get("x-forwarded-proto") == "https" or request.url.scheme == "https":
+        reponse.headers.setdefault("Strict-Transport-Security", "max-age=31536000")
+    return reponse
 
 # --- CORS : liste blanche de domaines ------------------------------------- #
 # L'API s'authentifie par en-tête (X-API-Password), jamais par cookie : pas de
@@ -160,13 +239,63 @@ def _erreur_inattendue(request: Request, exc: Exception):
     return _erreur("Une erreur interne est survenue. Réessayez dans quelques instants.")
 
 
+# --- Mots de passe : comparaison et verrou anti-force brute --------------- #
+# Essais infructueux récents, par (porte, IP). En mémoire du processus : il n'y
+# a qu'une instance par client, et un redémarrage remet le compteur à zéro —
+# suffisant pour rendre l'essai systématique impraticable.
+_echecs: dict[tuple[str, str], list[float]] = {}
+
+
+def _mot_de_passe_valide(fourni: str | None, attendu: str) -> bool:
+    """Comparaison à durée constante. Avec `!=`, le temps de réponse varie selon
+    le nombre de caractères déjà corrects : le mot de passe se devine alors
+    lettre par lettre, sans jamais avoir à l'essayer en entier."""
+    if not attendu or not fourni:
+        return False
+    return hmac.compare_digest(fourni.encode("utf-8"), attendu.encode("utf-8"))
+
+
+def _verrou(porte: str, ip: str) -> None:
+    """Refuse la requête quand cette IP a déjà accumulé trop d'essais faux.
+    Sans ce verrou, /api/admin/* accepte un nombre illimité de tentatives sur le
+    mot de passe qui commande les documents du client."""
+    maintenant = time.time()
+    recents = [t for t in _echecs.get((porte, ip), [])
+               if maintenant - t < ECHECS_FENETRE]
+    _echecs[(porte, ip)] = recents
+    if len(recents) >= ECHECS_MAX:
+        raise HTTPException(
+            status_code=429,
+            detail="Trop de tentatives infructueuses. "
+                   "Réessayez dans quelques minutes.")
+
+
+def _echec(porte: str, ip: str) -> None:
+    """Enregistre un essai faux, et purge les IP devenues inactives pour que le
+    dictionnaire ne grossisse pas indéfiniment."""
+    maintenant = time.time()
+    for cle, essais in list(_echecs.items()):
+        if not essais or maintenant - essais[-1] >= ECHECS_FENETRE:
+            _echecs.pop(cle, None)
+    _echecs.setdefault((porte, ip), []).append(maintenant)
+
+
+def reinitialiser_verrous() -> None:
+    """Vide les compteurs d'essais (utilisé par les tests)."""
+    _echecs.clear()
+
+
 # --- Authentification chat (DEMO_PASSWORD) -------------------------------- #
-def verifier_mot_de_passe(x_api_password: str | None = Header(default=None)):
+def verifier_mot_de_passe(request: Request,
+                          x_api_password: str | None = Header(default=None)):
     """Rejette la requête si le mot de passe du chat est absent ou faux.
     Si DEMO_PASSWORD est vide, l'authentification est désactivée (local/démo)."""
     if not DEMO_PASSWORD:
         return
-    if x_api_password != DEMO_PASSWORD:
+    ip = _ip_client(request)
+    _verrou("chat", ip)
+    if not _mot_de_passe_valide(x_api_password, DEMO_PASSWORD):
+        _echec("chat", ip)
         raise HTTPException(
             status_code=401,
             detail="Non autorisé : mot de passe manquant ou incorrect "
@@ -174,7 +303,8 @@ def verifier_mot_de_passe(x_api_password: str | None = Header(default=None)):
 
 
 # --- Authentification admin (ADMIN_PASSWORD) ------------------------------ #
-def verifier_admin(x_api_password: str | None = Header(default=None)):
+def verifier_admin(request: Request,
+                   x_api_password: str | None = Header(default=None)):
     """Protège les routes admin avec ADMIN_PASSWORD (distinct du mot de passe du
     chat). Si le chat est protégé mais qu'ADMIN_PASSWORD manque, l'administration
     est fermée : le mot de passe du chat ne donne jamais l'accès admin."""
@@ -183,7 +313,10 @@ def verifier_admin(x_api_password: str | None = Header(default=None)):
             raise HTTPException(status_code=403, detail="Administration désactivée : "
                                 "définissez ADMIN_PASSWORD sur le serveur.")
         return  # ni chat ni admin protégés : usage local
-    if x_api_password != ADMIN_PASSWORD:
+    ip = _ip_client(request)
+    _verrou("admin", ip)
+    if not _mot_de_passe_valide(x_api_password, ADMIN_PASSWORD):
+        _echec("admin", ip)
         raise HTTPException(status_code=401, detail="Accès admin refusé.")
 
 
@@ -210,7 +343,8 @@ def _warmup():
         if not (ADMIN_PASSWORD or DEMO_PASSWORD):
             print("ATTENTION : aucune protection admin (ni ADMIN_PASSWORD ni DEMO_PASSWORD).")
         print(f"CORS autorisé pour : {ALLOWED_ORIGINS}")
-        print(f"Limite de débit /api/chat : {RATE_LIMIT}")
+        print(f"Limite de débit : /api/chat {RATE_LIMIT}, /api/admin/* {ADMIN_RATE_LIMIT}")
+        print(f"Proxys de confiance devant le service : {TRUSTED_PROXIES}")
         print("Journal des questions : "
               + (f"actif → {journal.chemin()}" if journal.actif() else "désactivé (LOG_QUESTIONS)"))
     except Exception as e:
@@ -218,14 +352,23 @@ def _warmup():
 
 
 @app.get("/api/health")
-def health():
-    """Non protégé : sert à vérifier que le service tourne."""
+def health(x_api_password: str | None = Header(default=None)):
+    """Sonde de vie, publique parce que l'hébergeur l'interroge sans mot de passe
+    (railway.json). Elle ne dit donc plus QUE le service tourne : la
+    configuration — fournisseurs, état des protections — dressait autrement la
+    carte du service pour n'importe qui. Le détail reste lisible avec le mot de
+    passe admin, et au démarrage dans les journaux du serveur."""
+    if not _mot_de_passe_valide(x_api_password, ADMIN_PASSWORD):
+        return {"status": "ok"}
     return {"status": "ok",
             "embeddings": rag_core.resolve_embedding_provider(),
             "llm": rag_core.resolve_llm_provider(),
             "auth": "activée" if DEMO_PASSWORD else "désactivée",
             "admin": "séparé" if ADMIN_PASSWORD else ("FERMÉ (ADMIN_PASSWORD manquant)" if DEMO_PASSWORD else "ouvert (usage local)"),
             "rate_limit": RATE_LIMIT,
+            "admin_rate_limit": ADMIN_RATE_LIMIT,
+            "trusted_proxies": TRUSTED_PROXIES,
+            "origines": ALLOWED_ORIGINS,
             "journal": "actif" if journal.actif() else "désactivé"}
 
 
@@ -260,15 +403,17 @@ def chat(request: Request, inp: ChatIn, _=Depends(verifier_mot_de_passe)):
     return {"answer": res.answer, "sources": res.sources, "chunks": res.chunks}
 
 
-# --- Routes admin : gestion des documents (ADMIN_PASSWORD) ---------------- #
+# --- Routes admin : gestion des documents (ADMIN_PASSWORD, débit limité) -- #
 @app.get("/api/admin/verify")
-def admin_verify(_=Depends(verifier_admin)):
+@limiter.limit(ADMIN_RATE_LIMIT)
+def admin_verify(request: Request, _=Depends(verifier_admin)):
     """Protégé (mot de passe admin) : renvoie 200 si bon, 401 sinon."""
     return {"ok": True}
 
 
 @app.get("/api/admin/files")
-def admin_files(_=Depends(verifier_admin)):
+@limiter.limit(ADMIN_RATE_LIMIT)
+def admin_files(request: Request, _=Depends(verifier_admin)):
     try:
         d = _data_dir()
     except OSError:
@@ -323,7 +468,9 @@ def _supprimer_silencieux(path: str) -> None:
 
 
 @app.post("/api/admin/upload")
-def admin_upload(file: UploadFile = File(...), _=Depends(verifier_admin)):
+@limiter.limit(ADMIN_RATE_LIMIT)
+def admin_upload(request: Request, file: UploadFile = File(...),
+                 _=Depends(verifier_admin)):
     nom_recu = (file.filename or "").strip()
     if not nom_recu:
         raise HTTPException(400, "Fichier sans nom : impossible à enregistrer.")
@@ -362,7 +509,8 @@ def admin_upload(file: UploadFile = File(...), _=Depends(verifier_admin)):
 
 
 @app.get("/api/admin/stats")
-def admin_stats(_=Depends(verifier_admin)):
+@limiter.limit(ADMIN_RATE_LIMIT)
+def admin_stats(request: Request, _=Depends(verifier_admin)):
     """Protégé (mot de passe admin) : statistiques d'usage tirées du journal
     des questions. Les questions sont regroupées par SENS grâce au modèle
     d'embedding local (déjà chargé pour l'index — coût zéro, rien ne sort de
@@ -385,7 +533,8 @@ def admin_stats(_=Depends(verifier_admin)):
 
 
 @app.get("/api/admin/questions")
-def admin_questions(debut: str = "", fin: str = "", q: str = "",
+@limiter.limit(ADMIN_RATE_LIMIT)
+def admin_questions(request: Request, debut: str = "", fin: str = "", q: str = "",
                     limite: int = 100, _=Depends(verifier_admin)):
     """Protégé (mot de passe admin) : recherche dans le journal des questions.
     Filtres : debut/fin (AAAA-MM-JJ, bornes incluses) et q (texte contenu
@@ -398,7 +547,9 @@ def admin_questions(debut: str = "", fin: str = "", q: str = "",
 
 
 @app.post("/api/admin/delete")
-def admin_delete(name: str = Form(...), _=Depends(verifier_admin)):
+@limiter.limit(ADMIN_RATE_LIMIT)
+def admin_delete(request: Request, name: str = Form(...),
+                 _=Depends(verifier_admin)):
     safe = _safe_name(name)
     if not (name or "").strip():
         raise HTTPException(400, "Aucun document indiqué.")

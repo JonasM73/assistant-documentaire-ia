@@ -38,11 +38,20 @@ ADD_BATCH = int(os.environ.get("ADD_BATCH", "16"))
 # Boilerplate : paragraphes répétés, sans valeur informative
 # --------------------------------------------------------------------------- #
 
+# Sert UNIQUEMENT à protéger de la détection de boilerplate une ligne répétée
+# qui porte de l'information. Ce vocabulaire vient d'une démonstration
+# abandonnée (catalogue de produits) : il ne doit plus servir à décider ce qui
+# entre dans l'index. Reste à remplacer ici aussi par une règle neutre.
 _UTILE = re.compile(
     r"\d|EUR|€|jour|mois|garantie|livraison|commande|minimale|validité|"
     r"catégorie|prix|stock|essentiel|pro|premium|délai|étape|responsable",
     re.IGNORECASE,
 )
+
+# Cellules remplies exigées pour qu'une ligne de tableau devienne une fiche.
+# En dessous, il ne reste qu'un fragment de ligne repliée, sans son libellé ou
+# sans sa valeur : l'indexer n'aide personne, et il brouille la recherche.
+CELLULES_MIN = 2
 
 
 def _boilerplate(textes_pages: list[str], seuil: float = 0.5) -> set[str]:
@@ -63,12 +72,15 @@ def _boilerplate(textes_pages: list[str], seuil: float = 0.5) -> set[str]:
 # --------------------------------------------------------------------------- #
 
 def _ligne_en_fiche(entetes: list[str], row: list[str]) -> str:
+    """Voie de repli (tableaux à filets). Retourne "" sous CELLULES_MIN."""
     paires = []
     for h, c in zip(entetes, row):
         h = (h or "").strip().replace("\n", " ")
         c = (c or "").strip().replace("\n", " ")
         if c:
             paires.append(f"{h} : {c}" if h else c)
+    if len(paires) < CELLULES_MIN:
+        return ""
     return " — ".join(paires)
 
 
@@ -119,13 +131,27 @@ def _blocs(ligne, ecart=12):
 
 
 def _bornes_colonnes(lignes, tol=8, part=0.4):
-    """Abscisses où une colonne commence, retenues si assez de lignes le confirment."""
+    """Abscisses où une colonne commence, retenues si assez de lignes le confirment.
+
+    La colonne la plus à gauche est retenue d'office. C'est celle du libellé, et
+    elle n'apparaît que sur les lignes qui ouvrent un enregistrement : dans un
+    tableau dont les libellés tiennent sur deux ou trois lignes, elle ne franchit
+    pas le seuil et se retrouve écartée. Le libellé est alors versé dans la
+    colonne suivante, ce qui donne un en-tête « Diagnostic Validité en vente » et
+    des fiches où plus rien ne dit à quel diagnostic appartient la durée :
+    « Validité en vente : Illimitée si le constat conclut à l'absence » d'un
+    côté, « Amiante » de l'autre. Constat de la recette du 10/09/2026 : le modèle
+    a alors attribué à l'amiante les 6 mois de la ligne des termites.
+    """
     compte = Counter()
     for lg in lignes:
         for b in _blocs(lg):
             compte[round(b[0]["x0"] / tol) * tol] += 1
     seuil = max(2, int(len(lignes) * part))
-    return sorted(x for x, n in compte.items() if n >= seuil)
+    bornes = {x for x, n in compte.items() if n >= seuil}
+    if compte:
+        bornes.add(min(compte))
+    return sorted(bornes)
 
 
 def _cellules(ligne, bornes):
@@ -138,11 +164,55 @@ def _cellules(ligne, bornes):
     return [" ".join(c).strip() for c in cells]
 
 
-def _fiches_par_colonnes(page) -> list[str]:
-    """Une ligne de tableau = une fiche « En-tête : valeur — En-tête : valeur ».
+def _fusion_colonnes(lignes, bornes) -> list[str]:
+    """Cellules d'une rangée, recomposées colonne par colonne.
 
-    Les lignes repliées (libellé long qui déborde sur la ligne suivante) sont
-    recollées à l'enregistrement en cours au lieu de créer une fiche orpheline.
+    Les lignes arrivent dans l'ordre du haut vers le bas, donc les morceaux
+    d'une même cellule se recollent dans l'ordre de lecture."""
+    cells = [""] * len(bornes)
+    for lg in lignes:
+        for j, c in enumerate(_cellules(lg, bornes)):
+            if c:
+                cells[j] = (cells[j] + " " + c).strip()
+    return cells
+
+
+def _rangees_de_lignes(rangees, lignes) -> list[list] | None:
+    """Répartit les lignes visuelles dans les rangées du tableau, ou None si la
+    géométrie ne colle pas (rangées absentes, ou lignes qui tombent hors de
+    toute rangée) : l'appelant se rabat alors sur le recollage de proche en
+    proche."""
+    if len(rangees) < 2:
+        return None
+    groupes = [[] for _ in rangees]
+    orphelines = 0
+    for lg in lignes:
+        centre = sum((w["top"] + w["bottom"]) / 2 for w in lg) / len(lg)
+        for i, r in enumerate(rangees):
+            if r.bbox[1] - 1 <= centre <= r.bbox[3] + 1:
+                groupes[i].append(lg)
+                break
+        else:
+            orphelines += 1
+    if orphelines > len(lignes) * 0.2 or not groupes[0]:
+        return None
+    return groupes
+
+
+def _fiches_par_colonnes(page) -> list[str]:
+    """Une RANGÉE de tableau = une fiche « En-tête : valeur — En-tête : valeur ».
+
+    Une rangée occupe souvent plusieurs lignes de texte, et le libellé n'est pas
+    forcément sur la première : dans le tableau des diagnostics, « Amiante »
+    apparaît deux lignes plus bas que le début de sa durée de validité, parce
+    que le texte est centré dans sa cellule. Recoller les lignes de proche en
+    proche coupait donc la phrase « Illimitée si le constat conclut à l'absence
+    d'amiante et a été établi à partir du 1er avril 2013 » en trois fiches, dont
+    une seule portait le mot « Amiante » — le modèle ne pouvait plus rattacher
+    la durée au bon diagnostic et lui a attribué les 6 mois des termites.
+
+    On s'appuie donc d'abord sur les rangées que pdfplumber délimite lui-même,
+    et on ne recolle de proche en proche qu'à défaut.
     """
     fiches = []
     for t in page.find_tables():
@@ -152,8 +222,16 @@ def _fiches_par_colonnes(page) -> list[str]:
         bornes = _bornes_colonnes(lignes)
         if len(bornes) < 2:
             continue
-        entetes = _cellules(lignes[0], bornes)
 
+        groupes = _rangees_de_lignes(getattr(t, "rows", None) or [], lignes)
+        if groupes:
+            entetes = _fusion_colonnes(groupes[0], bornes)
+            for g in groupes[1:]:
+                if g:
+                    fiches.append(_assembler(entetes, _fusion_colonnes(g, bornes)))
+            continue
+
+        entetes = _cellules(lignes[0], bornes)
         courant = None
         for lg in lignes[1:]:
             vals = _cellules(lg, bornes)
@@ -179,11 +257,25 @@ def _fiches_par_colonnes(page) -> list[str]:
 
 
 def _assembler(entetes: list[str], vals: list[str]) -> str:
+    """Fiche « En-tête : valeur — En-tête : valeur ».
+
+    Retourne "" sous CELLULES_MIN : l'appelant écarte alors la fiche. C'est le
+    seul critère d'entrée dans l'index — il ne regarde jamais le VOCABULAIRE de
+    la ligne. Un filtre par mots-clés écartait auparavant en silence les lignes
+    de tableau purement textuelles, par exemple « Autres agences — Mandat
+    simple : Autorisées — Mandat exclusif : Interdites », ou la ligne du barème
+    « Visite, dossier, rédaction du bail — Montant : identique au plafond
+    locataire ». Douze lignes du corpus Horizon disparaissaient ainsi, dont cinq
+    définitivement : leur zone de tableau étant retirée du texte de page, la
+    prose ne les rattrapait pas. Chez un client dont un tableau serait
+    entièrement textuel, le tableau entier manquait à l'appel."""
     paires = []
     for h, v in zip(entetes, vals):
         h, v = (h or "").strip(), (v or "").strip()
         if v:
             paires.append(f"{h} : {v}" if h else v)
+    if len(paires) < CELLULES_MIN:
+        return ""
     return " — ".join(paires)
 
 
@@ -291,8 +383,7 @@ def _chunks_pdf_pdfplumber(path: str) -> tuple[list[str], str]:
                 # grille / manuel : tableaux à en-tête, une ligne = une fiche.
                 # On reconstruit d'abord les colonnes par abscisse (tableaux sans
                 # filets) ; l'extraction native ne sert que de repli.
-                par_colonnes = [f for f in _fiches_par_colonnes(page)
-                                if _UTILE.search(f)]
+                par_colonnes = _fiches_par_colonnes(page)
                 if par_colonnes:
                     fiches.extend(par_colonnes)
                     zones_tableau = [t.bbox for t in page.find_tables()]
@@ -303,7 +394,7 @@ def _chunks_pdf_pdfplumber(path: str) -> tuple[list[str], str]:
                         entetes = [(c or "").strip() for c in t[0]]
                         for row in t[1:]:
                             fiche = _ligne_en_fiche(entetes, row)
-                            if fiche and _UTILE.search(fiche):
+                            if fiche:
                                 fiches.append(fiche)
 
             txt = _texte_hors_tableaux(page, zones_tableau)

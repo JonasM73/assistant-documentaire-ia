@@ -38,3 +38,5 @@ tests/resultats_evaluation.json
 .DS_Store
 Thumbs.db
 desktop.ini
+docs/
+CLAUDE.md

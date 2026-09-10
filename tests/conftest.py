@@ -39,6 +39,8 @@ os.environ["DEMO_PASSWORD"] = "secret123"
 os.environ["ADMIN_PASSWORD"] = "admin456"
 os.environ["ALLOWED_ORIGINS"] = "https://client-autorise.com"
 os.environ["RATE_LIMIT"] = "3/minute"
+os.environ["ADMIN_RATE_LIMIT"] = "12/minute"
+os.environ["TRUSTED_PROXIES"] = "1"
 os.environ["LOG_QUESTIONS"] = "0"
 os.environ["LOG_DIR"] = tempfile.mkdtemp(prefix="journal-test-")
 os.environ["DATA_DIR"] = tempfile.mkdtemp(prefix="data-test-")
@@ -102,6 +104,7 @@ def client(monkeypatch, tmp_path):
     monkeypatch.setattr(rag_core, "answer_question", lambda *a, **k: ReponseRAGFactice())
     monkeypatch.setenv("DATA_DIR", str(tmp_path / "data"))
     server.limiter.reset()
+    server.reinitialiser_verrous()      # sinon un test de force brute verrouille les suivants
     return TestClient(server.app)
 
 

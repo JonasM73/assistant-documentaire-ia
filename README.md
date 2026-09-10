@@ -1,131 +1,111 @@
-# Assistant documentaire (démo RAG)
+# Assistant documentaire — répondre à partir de documents, sans inventer
 
-Assistant qui répond aux questions **à partir des documents d'une entreprise**, avec la **source citée** à chaque réponse. C'est le cas de démonstration à montrer en partage d'écran pendant la prospection.
+Projet personnel. Un assistant qui répond aux questions posées sur un corpus de
+documents d'entreprise (PDF, Word, texte, **tableaux compris**), en citant le
+document dont la réponse est tirée, et qui **refuse de répondre quand
+l'information n'y figure pas**.
 
-Deux jeux de démonstration sont dans le dépôt : `data-immobilier/` (**Horizon Immobilier**, réseau d'agences fictif, France — **c'est la vitrine publique**, voir `DEMO-IMMOBILIER.md`) et `data/` (Boréale Équipement, ancien jeu québécois en dollars, **plus montré nulle part** ; à remplacer par un jeu français ou à supprimer). Pour une démo client, on pointe `DATA_DIR` sur leurs documents et on relance l'ingestion — rien d'autre à changer.
+L'intérêt du projet n'est pas le chatbot — c'est le **protocole de mesure** qui
+va avec, et ce qu'il a permis de trouver.
 
-Le déploiement de référence est **Railway** (`railway.json` : commande de démarrage, sonde `/api/health`, en-têtes de proxy). Les procédures client sont dans `docs/` : ouverture des comptes, déploiement, exploitation, sauvegarde.
+---
 
-## Stack
+## Le problème
 
-- **Chroma** — base vectorielle locale et persistante (aucun service cloud à configurer).
-- **fastembed** — embeddings multilingues **locaux** par défaut (aucune clé, rien ne sort de l'instance). Bascule sur OpenAI avec `EMBEDDING_PROVIDER=openai`.
-- **Claude** ou **OpenAI** pour la génération (`LLM_PROVIDER`). Auto : Claude si seule la clé Anthropic est présente.
-- **FastAPI** — serveur : API `/api/*`, widget de chat embarquable, espace d'administration.
+Un système de question-réponse sur documents est facile à faire marcher sur une
+démonstration choisie, et très difficile à faire marcher honnêtement. Deux
+défauts sont invisibles tant qu'on ne les cherche pas : il répond quand il ne
+sait pas, et il cite une source qui ne dit pas ce qu'il affirme.
 
-Architecture RAG classique (chargement → découpage → embeddings → récupération → génération sourcée), enrichie de deux correctifs : extraction **géométrique des tableaux** (`core/ingest_ameliore.py`) et **récupération hybride** mot-clé + vectoriel (`core/recherche_hybride.py`).
+J'ai donc construit le système **et** sa recette : un jeu de 28 questions de
+contrôle sur un corpus de démonstration, avec les réponses attendues connues
+d'avance, dont cinq questions dont la réponse **n'existe pas** dans les
+documents — pour vérifier qu'il refuse au lieu de combler le vide.
 
-Aucune base de données : le journal des questions est un simple fichier **JSONL en ajout seul**.
+## Ce que la mesure a trouvé
 
-## Démarrage (5 minutes)
+C'est la partie intéressante. Les trois défauts ci-dessous étaient invisibles à
+l'usage courant : le système avait l'air de fonctionner.
 
-```bash
-# 1. Environnement
-python -m venv venv && source venv/bin/activate      # Windows : venv\Scripts\activate
-pip install -r requirements.txt
+**Les tableaux étaient lus de travers.** Les PDF utilisés n'ont aucun trait de
+séparation ; l'extracteur renvoyait alors une seule colonne par ligne, et les
+en-têtes perdaient tout lien avec les valeurs. Sur un barème à trois colonnes,
+l'assistant annonçait 5,0 % là où le document dit 4,2 % — la valeur de la ligne
+voisine. Correctif : reconstruction des colonnes à partir des **abscisses des
+mots**, avec recollage des lignes dont le libellé déborde sur la ligne suivante.
 
-# 2. Clé API (une seule suffit pour démarrer)
-cp .env.example .env       # puis éditez .env et collez votre ANTHROPIC_API_KEY
-                           # le .env est chargé automatiquement, rien d'autre à faire
+**Chaque tableau était indexé deux fois.** Une fois proprement, en fiches
+« en-tête : valeur », et une fois en vrac dans le texte de la page. Les deux
+copies se contredisaient. Tant que la recherche ne remontait que la bonne, tout
+allait bien — élargir le nombre d'extraits transmis au modèle faisait
+apparaître la mauvaise et **dégradait** le résultat. C'est ce qui a mis la
+double indexation en évidence : un réglage censé améliorer les choses les
+empirait. Correctif : les zones de tableau sont retirées du texte de page.
 
-# 3. Indexer les documents (DATA_DIR=data-immobilier pour la démo Horizon)
-python ingest.py
+**La recherche exacte ignorait les noms propres.** Elle ne se déclenchait que
+sur des identifiants (`BX-1003`, `S001`). Résultat : à la question « quels
+honoraires pour l'agence de Blois ? », le tableau qui associe Blois à sa zone
+tarifaire ne remontait jamais — il ne contient que des villes et des codes, il
+n'a presque aucune proximité sémantique avec le mot « honoraires ». Correctif :
+reconnaissance des noms propres, avec un garde-fou écartant les termes présents
+dans plus d'un quart du corpus, et un plafond d'extraits forcés.
 
-# 4. Lancer le serveur web
-python -m uvicorn server:app --reload
-```
+## Résultat
 
-- `http://localhost:8000` — site de démonstration avec l'assistant en bulle, intégré ou plein écran (protégé par `DEMO_PASSWORD` s'il est défini).
-- `http://localhost:8000/gestion.html` — espace d'administration : documents et statistiques d'usage (`ADMIN_PASSWORD`).
+Sur 28 questions de contrôle, dont 5 sans réponse possible :
 
-## Tester sans clé API
+| Réglage | Réponses exactes | Refus corrects | Réponses inventées |
+|---|---|---|---|
+| 12 extraits | 17 / 23 | 5 / 5 | **0** |
+| 20 extraits | 18 / 23 | 5 / 5 | **0** |
 
-```bash
-pip install -r requirements-dev.txt
-python -m pytest
-```
+Zéro réponse inventée aux deux réglages : après le correctif de double
+indexation, le comportement ne dépend plus du nombre d'extraits transmis.
 
-**Aucun appel réseau, aucune clé, quelques secondes.** La suite injecte un embedding déterministe et un double du cœur RAG : elle ne consomme aucun crédit d'API.
+Ce qui reste imparfait, c'est le **rappel** : sur quelques questions, le bon
+extrait existe dans l'index mais ne remonte pas, et l'assistant refuse alors
+honnêtement. Les questions qui échouent changent d'un réglage à l'autre — la
+signature d'un problème de classement, pas de véracité.
 
-| Fichier | Ce qu'il couvre |
-|---|---|
-| `tests/test_pipeline.py` | Chargement → découpage → indexation → récupération, bout en bout |
-| `tests/test_documents.py` | PDF et DOCX corrompus, encodages non UTF-8, formats inconnus, réindexation |
-| `tests/test_admin_documents.py` | Téléversement, listing, suppression et tous leurs chemins d'erreur |
-| `tests/test_journal.py` | Journal des questions : écriture, regroupement par sens, recherche |
-| `tests/test_journal_limites.py` | Journal absent, vide, tronqué, corrompu ; paramètres hostiles |
-| `tests/test_protections.py` | Authentification, CORS, limite de débit, requêtes malformées |
+*Ces chiffres valent pour ce corpus et ces 28 questions. Ils ne prédisent rien
+sur un autre jeu de documents.*
 
-Les tests travaillent **exclusivement dans des dossiers temporaires** : ni `chroma_db/`, ni `data/`, ni `logs/`, ni le `.env` ne sont touchés.
+## Comment c'est construit
 
-## Adapter à un client
+Serveur **FastAPI**. Index vectoriel **ChromaDB**. Embeddings **fastembed**
+calculés localement (`paraphrase-multilingual-MiniLM-L12-v2`), donc sans appel
+réseau ni clé pour la partie recherche. Génération par **Claude Haiku 4.5**.
+Interface de chat en JavaScript sans dépendance, intégrable en bulle flottante,
+en ligne dans une page ou en plein écran.
 
-1. Videz `data/` et déposez-y les documents du client (`.pdf`, `.docx`, `.md`, `.txt`). Ou, sans toucher au serveur : déposez-les depuis `gestion.html`, ils sont indexés à chaud.
-2. Via `.env`, ajustez `CLIENT_NAME` et `ASSISTANT_NAME`.
-3. Adaptez le cadre de comportement de l'assistant (ton, périmètre, confidentialité) : c'est le `SYSTEM_PROMPT` de `core/rag_core.py`, et rien d'autre.
-4. `python ingest.py`, puis relancez le serveur.
+Deux points de conception qui font l'essentiel du comportement :
 
-## Réglages (variables d'environnement)
+**Les sources ne sont pas écrites par le modèle.** Elles proviennent des
+métadonnées des extraits réellement récupérés. Une source ne peut donc pas être
+hallucinée — c'est une propriété de la construction, pas une consigne.
 
-| Variable | Défaut | Rôle |
-|---|---|---|
-| `ANTHROPIC_API_KEY` | — | Requis si la génération passe par Claude |
-| `OPENAI_API_KEY` | — | Requis si la génération passe par OpenAI |
-| `LLM_PROVIDER` | auto | `openai` ou `anthropic` (auto selon la clé présente) |
-| `EMBEDDING_PROVIDER` | auto | `local` (défaut, sans clé) ou `openai` |
-| `TOP_K` | `8` | Nombre d'extraits récupérés par question |
-| `CHUNK_SIZE` | `900` | Taille des chunks (caractères) |
-| `ANTHROPIC_MODEL` (ou `CLAUDE_MODEL`) | `claude-haiku-4-5` | Modèle Claude utilisé — celui de l'offre |
-| `CHUNK_OVERLAP` | `150` | Recouvrement entre chunks (caractères) |
-| `CLIENT_NAME` | `l'entreprise` | Nom du client dans l'invite système |
-| `ASSISTANT_NAME` / `ASSISTANT_CONTACT` | `Assistant documentaire` / `le service concerné` | Nom de l'assistant, service vers lequel il renvoie en cas de refus |
-| `DATA_DIR` | `data` | Dossier des documents (sur Railway : `/data/documents`, volume persistant) |
-| `CHROMA_DIR` | `chroma_db` | Dossier de l'index (sur Railway : `/data/chroma_db`) |
-| `COLLECTION_NAME` | `documents_client` | Nom de la collection Chroma |
-| `EMBED_BATCH` / `ADD_BATCH` | `8` / `16` | Tailles de lots à l'ingestion (baisser si mémoire limitée) |
-| `MAX_UPLOAD_MB` | `20` | Taille maximale d'un document téléversé |
-| `DEMO_PASSWORD` | — | Mot de passe du chat (vide = pas d'authentification, usage local) |
-| `ADMIN_PASSWORD` | — | Mot de passe de l'administration. **Obligatoire dès que `DEMO_PASSWORD` est défini** : sans lui, l'administration est fermée (aucun repli sur le mot de passe du chat) |
-| `ALLOWED_ORIGINS` | `*` | Domaines autorisés à appeler l'API (CORS). En production : le domaine du client, jamais `*` |
-| `RATE_LIMIT` | `30/minute` | Limite de débit par IP sur `/api/chat` (IP lue dans `X-Forwarded-For` derrière Railway) |
-| `LOG_QUESTIONS` | `0` | Journal des questions (opt-in strict) |
-| `LOG_DIR` | `logs` | Dossier du fichier `questions.jsonl` (sur Railway : `/data/logs`) |
+**La phrase de refus est unique**, quelle que soit la raison du refus :
+information absente, question hors sujet, tentative de détournement. Le
+comportement devient prévisible pour l'utilisateur, et vérifiable
+automatiquement par la recette. Une règle interdit par ailleurs de relier deux
+documents si un maillon manque, ou d'énoncer une justification (« parce
+que… ») qui ne figure pas telle quelle dans un extrait.
 
-## Interfaces
+Le corpus de démonstration décrit un réseau d'agences immobilières **fictif**,
+écrit pour ce projet : aucune entreprise de ce nom n'existe.
 
-Toutes les pages partagent **un seul système de design**, « Encre & Signal » :
+## Tests
 
-| Fichier | Rôle |
-|---|---|
-| `web/da.css` | Jetons (encre, papier, signal, typographie, courbes), primitives d'animation, composants communs (boutons, filets, pastilles, médias). |
-| `web/motion.js` | Moteur d'animation maison, sans dépendance obligatoire : apparitions à l'entrée dans l'écran, titres découpés mot à mot, parallaxe, compteurs, micro-interactions, en-tête réactif. |
-| `web/lenis.min.js` | Défilement inertiel (Lenis, MIT), servi en local — le site fonctionne à l'identique s'il est absent. |
-| `web/img/` | Photographies servies en local (les polices, elles, viennent de Google Fonts). |
+Une centaine de tests hors ligne, exécutables sans clé d'API : ils injectent un
+embedding déterministe et un double du cœur de recherche. Ils couvrent
+l'ingestion, le journal, les protections du serveur et le pipeline complet.
 
-Le site commercial vit dans un **dépôt séparé** (`../site-vitrine/`, déployé sur assistant-documentaire.com via Cloudflare Pages) : `da.css`, `motion.js` et `lenis.min.js` y sont **copiés à l'identique**. Toute modification doit être répercutée dans les deux dépôts.
+## Statut et réutilisation
 
-Deux exceptions assumées à la règle « aucun conteneur » : l'onglet **Statistiques** de l'administration pose ses blocs sur des cartes translucides (sans quoi on ne distingue plus un groupe de chiffres du suivant), et les **réponses du chatbot** sont dans des bulles blanches (sans quoi on ne voit plus où commence un tour de parole). Partout ailleurs, le contenu reste posé à nu sur le fond.
+**Projet personnel, présenté ici à titre de démonstration technique.** Il n'est
+ni maintenu, ni supporté, ni destiné à être déployé tel quel. Aucune clé d'API
+ni aucun secret n'a jamais été versionné dans ce dépôt.
 
-L'explorateur de questions affiche **15 questions par page** ; le serveur en renvoie au plus 500 (borne de `journal.rechercher`), la pagination est faite côté client.
-
-Le widget (`web/widget.js`) embarque sa propre feuille de style, alignée sur les mêmes valeurs mais avec des jetons préfixés `--da-` : il ne peut ni entrer en collision avec le CSS du site hôte, ni en hériter.
-
-Deux axes de variation, et deux seulement :
-
-| Axe | Attribut sur `<html>` | Qui l'utilise |
-|---|---|---|
-| **Thème** | `data-theme="clair"` (papier) · absent = sombre (encre) | Clair : vitrine Boréale, administration, widget. Sombre : site de l'offre. |
-| **Signal** | `data-skin="boreale"` (cobalt & ambre) · absent = émeraude | Cobalt : vitrine Boréale. Émeraude : le produit (assistant, administration, offre). |
-
-Le thème clair ne redéfinit que des **valeurs de jetons**, jamais des règles : toute la mise en page écrite pour le sombre fonctionne telle quelle. Les couleurs en dur sont proscrites dans les pages — on ne manipule que des rôles (`--ink-*` pour les surfaces, `--on-ink-*` pour le texte, `--tint*` pour les surfaces surélevées, `--sh-*` pour les ombres, `--on-media` pour le texte posé sur une photo).
-
-Le contenu reste lisible sans JavaScript : les états masqués sont conditionnés à une classe posée par `motion.js`, et un filet de sécurité révèle tout au bout de 3 secondes. `prefers-reduced-motion` neutralise l'ensemble des animations.
-
-## Limites (à dire au client, c'est une démo)
-
-- Pas de gestion multi-utilisateurs : un mot de passe partagé pour le chat, un pour l'administration.
-- Documents scannés non gérés (pas d'OCR) — l'assistant le dit explicitement au téléversement.
-- Pas de mise à jour incrémentale par `ingest.py` : il réindexe tout le corpus. (Le téléversement depuis `gestion.html`, lui, est bien incrémental.)
-- Formats : `.pdf`, `.docx`, `.md`, `.txt`. Ni `.doc` ancien format, ni Excel, ni boîtes mail, ni SharePoint/Drive — à dire avant le devis.
-
-Ces limites correspondent exactement au **hors-scope** de l'offre de lancement. Les lever se fait sur devis séparé.
+**Tous droits réservés.** Ce dépôt ne comporte aucune licence : le code est
+consultable, il n'est pas réutilisable — ni en l'état, ni dérivé, ni à des fins
+commerciales. Pour toute question : contact via mon profil GitHub.
