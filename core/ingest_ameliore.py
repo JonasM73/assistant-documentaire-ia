@@ -23,6 +23,7 @@ import os
 import re
 import glob
 from collections import Counter
+from itertools import groupby
 
 import pdfplumber
 
@@ -81,6 +82,111 @@ _CODE = re.compile(r"^[A-Z]{2,4}-\d{3,5}$")
 _PIED_CATALOGUE = re.compile(r"commande minimale|livraison standard|150 EUR HT", re.IGNORECASE)
 
 
+# --------------------------------------------------------------------------- #
+# Tableaux sans filets : reconstruction des colonnes par position horizontale
+# --------------------------------------------------------------------------- #
+# Constat de la recette Horizon du 09/09/2026. Les tableaux de ces PDF n'ont
+# aucun trait de séparation : pdfplumber renvoie alors UNE seule colonne par
+# ligne, et la fiche produite ressemble à
+#     « Tranche Zone A Zone B Zone C : De 250 001 € à 400 000 € 4,5 % 4,2 % 4,0 % »
+# où plus rien ne relie un en-tête à sa valeur. L'assistant a lu 5,0 % au lieu
+# de 4,2 % — la valeur de la ligne du dessus. On reconstruit donc les colonnes
+# à partir des abscisses des mots, ce qui donne
+#     « Tranche : De 250 001 € à 400 000 € — Zone A : 4,5 % — Zone B : 4,2 % … »
+
+def _lignes_de_mots(page, bbox, tol_y=2.5):
+    """Mots du tableau, regroupés en lignes visuelles."""
+    x0, t0, x1, t1 = bbox
+    mots = [m for m in page.extract_words(x_tolerance=1.5, y_tolerance=2)
+            if m["x0"] >= x0 - 2 and m["x1"] <= x1 + 2
+            and m["top"] >= t0 - 2 and m["bottom"] <= t1 + 2]
+    mots.sort(key=lambda m: (round(m["top"] / tol_y), m["x0"]))
+    return [sorted(g, key=lambda m: m["x0"])
+            for _, g in groupby(mots, key=lambda m: round(m["top"] / tol_y))]
+
+
+def _blocs(ligne, ecart=12):
+    """Découpe une ligne là où un blanc dépasse `ecart` points."""
+    blocs, cur = [], [ligne[0]]
+    for prec, m in zip(ligne, ligne[1:]):
+        if m["x0"] - prec["x1"] > ecart:
+            blocs.append(cur)
+            cur = [m]
+        else:
+            cur.append(m)
+    blocs.append(cur)
+    return blocs
+
+
+def _bornes_colonnes(lignes, tol=8, part=0.4):
+    """Abscisses où une colonne commence, retenues si assez de lignes le confirment."""
+    compte = Counter()
+    for lg in lignes:
+        for b in _blocs(lg):
+            compte[round(b[0]["x0"] / tol) * tol] += 1
+    seuil = max(2, int(len(lignes) * part))
+    return sorted(x for x, n in compte.items() if n >= seuil)
+
+
+def _cellules(ligne, bornes):
+    cells = [[] for _ in bornes]
+    for b in _blocs(ligne):
+        x = b[0]["x0"]
+        candidats = [j for j, bo in enumerate(bornes) if bo <= x + 4]
+        cells[max(candidats) if candidats else 0].append(
+            " ".join(w["text"] for w in b))
+    return [" ".join(c).strip() for c in cells]
+
+
+def _fiches_par_colonnes(page) -> list[str]:
+    """Une ligne de tableau = une fiche « En-tête : valeur — En-tête : valeur ».
+
+    Les lignes repliées (libellé long qui déborde sur la ligne suivante) sont
+    recollées à l'enregistrement en cours au lieu de créer une fiche orpheline.
+    """
+    fiches = []
+    for t in page.find_tables():
+        lignes = _lignes_de_mots(page, t.bbox)
+        if len(lignes) < 2:
+            continue
+        bornes = _bornes_colonnes(lignes)
+        if len(bornes) < 2:
+            continue
+        entetes = _cellules(lignes[0], bornes)
+
+        courant = None
+        for lg in lignes[1:]:
+            vals = _cellules(lg, bornes)
+            if not any(vals):
+                continue
+            seul_libelle = bool(vals[0]) and not any(vals[1:])
+            if courant is None:
+                courant = vals
+            elif seul_libelle and any(courant[1:]):
+                # suite du libellé d'une ligne déjà pourvue de valeurs
+                courant[0] = (courant[0] + " " + vals[0]).strip()
+            elif all(not (a and b) for a, b in zip(courant, vals)):
+                # lignes complémentaires : le libellé d'un côté, les valeurs de l'autre
+                courant = [(a or "") + (" " if a and b else "") + (b or "")
+                           for a, b in zip(courant, vals)]
+                courant = [c.strip() for c in courant]
+            else:
+                fiches.append(_assembler(entetes, courant))
+                courant = vals
+        if courant:
+            fiches.append(_assembler(entetes, courant))
+    return [f for f in fiches if f]
+
+
+def _assembler(entetes: list[str], vals: list[str]) -> str:
+    paires = []
+    for h, v in zip(entetes, vals):
+        h, v = (h or "").strip(), (v or "").strip()
+        if v:
+            paires.append(f"{h} : {v}" if h else v)
+    return " — ".join(paires)
+
+
 def _fiches_par_geometrie(page) -> list[str]:
     """Catalogue à colonnes : chaque mini-tableau (Catégorie/Prix/Stock) est
     rattaché au code produit le plus proche AU-DESSUS de lui (proximité x + y).
@@ -137,6 +243,32 @@ def chunks_pdf(path: str) -> tuple[list[str], str]:
     return rag_core.chunk_text(texte), "paragraphes (repli)"
 
 
+
+def _texte_hors_tableaux(page, bboxes) -> str:
+    """Texte de la page PRIVÉ des zones de tableau déjà converties en fiches.
+
+    Sans cela, chaque tableau est indexé deux fois : une fois proprement en
+    fiches étiquetées, une fois en vrac dans le texte de la page, où les
+    en-têtes ont perdu leur lien avec les valeurs. Les deux copies se
+    contredisent, et il suffit que la mauvaise remonte pour que l'assistant
+    lise « 5,0 % » là où le tableau dit « 4,2 % » — c'est exactement ce qui
+    s'est produit à la recette du 09/09/2026 en élargissant le top-K.
+    """
+    if not bboxes:
+        return page.extract_text() or ""
+    lignes = {}
+    for m in page.extract_words(x_tolerance=1.5, y_tolerance=2):
+        centre = (m["top"] + m["bottom"]) / 2
+        if any(t0 - 2 <= centre <= t1 + 2 for _, t0, _, t1 in bboxes):
+            continue                      # ligne appartenant à un tableau
+        lignes.setdefault(round(m["top"] / 2.5), []).append(m)
+    sortie = []
+    for cle in sorted(lignes):
+        mots = sorted(lignes[cle], key=lambda m: m["x0"])
+        sortie.append(" ".join(w["text"] for w in mots))
+    return "\n".join(sortie)
+
+
 def _chunks_pdf_pdfplumber(path: str) -> tuple[list[str], str]:
     fiches: list[str] = []
     textes_hors_tableau: list[str] = []
@@ -151,21 +283,30 @@ def _chunks_pdf_pdfplumber(path: str) -> tuple[list[str], str]:
             1 for pg in pdf.pages for w in pg.extract_words() if _CODE.match(w["text"]))
 
         for page in pdf.pages:
+            zones_tableau = []          # bboxes converties en fiches sur CETTE page
             fiches_geo = _fiches_par_geometrie(page) if codes_totaux >= 10 else []
             if fiches_geo:
                 fiches.extend(fiches_geo)
             else:
-                # grille / manuel : tableaux à en-tête, une ligne = une fiche
-                for t in page.extract_tables():
-                    if not t or len(t) < 2:
-                        continue
-                    entetes = [(c or "").strip() for c in t[0]]
-                    for row in t[1:]:
-                        fiche = _ligne_en_fiche(entetes, row)
-                        if fiche and _UTILE.search(fiche):
-                            fiches.append(fiche)
+                # grille / manuel : tableaux à en-tête, une ligne = une fiche.
+                # On reconstruit d'abord les colonnes par abscisse (tableaux sans
+                # filets) ; l'extraction native ne sert que de repli.
+                par_colonnes = [f for f in _fiches_par_colonnes(page)
+                                if _UTILE.search(f)]
+                if par_colonnes:
+                    fiches.extend(par_colonnes)
+                    zones_tableau = [t.bbox for t in page.find_tables()]
+                else:
+                    for t in page.extract_tables():
+                        if not t or len(t) < 2:
+                            continue
+                        entetes = [(c or "").strip() for c in t[0]]
+                        for row in t[1:]:
+                            fiche = _ligne_en_fiche(entetes, row)
+                            if fiche and _UTILE.search(fiche):
+                                fiches.append(fiche)
 
-            txt = page.extract_text() or ""
+            txt = _texte_hors_tableaux(page, zones_tableau)
             gardees = [l.strip() for l in txt.split("\n")
                        if l.strip() and l.strip() not in bruit]
             if gardees:

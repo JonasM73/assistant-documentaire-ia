@@ -54,6 +54,15 @@ MARQUEURS_REFUS = [
     "sort de mon", "hors de mon perimetre", "mon role est", "mon perimetre",
     "je suis l'assistant", "je suis un assistant", "je reponds uniquement",
     "je peux uniquement", "je ne reponds qu",
+    # Ajouts du 09/09/2026 — la recette Horizon a classé « halluc » un refus
+    # parfaitement valide (H01) que ces marqueurs ne reconnaissaient pas.
+    # Le correctif de fond est dans le prompt système (formule de refus
+    # désormais identique quelle que soit la raison) ; ceci reste le filet.
+    "je ne peux repondre qu", "ne peux repondre qu", "ne peux que repondre",
+    "rester dans mon role", "mon role d'assistant", "mon role de",
+    "aucun rapport avec les documents", "n'a aucun rapport",
+    "sans rapport avec les documents", "ne concerne pas les documents",
+    "n'est pas couvert par", "ne releve pas des documents",
 ]
 
 
