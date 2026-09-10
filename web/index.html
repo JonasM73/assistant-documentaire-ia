@@ -477,41 +477,20 @@
 
       <div data-reveal="up" data-delay="120">
         <div class="chatbox">
-          <!-- Porte d'accès : le code est conservé par le navigateur du visiteur. -->
-          <div class="gate" id="gate">
-            <div>
-              <div class="gate__lock" aria-hidden="true">
-                <svg viewBox="0 0 24 24"><rect x="4" y="10.5" width="16" height="10.5" rx="2.4"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg>
-              </div>
-              <h3>L'assistant est protégé par un code</h3>
-              <p>Saisissez le code d'accès qui vous a été communiqué. Il reste dans
-                 votre navigateur ; vous ne le retaperez pas à la prochaine visite.</p>
-              <form id="gate-form" autocomplete="off" novalidate>
-                <label for="code-acces">Code d'accès</label>
-                <input id="code-acces" name="code-acces" type="password" inputmode="text"
-                       autocomplete="current-password" placeholder="Votre code" required>
-                <button class="btn btn--sig" type="submit" id="gate-go" data-magnetic="0.2">
-                  <span>Ouvrir l'assistant</span>
-                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13"/><path d="m12 5 7 7-7 7"/></svg>
-                </button>
-              </form>
-              <p class="gate__msg" id="gate-msg" role="status" aria-live="polite"></p>
-              <noscript>
-                <p class="nojs">L'assistant a besoin de JavaScript pour fonctionner.
-                   Le reste de la page — les documents chargés et le périmètre de
-                   l'assistant — reste consultable sans lui.</p>
-              </noscript>
-            </div>
-          </div>
-
-          <!-- Le widget vient s'installer ici une fois le code accepté. -->
-          <div class="chat__cible" id="chat-cible" hidden></div>
+          <!-- L'assistant est monté ici au chargement. Cette page est une
+               démonstration statique : aucune instance n'est jointe derrière. -->
+          <div class="chat__cible" id="chat-cible"></div>
+          <noscript>
+            <p class="nojs" style="padding:28px">L'assistant a besoin de JavaScript pour
+               s'afficher. Le reste de la page — les documents chargés et le périmètre
+               de l'assistant — reste consultable sans lui.</p>
+          </noscript>
         </div>
 
         <p class="chat__note">
           <span><b>Horizon Immobilier est un réseau fictif</b> — ses documents ont été écrits
-            pour cette démonstration.</span>
-          <button class="reset" type="button" id="chat-reset" hidden>Changer de code</button>
+            pour cette démonstration. L'interface ci-dessus est celle du produit ;
+            <b>elle n'est reliée à aucune instance</b>, les questions ne partent donc nulle part.</span>
         </p>
       </div>
 
@@ -630,12 +609,8 @@
     <div class="foot__top">
       <p class="foot__claim" data-reveal="fade" data-split>La réponse est déjà écrite quelque part.</p>
       <div data-reveal="up" data-delay="120">
-        <p class="lead" style="margin-bottom:24px">Le même assistant peut être installé sur les
-          documents de votre entreprise, quels qu'ils soient.</p>
-        <a class="btn btn--paper" href="https://assistant-documentaire.com" rel="noopener" data-magnetic="0.2">
-          <span>assistant-documentaire.com</span>
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13"/><path d="m12 5 7 7-7 7"/></svg>
-        </a>
+        <p class="lead" style="margin-bottom:24px">Le même assistant fonctionne sur n'importe quel
+          jeu de documents : il suffit de remplacer le dossier et de relancer l'indexation.</p>
       </div>
     </div>
 
@@ -650,7 +625,7 @@
 
     <div class="foot__bar">
       <span>Démonstration · Horizon Immobilier (fictif)</span>
-      <span><a href="https://assistant-documentaire.com" rel="noopener">Assistant documentaire — France</a></span>
+      <span>Projet personnel — Jonas Mionnet</span>
     </div>
   </div>
 </footer>
@@ -685,152 +660,52 @@
 })();
 
 /* ---------------------------------------------------------------------------
-   Porte d'accès et assistant en ligne.
+   Assistant en ligne — démonstration statique.
 
-   Le widget lit lui-même le code dans localStorage["da_api_password"] à chaque
-   requête : le rôle de cette page est de le vérifier une fois, de l'y écrire,
-   puis de monter l'assistant dans la section prévue.
+   L'interface est montée telle qu'elle apparaît chez un client. Cette page
+   n'étant reliée à aucune instance, les exemples remplissent le champ de saisie
+   sans envoyer la question : mieux vaut un champ pré-rempli qu'un message
+   d'erreur réseau qui laisserait croire à une panne.
    --------------------------------------------------------------------------- */
 (function () {
-  var CLE = "da_api_password";
+  var cible = document.getElementById("chat-cible");
+  if (!cible || !window.DocAssistant) return;
 
-  var gate   = document.getElementById("gate"),
-      form   = document.getElementById("gate-form"),
-      champ  = document.getElementById("code-acces"),
-      bouton = document.getElementById("gate-go"),
-      msg    = document.getElementById("gate-msg"),
-      cible  = document.getElementById("chat-cible"),
-      reset  = document.getElementById("chat-reset");
-
-  if (!gate || !form || !champ || !cible) return;
-
-  var monte = false;          // l'assistant est-il déjà en place ?
-  var enAttente = null;       // question cliquée avant l'ouverture de l'assistant
-
-  /* --- stockage : toujours enveloppé, la navigation privée le refuse ------ */
-  function lireCode() {
-    try { return localStorage.getItem(CLE) || ""; } catch (e) { return ""; }
-  }
-  function ecrireCode(v) {
-    try { localStorage.setItem(CLE, v); return true; } catch (e) { return false; }
-  }
-  function effacerCode() {
-    try { localStorage.removeItem(CLE); } catch (e) { /* rien à faire */ }
-  }
-
-  function etat(texte, type) {
-    if (!msg) return;
-    msg.textContent = texte || "";
-    if (type) { msg.setAttribute("data-etat", type); }
-    else { msg.removeAttribute("data-etat"); }
-  }
-
-  /* --- vérification du code auprès de l'instance -------------------------- */
-  function verifier(code) {
-    return fetch("/api/verify", { headers: { "X-API-Password": code } })
-      .then(function (r) { return r.status === 200; });
-  }
-
-  /* --- montage de l'assistant -------------------------------------------- */
-  function monterAssistant() {
-    if (monte || !window.DocAssistant) return;
-    gate.hidden = true;
-    cible.hidden = false;
-    window.DocAssistant.mount({
-      mode: "inline",
-      apiBase: "",
-      assistantName: "Assistant Horizon",
-      clientName: "Horizon Immobilier",
-      examples: [
-        "Un bien est vendu 70 000 € par l'agence de Vendôme. Quels honoraires ?",
-        "Combien de temps le diagnostic de l'installation électrique est-il valable pour une location ?",
-        "Un propriétaire a signé le mandat chez lui. Peut-il revenir dessus et sous quel délai ?",
-        "Quels sont vos tarifs de syndic de copropriété ?"
-      ],
-      target: cible
-    });
-    monte = true;
-    if (reset) reset.hidden = false;
-    if (enAttente) { var q = enAttente; enAttente = null; poser(q); }
-  }
-
-  /* --- retour à la porte d'accès ----------------------------------------- */
-  function redemanderCode(message) {
-    effacerCode();
-    if (window.DocAssistant) window.DocAssistant.unmountAll();
-    monte = false;
-    cible.innerHTML = "";
-    cible.hidden = true;
-    gate.hidden = false;
-    if (reset) reset.hidden = true;
-    champ.value = "";
-    etat(message || "", message ? "erreur" : null);
-    champ.focus();
-  }
-
-  /* --- envoi d'une question depuis un exemple de la page ----------------- */
-  function poser(question) {
-    var zone = cible.querySelector("textarea");
-    if (!zone) return;
-    zone.value = question;
-    zone.dispatchEvent(new Event("input", { bubbles: true }));
-    var envoyer = cible.querySelector(".da-send");
-    if (envoyer) { envoyer.click(); } else { zone.focus(); }
-  }
-
-  /* --- soumission du code ------------------------------------------------ */
-  form.addEventListener("submit", function (e) {
-    e.preventDefault();
-    var code = (champ.value || "").trim();
-    if (!code) { etat("Entrez le code d'accès.", "erreur"); champ.focus(); return; }
-
-    bouton.disabled = true;
-    etat("Vérification en cours…");
-
-    verifier(code).then(function (ok) {
-      bouton.disabled = false;
-      if (!ok) { etat("Ce code n'est pas reconnu.", "erreur"); champ.select(); return; }
-      if (!ecrireCode(code)) {
-        etat("Votre navigateur bloque le stockage local : l'assistant ne peut pas " +
-             "conserver le code. Désactivez la navigation privée, puis réessayez.", "erreur");
-        return;
-      }
-      etat("");
-      monterAssistant();
-    }).catch(function () {
-      bouton.disabled = false;
-      etat("L'assistant est injoignable pour le moment. Réessayez dans un instant.", "erreur");
-    });
+  window.DocAssistant.mount({
+    mode: "inline",
+    apiBase: "",
+    assistantName: "Assistant Horizon",
+    clientName: "Horizon Immobilier",
+    examples: [
+      "Un bien est vendu 70 000 € par l'agence de Vendôme. Quels honoraires ?",
+      "Combien de temps le diagnostic de l'installation électrique est-il valable pour une location ?",
+      "Un propriétaire a signé le mandat chez lui. Peut-il revenir dessus et sous quel délai ?",
+      "Quels sont vos tarifs de syndic de copropriété ?"
+    ],
+    target: cible
   });
 
-  /* --- lien discret « changer de code » ---------------------------------- */
-  if (reset) {
-    reset.addEventListener("click", function () { redemanderCode(""); });
+  /* Le widget s'annonce « En ligne » : faux ici, aucune instance derrière.
+     On corrige l'en-tête depuis la page, sans toucher au composant lui-même. */
+  var sous = cible.querySelector(".da-head p");
+  if (sous) {
+    sous.innerHTML = sous.innerHTML.replace(
+      "En ligne \u00b7", "D\u00e9monstration \u00b7");
   }
+  var pastille = cible.querySelector(".da-status");
+  if (pastille) pastille.style.background = "#8B968F";
 
-  /* --- exemples cliquables de la page ------------------------------------ */
+  /* Exemples de la page : on remplit le champ, on ne soumet pas. */
   Array.prototype.forEach.call(document.querySelectorAll(".try"), function (b) {
     b.addEventListener("click", function () {
-      var question = b.getAttribute("data-question");
-      if (monte) { poser(question); return; }
-      enAttente = question;                       // posée dès que le code est accepté
-      etat("Entrez le code d'accès : la question part ensuite toute seule.");
-      champ.focus();
+      var zone = cible.querySelector("textarea");
+      if (!zone) return;
+      zone.value = b.getAttribute("data-question") || "";
+      zone.dispatchEvent(new Event("input", { bubbles: true }));
+      zone.focus();
+      zone.scrollIntoView({ block: "center", behavior: "smooth" });
     });
   });
-
-  /* --- au chargement : un code déjà enregistré ouvre directement ---------- */
-  (function ouvrirSiCodeConnu() {
-    var code = lireCode();
-    if (!code) return;
-    etat("Ouverture de l'assistant…");
-    verifier(code).then(function (ok) {
-      if (ok) { etat(""); monterAssistant(); }
-      else { redemanderCode("Le code enregistré n'est plus valable. Saisissez-en un nouveau."); }
-    }).catch(function () {
-      etat("L'assistant est injoignable pour le moment. Réessayez dans un instant.", "erreur");
-    });
-  })();
 })();
 </script>
 </body>
